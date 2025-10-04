@@ -126,6 +126,24 @@ npm run build:backend
 npm run build:frontend
 ```
 
+## Testing
+
+Run all tests:
+```bash
+npm test
+```
+
+Run tests separately:
+```bash
+npm run test:backend   # Jest tests
+npm run test:frontend  # Vitest tests
+```
+
+With coverage:
+```bash
+npm run test:coverage
+```
+
 ## Learn More
 
 - See [README.md](README.md) for full documentation

@@ -137,6 +137,65 @@ smart-invoice/
 - amount (Decimal)
 - invoiceId (UUID, Foreign Key)
 
+## Testing
+
+### Backend Tests (Jest)
+
+The backend uses Jest for unit testing with the following setup:
+
+**Test Structure:**
+- `src/**/*.spec.ts` - Test files
+- `jest.config.js` - Jest configuration
+- Coverage reports in `backend/coverage/`
+
+**Running Tests:**
+```bash
+cd backend
+npm test                  # Run all tests
+npm run test:watch        # Run tests in watch mode
+npm run test:cov          # Run tests with coverage report
+```
+
+**Test Coverage:**
+- Auth Service: Register, login, user validation
+- Clients Service: CRUD operations
+- Invoices Service: Invoice creation, calculations, dashboard stats
+
+### Frontend Tests (Vitest)
+
+The frontend uses Vitest for unit testing with the following setup:
+
+**Test Structure:**
+- `src/**/*.test.ts` - Test files
+- `vitest.config.ts` - Vitest configuration
+- Coverage reports in `frontend/coverage/`
+
+**Running Tests:**
+```bash
+cd frontend
+npm test                  # Run all tests
+npm run test:ui           # Run tests with interactive UI
+npm run test:coverage     # Run tests with coverage report
+```
+
+**Test Coverage:**
+- Auth Store: Login, register, logout functionality
+- Service Layer: API calls for clients and invoices
+- Vue Components: Login component rendering and behavior
+
+### Running All Tests
+
+From the root directory:
+```bash
+npm test                  # Run both backend and frontend tests
+npm run test:coverage     # Run all tests with coverage
+```
+
+**Test Statistics:**
+- Backend: 19 tests across 3 test suites
+- Frontend: 20 tests across 4 test suites
+- Total: 39 tests with 100% pass rate
+
 ## Development Workflow
 
 ### First Time Setup

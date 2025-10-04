@@ -96,6 +96,36 @@ The frontend will be running at `http://localhost:5173`
 5. Download invoices as PDF
 6. Track your sales and unpaid invoices on the Dashboard
 
+## Testing
+
+### Backend Tests (Jest)
+
+Run backend tests:
+```bash
+cd backend
+npm test                  # Run all tests
+npm run test:watch        # Run tests in watch mode
+npm run test:cov          # Run tests with coverage
+```
+
+### Frontend Tests (Vitest)
+
+Run frontend tests:
+```bash
+cd frontend
+npm test                  # Run all tests
+npm run test:ui           # Run tests with UI
+npm run test:coverage     # Run tests with coverage
+```
+
+### Run All Tests
+
+From the root directory:
+```bash
+npm test                  # Run both backend and frontend tests
+npm run test:coverage     # Run all tests with coverage
+```
+
 ## Building for Production
 
 ### Backend
