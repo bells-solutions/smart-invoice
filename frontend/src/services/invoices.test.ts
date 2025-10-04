@@ -98,7 +98,7 @@ describe('Invoice Service', () => {
   describe('update', () => {
     it('should update an existing invoice', async () => {
       const updateData = {
-        status: 'sent' as const,
+        status: 'sent' as any,
       };
 
       const mockResponse = {
