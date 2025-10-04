@@ -207,6 +207,43 @@ npm run test:coverage     # Run all tests with coverage
    ```
 
 2. **Set up PostgreSQL**
+
+   **Option A: Using Docker (Recommended for Development)**
+   
+   Using Docker Compose:
+   ```bash
+   # Start PostgreSQL in a Docker container
+   docker compose up -d
+   
+   # Verify it's running
+   docker compose ps
+   
+   # View logs if needed
+   docker compose logs postgres
+   ```
+   
+   Or using Docker Run:
+   ```bash
+   # Create volume and run PostgreSQL container
+   docker volume create smartinvoice-postgres-data
+   docker run -d \
+     --name smartinvoice-postgres \
+     -p 5432:5432 \
+     -e POSTGRES_USER=postgres \
+     -e POSTGRES_PASSWORD=postgres \
+     -e POSTGRES_DB=smartinvoice \
+     -v smartinvoice-postgres-data:/var/lib/postgresql/data \
+     postgres:13-alpine
+   ```
+   
+   The database is automatically configured with:
+   - Host: localhost
+   - Port: 5432
+   - Username: postgres
+   - Password: postgres
+   - Database: smartinvoice
+   
+   **Option B: Using Local PostgreSQL Installation**
    ```bash
    # Install PostgreSQL if not already installed
    # Create database
@@ -218,6 +255,7 @@ npm run test:coverage     # Run all tests with coverage
    cd backend
    cp .env.example .env
    # Edit .env with your database credentials and JWT secret
+   # Note: If using Docker, the default values work without modification
    npm install
    ```
 
@@ -355,9 +393,15 @@ VITE_API_URL=/api
 ## Troubleshooting
 
 ### Database Connection Issues
-- Ensure PostgreSQL is running
-- Check database credentials in .env
-- Verify database exists: `psql -l`
+- If using Docker: 
+  - Ensure Docker is running: `docker --version`
+  - Check container status: `docker compose ps`
+  - View logs: `docker compose logs postgres`
+  - Restart container: `docker compose restart postgres`
+- If using local PostgreSQL:
+  - Ensure PostgreSQL is running
+  - Check database credentials in .env
+  - Verify database exists: `psql -l`
 
 ### Port Already in Use
 - Backend: Change PORT in .env
