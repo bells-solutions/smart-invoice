@@ -209,6 +209,8 @@ npm run test:coverage     # Run all tests with coverage
 2. **Set up PostgreSQL**
 
    **Option A: Using Docker (Recommended for Development)**
+   
+   Using Docker Compose:
    ```bash
    # Start PostgreSQL in a Docker container
    docker compose up -d
@@ -218,6 +220,20 @@ npm run test:coverage     # Run all tests with coverage
    
    # View logs if needed
    docker compose logs postgres
+   ```
+   
+   Or using Docker Run:
+   ```bash
+   # Create volume and run PostgreSQL container
+   docker volume create smartinvoice-postgres-data
+   docker run -d \
+     --name smartinvoice-postgres \
+     -p 5432:5432 \
+     -e POSTGRES_USER=postgres \
+     -e POSTGRES_PASSWORD=postgres \
+     -e POSTGRES_DB=smartinvoice \
+     -v smartinvoice-postgres-data:/var/lib/postgresql/data \
+     postgres:13-alpine
    ```
    
    The database is automatically configured with:

@@ -43,6 +43,7 @@ SmartInvoice is a lightweight SaaS for small businesses and freelancers to quick
 
 If you have Docker installed, you can run PostgreSQL in a container:
 
+**Using Docker Compose (Recommended):**
 ```bash
 # Start PostgreSQL container
 docker compose up -d
@@ -63,6 +64,38 @@ docker compose down
 To stop and remove all data:
 ```bash
 docker compose down -v
+```
+
+**Using Docker Run (Alternative):**
+```bash
+# Create a volume for data persistence
+docker volume create smartinvoice-postgres-data
+
+# Run PostgreSQL container
+docker run -d \
+  --name smartinvoice-postgres \
+  -p 5432:5432 \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=smartinvoice \
+  -v smartinvoice-postgres-data:/var/lib/postgresql/data \
+  postgres:13-alpine
+
+# Verify the container is running
+docker ps | grep smartinvoice-postgres
+```
+
+To stop the database:
+```bash
+docker stop smartinvoice-postgres
+docker rm smartinvoice-postgres
+```
+
+To stop and remove all data:
+```bash
+docker stop smartinvoice-postgres
+docker rm smartinvoice-postgres
+docker volume rm smartinvoice-postgres-data
 ```
 
 **Option 2: Using Local PostgreSQL Installation**
