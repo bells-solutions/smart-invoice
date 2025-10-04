@@ -34,8 +34,50 @@ SmartInvoice is a lightweight SaaS for small businesses and freelancers to quick
 ### Prerequisites
 
 - Node.js (v18 or higher)
-- PostgreSQL (v13 or higher)
+- PostgreSQL (v13 or higher) **OR** Docker (for running PostgreSQL in a container)
 - npm or yarn
+
+### Database Setup
+
+**Option 1: Using Docker (Recommended for Development)**
+
+If you have Docker installed, you can run PostgreSQL in a container:
+
+```bash
+# Start PostgreSQL container
+docker-compose up -d
+
+# Verify the container is running
+docker-compose ps
+
+# The database will be available at localhost:5432
+# Default credentials: postgres/postgres
+# Database name: smartinvoice
+```
+
+To stop the database:
+```bash
+docker-compose down
+```
+
+To stop and remove all data:
+```bash
+docker-compose down -v
+```
+
+**Option 2: Using Local PostgreSQL Installation**
+
+Make sure PostgreSQL is running and create the database:
+```bash
+createdb smartinvoice
+```
+
+Or using psql:
+```bash
+psql -U postgres
+CREATE DATABASE smartinvoice;
+\q
+```
 
 ### Backend Setup
 
@@ -56,12 +98,10 @@ cp .env.example .env
 
 4. Update the `.env` file with your database credentials and JWT secret.
 
-5. Make sure PostgreSQL is running and create the database:
-```bash
-createdb smartinvoice
-```
+   If using Docker with default settings, the `.env` file is already configured correctly.
+   If using a local PostgreSQL installation, update the credentials as needed.
 
-6. Start the backend server:
+5. Start the backend server:
 ```bash
 npm run start:dev
 ```
