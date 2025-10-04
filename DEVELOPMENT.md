@@ -211,13 +211,13 @@ npm run test:coverage     # Run all tests with coverage
    **Option A: Using Docker (Recommended for Development)**
    ```bash
    # Start PostgreSQL in a Docker container
-   docker-compose up -d
+   docker compose up -d
    
    # Verify it's running
-   docker-compose ps
+   docker compose ps
    
    # View logs if needed
-   docker-compose logs postgres
+   docker compose logs postgres
    ```
    
    The database is automatically configured with:
@@ -379,9 +379,9 @@ VITE_API_URL=/api
 ### Database Connection Issues
 - If using Docker: 
   - Ensure Docker is running: `docker --version`
-  - Check container status: `docker-compose ps`
-  - View logs: `docker-compose logs postgres`
-  - Restart container: `docker-compose restart postgres`
+  - Check container status: `docker compose ps`
+  - View logs: `docker compose logs postgres`
+  - Restart container: `docker compose restart postgres`
 - If using local PostgreSQL:
   - Ensure PostgreSQL is running
   - Check database credentials in .env

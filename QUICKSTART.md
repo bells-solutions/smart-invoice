@@ -20,10 +20,10 @@ This is a quick reference to get SmartInvoice up and running in 5 minutes.
    **Option A: Using Docker (Recommended)**
    ```bash
    # Start PostgreSQL in a Docker container
-   docker-compose up -d
+   docker compose up -d
    
    # Verify it's running
-   docker-compose ps
+   docker compose ps
    ```
    
    The database is automatically created with these settings:
@@ -120,10 +120,10 @@ npm run dev:frontend
 ## Troubleshooting
 
 **Database connection failed:**
-- If using Docker: Ensure Docker is running and the container is started: `docker-compose ps`
+- If using Docker: Ensure Docker is running and the container is started: `docker compose ps`
 - If using local PostgreSQL: Ensure PostgreSQL is running: `sudo service postgresql status`
 - Check your credentials in `backend/.env`
-- Verify database exists: `psql -l | grep smartinvoice` (or `docker-compose exec postgres psql -U postgres -l` for Docker)
+- Verify database exists: `psql -l | grep smartinvoice` (or `docker compose exec postgres psql -U postgres -l` for Docker)
 
 **Port already in use:**
 - Backend: Change `PORT` in `backend/.env`

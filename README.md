@@ -45,10 +45,10 @@ If you have Docker installed, you can run PostgreSQL in a container:
 
 ```bash
 # Start PostgreSQL container
-docker-compose up -d
+docker compose up -d
 
 # Verify the container is running
-docker-compose ps
+docker compose ps
 
 # The database will be available at localhost:5432
 # Default credentials: postgres/postgres
@@ -57,12 +57,12 @@ docker-compose ps
 
 To stop the database:
 ```bash
-docker-compose down
+docker compose down
 ```
 
 To stop and remove all data:
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
 
 **Option 2: Using Local PostgreSQL Installation**
