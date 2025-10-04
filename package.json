@@ -1,0 +1,12 @@
+{
+  "name": "smart-invoice",
+  "version": "1.0.0",
+  "description": "SmartInvoice is a lightweight, offline-friendly SaaS for small businesses and freelancers to quickly create, manage, and send professional invoices and receipts. Built with NestJS, CouchDB, Vue 3, and TailwindCSS, it combines simplicity, speed, and scalability to help businesses stay organized and save time.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
