@@ -162,7 +162,7 @@
             </div>
 
             <!-- User Profile Dropdown -->
-            <div class="relative ml-3" ref="userMenuRef">
+            <div class="relative ml-3">
               <button
                 @click="toggleUserMenu"
                 class="flex items-center max-w-xs bg-white rounded-full p-2 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hover:bg-gray-50 transition-colors duration-200"
@@ -351,7 +351,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
@@ -360,7 +360,6 @@ const authStore = useAuthStore();
 
 const showUserMenu = ref(false);
 const showMobileMenu = ref(false);
-const userMenuRef = ref<HTMLElement | null>(null);
 
 function toggleUserMenu() {
   showUserMenu.value = !showUserMenu.value;
@@ -372,16 +371,6 @@ function toggleMobileMenu() {
 
 function closeMobileMenu() {
   showMobileMenu.value = false;
-}
-
-function handleClickOutside(event: MouseEvent) {
-  if (
-    userMenuRef.value &&
-    !userMenuRef.value.contains(event.target as Node) &&
-    showUserMenu.value
-  ) {
-    showUserMenu.value = false;
-  }
 }
 
 function getInitials() {
@@ -398,12 +387,4 @@ function handleLogout() {
   authStore.logout();
   router.push("/login");
 }
-
-onMounted(() => {
-  document.addEventListener("click", handleClickOutside);
-});
-
-onUnmounted(() => {
-  document.removeEventListener("click", handleClickOutside);
-});
 </script>
