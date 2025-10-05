@@ -12,7 +12,10 @@
 
     <div v-if="loading" class="text-center">Loading...</div>
 
-    <div v-else-if="invoices.length === 0" class="bg-white rounded-lg shadow p-6 text-center text-gray-600">
+    <div
+      v-else-if="invoices.length === 0"
+      class="bg-white rounded-lg shadow p-6 text-center text-gray-600"
+    >
       No invoices yet. Create your first invoice to get started.
     </div>
 
@@ -20,26 +23,61 @@
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Invoice #
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Client
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Date
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Status
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Total
+            </th>
+            <th
+              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="invoice in invoices" :key="invoice.id">
-            <td class="px-6 py-4 whitespace-nowrap">{{ invoice.invoiceNumber }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ invoice.client?.name }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(invoice.issueDate) }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span :class="getStatusClass(invoice.status)" class="px-2 py-1 rounded text-xs font-semibold">
+              {{ invoice.invoiceNumber }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {{ invoice.client?.name }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {{ formatDate(invoice.issueDate) }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                :class="getStatusClass(invoice.status)"
+                class="px-2 py-1 rounded text-xs font-semibold"
+              >
                 {{ invoice.status.toUpperCase() }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">${{ invoice.total.toFixed(2) }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <td class="px-6 py-4 whitespace-nowrap">${{ invoice.total }}</td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+            >
               <button
                 @click="downloadPDF(invoice.id)"
                 class="text-green-600 hover:text-green-900 mr-4"
@@ -67,10 +105,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { invoiceService } from '@/services/invoices';
-import type { Invoice, InvoiceStatus } from '@/types';
-import Layout from '@/components/Layout.vue';
+import { ref, onMounted } from "vue";
+import { invoiceService } from "@/services/invoices";
+import type { Invoice, InvoiceStatus } from "@/types";
+import Layout from "@/components/Layout.vue";
 
 const invoices = ref<Invoice[]>([]);
 const loading = ref(true);
@@ -83,7 +121,7 @@ async function loadInvoices() {
   try {
     invoices.value = await invoiceService.getAll();
   } catch (error) {
-    console.error('Failed to load invoices:', error);
+    console.error("Failed to load invoices:", error);
   } finally {
     loading.value = false;
   }
@@ -93,18 +131,18 @@ async function downloadPDF(id: string) {
   try {
     await invoiceService.downloadPDF(id);
   } catch (error) {
-    console.error('Failed to download PDF:', error);
+    console.error("Failed to download PDF:", error);
   }
 }
 
 async function deleteInvoice(id: string) {
-  if (!confirm('Are you sure you want to delete this invoice?')) return;
-  
+  if (!confirm("Are you sure you want to delete this invoice?")) return;
+
   try {
     await invoiceService.delete(id);
     await loadInvoices();
   } catch (error) {
-    console.error('Failed to delete invoice:', error);
+    console.error("Failed to delete invoice:", error);
   }
 }
 
@@ -114,10 +152,10 @@ function formatDate(date: string) {
 
 function getStatusClass(status: InvoiceStatus) {
   const classes: Record<InvoiceStatus, string> = {
-    draft: 'bg-gray-200 text-gray-800',
-    sent: 'bg-blue-200 text-blue-800',
-    paid: 'bg-green-200 text-green-800',
-    overdue: 'bg-red-200 text-red-800',
+    draft: "bg-gray-200 text-gray-800",
+    sent: "bg-blue-200 text-blue-800",
+    paid: "bg-green-200 text-green-800",
+    overdue: "bg-red-200 text-red-800",
   };
   return classes[status];
 }
