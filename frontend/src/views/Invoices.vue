@@ -74,7 +74,9 @@
                 {{ invoice.status.toUpperCase() }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">${{ invoice.total }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              ${{ invoice.total.toFixed(2) }}
+            </td>
             <td
               class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
             >
