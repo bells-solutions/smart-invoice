@@ -1,26 +1,36 @@
 <template>
   <Layout>
-    <h2 class="text-2xl font-bold mb-6">{{ isEdit ? 'Edit Invoice' : 'Create Invoice' }}</h2>
+    <h2 class="text-2xl font-bold mb-6">
+      {{ isEdit ? "Edit Invoice" : "Create Invoice" }}
+    </h2>
 
     <div class="bg-white rounded-lg shadow p-6">
       <form @submit.prevent="saveInvoice">
         <div class="grid grid-cols-2 gap-4 mb-6">
           <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2">Client</label>
+            <label class="block text-gray-700 text-sm font-bold mb-2"
+              >Client</label
+            >
             <select
               v-model="form.clientId"
               required
               class="shadow border rounded w-full py-2 px-3 text-gray-700"
             >
               <option value="">Select Client</option>
-              <option v-for="client in clients" :key="client.id" :value="client.id">
+              <option
+                v-for="client in clients"
+                :key="client.id"
+                :value="client.id"
+              >
                 {{ client.name }}
               </option>
             </select>
           </div>
 
           <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2">Status</label>
+            <label class="block text-gray-700 text-sm font-bold mb-2"
+              >Status</label
+            >
             <select
               v-model="form.status"
               class="shadow border rounded w-full py-2 px-3 text-gray-700"
@@ -33,7 +43,9 @@
           </div>
 
           <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2">Issue Date</label>
+            <label class="block text-gray-700 text-sm font-bold mb-2"
+              >Issue Date</label
+            >
             <input
               v-model="form.issueDate"
               type="date"
@@ -43,7 +55,9 @@
           </div>
 
           <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2">Due Date</label>
+            <label class="block text-gray-700 text-sm font-bold mb-2"
+              >Due Date</label
+            >
             <input
               v-model="form.dueDate"
               type="date"
@@ -53,7 +67,9 @@
           </div>
 
           <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2">Tax Rate (%)</label>
+            <label class="block text-gray-700 text-sm font-bold mb-2"
+              >Tax Rate (%)</label
+            >
             <input
               v-model.number="form.taxRate"
               type="number"
@@ -77,7 +93,11 @@
           </div>
 
           <div class="space-y-2">
-            <div v-for="(item, index) in form.items" :key="index" class="grid grid-cols-12 gap-2">
+            <div
+              v-for="(item, index) in form.items"
+              :key="index"
+              class="grid grid-cols-12 gap-2"
+            >
               <div class="col-span-5">
                 <input
                   v-model="item.description"
@@ -130,7 +150,9 @@
         </div>
 
         <div class="mb-6">
-          <label class="block text-gray-700 text-sm font-bold mb-2">Notes</label>
+          <label class="block text-gray-700 text-sm font-bold mb-2"
+            >Notes</label
+          >
           <textarea
             v-model="form.notes"
             rows="3"
@@ -143,7 +165,9 @@
             <div class="w-64">
               <div class="flex justify-between mb-2">
                 <span class="text-gray-700">Subtotal:</span>
-                <span class="font-bold">${{ calculateSubtotal().toFixed(2) }}</span>
+                <span class="font-bold"
+                  >${{ calculateSubtotal().toFixed(2) }}</span
+                >
               </div>
               <div class="flex justify-between mb-2">
                 <span class="text-gray-700">Tax ({{ form.taxRate }}%):</span>
@@ -151,7 +175,9 @@
               </div>
               <div class="flex justify-between text-lg">
                 <span class="text-gray-700 font-bold">Total:</span>
-                <span class="font-bold">${{ calculateTotal().toFixed(2) }}</span>
+                <span class="font-bold"
+                  >${{ calculateTotal().toFixed(2) }}</span
+                >
               </div>
             </div>
           </div>
@@ -177,12 +203,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import { clientService } from '@/services/clients';
-import { invoiceService } from '@/services/invoices';
-import type { Client, InvoiceItem, InvoiceStatus } from '@/types';
-import Layout from '@/components/Layout.vue';
+import { ref, onMounted, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { clientService } from "@/services/clients";
+import { invoiceService } from "@/services/invoices";
+import type { Client, InvoiceItem, InvoiceStatus } from "@/types";
+import Layout from "@/components/Layout.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -191,29 +217,31 @@ const clients = ref<Client[]>([]);
 const isEdit = computed(() => !!route.params.id);
 
 const form = ref({
-  clientId: '',
-  status: 'draft' as InvoiceStatus,
-  issueDate: new Date().toISOString().split('T')[0],
-  dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+  clientId: "",
+  status: "draft" as InvoiceStatus,
+  issueDate: new Date().toISOString().split("T")[0],
+  dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0],
   taxRate: 0,
-  notes: '',
+  notes: "",
   items: [] as InvoiceItem[],
 });
 
 onMounted(async () => {
   try {
     clients.value = await clientService.getAll();
-    
+
     if (isEdit.value) {
       const invoice = await invoiceService.getOne(route.params.id as string);
       form.value = {
         clientId: invoice.clientId,
         status: invoice.status,
-        issueDate: invoice.issueDate.split('T')[0],
-        dueDate: invoice.dueDate.split('T')[0],
+        issueDate: invoice.issueDate.split("T")[0],
+        dueDate: invoice.dueDate.split("T")[0],
         taxRate: invoice.taxRate,
-        notes: invoice.notes || '',
-        items: invoice.items.map(item => ({
+        notes: invoice.notes || "",
+        items: invoice.items.map((item) => ({
           description: item.description,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
@@ -223,13 +251,13 @@ onMounted(async () => {
       addItem();
     }
   } catch (error) {
-    console.error('Failed to load data:', error);
+    console.error("Failed to load data:", error);
   }
 });
 
 function addItem() {
   form.value.items.push({
-    description: '',
+    description: "",
     quantity: 1,
     unitPrice: 0,
   });
@@ -240,7 +268,10 @@ function removeItem(index: number) {
 }
 
 function calculateSubtotal() {
-  return form.value.items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
+  return form.value.items.reduce(
+    (sum, item) => sum + item.quantity * item.unitPrice,
+    0
+  );
 }
 
 function calculateTax() {
@@ -253,14 +284,29 @@ function calculateTotal() {
 
 async function saveInvoice() {
   try {
+    // Build a plain payload to avoid sending reactive proxies
+    const payload = {
+      clientId: form.value.clientId,
+      status: form.value.status,
+      issueDate: form.value.issueDate,
+      dueDate: form.value.dueDate,
+      taxRate: form.value.taxRate,
+      notes: form.value.notes,
+      items: form.value.items.map((it) => ({
+        description: it.description,
+        quantity: Number(it.quantity),
+        unitPrice: Number(it.unitPrice),
+      })),
+    };
+
     if (isEdit.value) {
-      await invoiceService.update(route.params.id as string, form.value);
+      await invoiceService.update(route.params.id as string, payload);
     } else {
-      await invoiceService.create(form.value);
+      await invoiceService.create(payload);
     }
-    router.push('/invoices');
+    router.push("/invoices");
   } catch (error) {
-    console.error('Failed to save invoice:', error);
+    console.error("Failed to save invoice:", error);
   }
 }
 </script>
