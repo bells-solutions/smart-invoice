@@ -295,45 +295,45 @@ export class InvoicesService {
 
       // ===== HEADER SECTION =====
       // Decorative background
-      drawRoundedRect(0, 0, 595, 140, 0, colors.light);
+      drawRoundedRect(0, 0, 595, 120, 0, colors.light);
 
       // Company branding section
       doc.fillColor(colors.primary).fontSize(28).font("Helvetica-Bold");
       const companyName = user.companyName || "Your Company";
-      doc.text(companyName, 50, 25);
+      doc.text(companyName, 50, 20);
 
       // Company tagline
       doc.fillColor(colors.muted).fontSize(10).font("Helvetica");
-      doc.text("Professional Invoicing Solutions", 50, 55);
+      doc.text("Professional Invoicing Solutions", 50, 50);
 
       // Company contact info
       doc.fillColor(colors.secondary).fontSize(9).font("Helvetica");
-      doc.text(`${user.firstName} ${user.lastName}`, 50, 75);
-      doc.text("Email: contact@company.com", 50, 88);
-      doc.text("Phone: (555) 123-4567", 50, 101);
-      doc.text("Website: www.company.com", 50, 114);
+      doc.text(`${user.firstName} ${user.lastName}`, 50, 70);
+      doc.text("Email: contact@company.com", 50, 83);
+      doc.text("Phone: (555) 123-4567", 50, 96);
+      doc.text("Website: www.company.com", 50, 109);
 
       // Invoice title with modern styling
-      drawRoundedRect(380, 20, 140, 40, 8, colors.primary);
+      drawRoundedRect(380, 15, 140, 40, 8, colors.primary);
       doc.fillColor("white").fontSize(16).font("Helvetica-Bold");
-      doc.text("INVOICE", 410, 32);
+      doc.text("INVOICE", 410, 27);
 
       // Invoice number with background
-      drawRoundedRect(380, 70, 140, 35, 6, colors.light);
+      drawRoundedRect(380, 65, 140, 35, 6, colors.light);
       doc
         .strokeColor(colors.border)
         .lineWidth(1)
-        .roundedRect(380, 70, 140, 35, 6)
+        .roundedRect(380, 65, 140, 35, 6)
         .stroke();
       doc.fillColor(colors.primary).fontSize(12).font("Helvetica-Bold");
-      doc.text(`#${invoice.invoiceNumber}`, 390, 80);
+      doc.text(`#${invoice.invoiceNumber}`, 390, 75);
 
-      yPosition = 160;
+      yPosition = 140;
 
       // ===== INVOICE DETAILS SECTION =====
       doc.fillColor(colors.dark).fontSize(16).font("Helvetica-Bold");
       doc.text("Invoice Details", 50, yPosition);
-      yPosition += 25;
+      yPosition += 30;
 
       // Details grid with modern styling
       const detailsY = yPosition;
@@ -355,12 +355,12 @@ export class InvoicesService {
       // Status badge
       drawStatusBadge(invoice.status, 130, detailsY + 36);
 
-      yPosition += 70;
+      yPosition += 75;
 
       // ===== BILL TO SECTION =====
       doc.fillColor(colors.dark).fontSize(16).font("Helvetica-Bold");
       doc.text("Bill To:", 50, yPosition);
-      yPosition += 20;
+      yPosition += 25;
 
       // Client info card
       drawRoundedRect(45, yPosition - 8, 280, 70, 8, colors.light);
@@ -393,12 +393,12 @@ export class InvoicesService {
         doc.text(location, 95, yPosition + 48);
       }
 
-      yPosition += 85;
+      yPosition += 90;
 
       // ===== ITEMS TABLE =====
       doc.fillColor(colors.dark).fontSize(16).font("Helvetica-Bold");
       doc.text("Items & Services", 50, yPosition);
-      yPosition += 20;
+      yPosition += 25;
 
       // Table header with gradient
       drawRoundedRect(45, yPosition, 500, 30, 6, colors.primary);
@@ -408,12 +408,12 @@ export class InvoicesService {
       doc.text("Rate", 390, yPosition + 9);
       doc.text("Amount", 470, yPosition + 9);
 
-      yPosition += 35;
+      yPosition += 40;
 
       // Table rows with alternating colors
       let alternateRow = false;
       invoice.items.forEach((item) => {
-        const rowHeight = 28;
+        const rowHeight = 32;
 
         // Alternate row background
         if (alternateRow) {
@@ -422,18 +422,18 @@ export class InvoicesService {
 
         // Item details
         doc.fillColor(colors.dark).fontSize(10).font("Helvetica");
-        doc.text(item.description, 55, yPosition + 8, { width: 250 });
+        doc.text(item.description, 55, yPosition + 10, { width: 250 });
 
-        doc.text(item.quantity.toString(), 330, yPosition + 8);
+        doc.text(item.quantity.toString(), 330, yPosition + 10);
         doc.text(
           formatCurrency(parseFloat(item.unitPrice.toString())),
           390,
-          yPosition + 8
+          yPosition + 10
         );
         doc.text(
           formatCurrency(parseFloat(item.amount.toString())),
           470,
-          yPosition + 8
+          yPosition + 10
         );
 
         yPosition += rowHeight;
@@ -448,31 +448,24 @@ export class InvoicesService {
         .lineTo(545, yPosition)
         .stroke();
 
-      yPosition += 25;
+      yPosition += 30;
 
       // ===== TOTALS SECTION =====
       const totalsX = 320;
       const totalsWidth = 225;
 
-      // Totals background with shadow effect
-      drawRoundedRect(
-        totalsX - 3,
-        yPosition - 8,
-        totalsWidth,
-        85,
-        8,
-        colors.light
-      );
+      // Totals background
+      drawRoundedRect(totalsX, yPosition - 8, totalsWidth, 85, 8, colors.light);
       doc
         .strokeColor(colors.border)
         .lineWidth(1)
-        .roundedRect(totalsX - 3, yPosition - 8, totalsWidth, 85, 8)
+        .roundedRect(totalsX, yPosition - 8, totalsWidth, 85, 8)
         .stroke();
 
       doc.fillColor(colors.secondary).fontSize(10).font("Helvetica");
 
       // Subtotal
-      doc.text("Subtotal:", totalsX + 5, yPosition);
+      doc.text("Subtotal:", totalsX + 10, yPosition);
       doc.fillColor(colors.dark).font("Helvetica-Bold");
       doc.text(
         formatCurrency(parseFloat(invoice.subtotal.toString())),
@@ -484,7 +477,7 @@ export class InvoicesService {
       // Tax
       yPosition += 20;
       doc.fillColor(colors.secondary).font("Helvetica");
-      doc.text(`Tax (${invoice.taxRate}%):`, totalsX + 5, yPosition);
+      doc.text(`Tax (${invoice.taxRate}%):`, totalsX + 10, yPosition);
       doc.fillColor(colors.dark).font("Helvetica-Bold");
       doc.text(
         formatCurrency(parseFloat(invoice.taxAmount.toString())),
@@ -496,7 +489,7 @@ export class InvoicesService {
       // Total with accent background
       yPosition += 25;
       drawRoundedRect(
-        totalsX - 3,
+        totalsX,
         yPosition - 5,
         totalsWidth,
         30,
@@ -504,7 +497,7 @@ export class InvoicesService {
         colors.primary
       );
       doc.fillColor("white").fontSize(14).font("Helvetica-Bold");
-      doc.text("TOTAL:", totalsX + 5, yPosition);
+      doc.text("TOTAL:", totalsX + 10, yPosition);
       doc.text(
         formatCurrency(parseFloat(invoice.total.toString())),
         totalsX + 140,
@@ -512,13 +505,13 @@ export class InvoicesService {
         { align: "right" }
       );
 
-      yPosition += 50;
+      yPosition += 55;
 
       // ===== NOTES SECTION =====
       if (invoice.notes) {
         doc.fillColor(colors.dark).fontSize(12).font("Helvetica-Bold");
         doc.text("Notes:", 50, yPosition);
-        yPosition += 15;
+        yPosition += 20;
 
         // Notes background
         drawRoundedRect(45, yPosition - 5, 500, 40, 4, "#fefefe");
@@ -530,11 +523,11 @@ export class InvoicesService {
 
         doc.fillColor(colors.secondary).fontSize(10).font("Helvetica");
         doc.text(invoice.notes, 55, yPosition, { width: 480 });
-        yPosition += 50;
+        yPosition += 55;
       }
 
       // ===== FOOTER =====
-      const footerY = 750;
+      const footerY = Math.max(yPosition + 20, 720); // Ensure minimum space from content
 
       // Footer decorative line
       doc
@@ -570,13 +563,14 @@ export class InvoicesService {
       doc.text("contact@company.com • (555) 123-4567", 400, footerY + 30, {
         align: "right",
       });
+      doc.text("www.company.com", 400, footerY + 42, { align: "right" });
 
       // Page info
       doc.fillColor(colors.muted).fontSize(8).font("Helvetica");
       doc.text(
         `Generated on ${formatDate(new Date())} • Page 1 of 1`,
         400,
-        footerY + 42,
+        footerY + 54,
         { align: "right" }
       );
 
