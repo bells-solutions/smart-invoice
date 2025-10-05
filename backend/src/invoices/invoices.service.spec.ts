@@ -242,4 +242,65 @@ describe('InvoicesService', () => {
       expect(mockInvoiceRepository.remove).toHaveBeenCalledWith(invoice);
     });
   });
+
+  describe('update', () => {
+    it('should update an invoice with items', async () => {
+      const existingInvoice = {
+        id: 'invoice-1',
+        invoiceNumber: 'INV-000001',
+        userId: mockUser.id,
+        clientId: 'client-1',
+        status: InvoiceStatus.DRAFT,
+        issueDate: new Date('2024-01-01'),
+        dueDate: new Date('2024-02-01'),
+        taxRate: 10,
+        subtotal: 200,
+        taxAmount: 20,
+        total: 220,
+        notes: 'Old notes',
+        items: [
+          {
+            id: 'item-1',
+            description: 'Old Item',
+            quantity: 2,
+            unitPrice: 100,
+            amount: 200,
+            invoiceId: 'invoice-1',
+          },
+        ],
+      };
+
+      const updateDto = {
+        status: InvoiceStatus.SENT,
+        notes: 'New notes',
+        items: [
+          {
+            description: 'New Item',
+            quantity: 1,
+            unitPrice: 150,
+          },
+        ],
+      };
+
+      mockInvoiceRepository.findOne.mockResolvedValue(existingInvoice);
+      mockInvoiceItemRepository.delete.mockResolvedValue({ affected: 1 });
+      mockInvoiceItemRepository.create.mockImplementation((item) => item);
+      mockInvoiceItemRepository.save.mockResolvedValue([]);
+      mockInvoiceRepository.save.mockResolvedValue({
+        ...existingInvoice,
+        ...updateDto,
+        subtotal: 150,
+        taxAmount: 15,
+        total: 165,
+      });
+
+      const result = await service.update('invoice-1', updateDto, mockUser);
+
+      expect(mockInvoiceItemRepository.delete).toHaveBeenCalledWith({
+        invoiceId: 'invoice-1',
+      });
+      expect(mockInvoiceRepository.save).toHaveBeenCalled();
+      expect(mockInvoiceRepository.findOne).toHaveBeenCalledTimes(2);
+    });
+  });
 });

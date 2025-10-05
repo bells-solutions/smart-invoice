@@ -32,6 +32,10 @@ export class CreateInvoiceDto {
   dueDate: string;
 
   @IsOptional()
+  @IsEnum(InvoiceStatus)
+  status?: InvoiceStatus;
+
+  @IsOptional()
   @IsNumber()
   taxRate?: number;
 

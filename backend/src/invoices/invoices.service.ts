@@ -39,7 +39,7 @@ export class InvoicesService {
   }
 
   async create(createInvoiceDto: CreateInvoiceDto, user: User) {
-    const { items, taxRate = 0, ...invoiceData } = createInvoiceDto;
+    const { items, taxRate = 0, status, ...invoiceData } = createInvoiceDto;
 
     const totals = this.calculateTotals(items, taxRate);
     const invoiceNumber = await this.generateInvoiceNumber();
@@ -49,6 +49,7 @@ export class InvoicesService {
       invoiceNumber,
       userId: user.id,
       taxRate,
+      status: status || InvoiceStatus.DRAFT,
       ...totals,
     });
 
