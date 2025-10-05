@@ -288,10 +288,10 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <div class="flex items-center space-x-2">
-                  <router-link
-                    :to="`/invoices/${invoice.id}`"
+                  <button
+                    @click="openPreview(invoice.id)"
                     class="text-blue-600 hover:text-blue-900 transition-colors duration-200"
-                    title="View Invoice"
+                    title="Preview Invoice"
                   >
                     <svg
                       class="w-4 h-4"
@@ -312,7 +312,7 @@
                         d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                       />
                     </svg>
-                  </router-link>
+                  </button>
                   <router-link
                     :to="`/invoices/${invoice.id}/edit`"
                     class="text-indigo-600 hover:text-indigo-900 transition-colors duration-200"
@@ -358,6 +358,13 @@
         </table>
       </div>
     </div>
+
+    <!-- Invoice Preview Modal -->
+    <InvoicePreviewModal
+      :is-open="previewModalOpen"
+      :invoice-id="selectedInvoiceId"
+      @close="closePreview"
+    />
   </Layout>
 </template>
 
@@ -366,9 +373,12 @@ import { ref, onMounted } from "vue";
 import { invoiceService } from "@/services/invoices";
 import type { Invoice } from "@/types";
 import Layout from "@/components/Layout.vue";
+import InvoicePreviewModal from "@/components/InvoicePreviewModal.vue";
 
 const invoices = ref<Invoice[]>([]);
 const loading = ref(true);
+const previewModalOpen = ref(false);
+const selectedInvoiceId = ref<string | null>(null);
 
 onMounted(async () => {
   await loadInvoices();
@@ -390,5 +400,15 @@ async function downloadPDF(id: string) {
   } catch (error) {
     console.error("Failed to download PDF:", error);
   }
+}
+
+function openPreview(invoiceId: string) {
+  selectedInvoiceId.value = invoiceId;
+  previewModalOpen.value = true;
+}
+
+function closePreview() {
+  previewModalOpen.value = false;
+  selectedInvoiceId.value = null;
 }
 </script>
