@@ -1,25 +1,64 @@
-import api from './api';
-import type { Invoice, DashboardStats } from '@/types';
+import api from "./api";
+import type { Invoice, DashboardStats } from "@/types";
+
+function toNumber(value: unknown): number {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
+    const parsed = parseFloat(value);
+    return Number.isNaN(parsed) ? 0 : parsed;
+  }
+  return 0;
+}
+
+function normalizeInvoice(inv: Invoice): Invoice {
+  const out: any = { ...inv };
+
+  if ((inv as any).subtotal !== undefined) {
+    out.subtotal = toNumber((inv as any).subtotal);
+  }
+  if ((inv as any).taxRate !== undefined) {
+    out.taxRate = toNumber((inv as any).taxRate);
+  }
+  if ((inv as any).taxAmount !== undefined) {
+    out.taxAmount = toNumber((inv as any).taxAmount);
+  }
+  if ((inv as any).total !== undefined) {
+    out.total = toNumber((inv as any).total);
+  }
+  if ((inv as any).items !== undefined) {
+    out.items = (inv.items || []).map((it) => ({
+      ...it,
+      ...(it.unitPrice !== undefined
+        ? { unitPrice: toNumber((it as any).unitPrice) }
+        : {}),
+      ...(it.amount !== undefined
+        ? { amount: toNumber((it as any).amount) }
+        : {}),
+    }));
+  }
+
+  return out as Invoice;
+}
 
 export const invoiceService = {
   async getAll() {
-    const response = await api.get<Invoice[]>('/invoices');
-    return response.data;
+    const response = await api.get<Invoice[]>("/invoices");
+    return response.data.map(normalizeInvoice);
   },
 
   async getOne(id: string) {
     const response = await api.get<Invoice>(`/invoices/${id}`);
-    return response.data;
+    return normalizeInvoice(response.data);
   },
 
   async create(data: Partial<Invoice>) {
-    const response = await api.post<Invoice>('/invoices', data);
-    return response.data;
+    const response = await api.post<Invoice>("/invoices", data);
+    return normalizeInvoice(response.data);
   },
 
   async update(id: string, data: Partial<Invoice>) {
     const response = await api.put<Invoice>(`/invoices/${id}`, data);
-    return response.data;
+    return normalizeInvoice(response.data);
   },
 
   async delete(id: string) {
@@ -27,18 +66,18 @@ export const invoiceService = {
   },
 
   async getDashboardStats() {
-    const response = await api.get<DashboardStats>('/invoices/dashboard/stats');
+    const response = await api.get<DashboardStats>("/invoices/dashboard/stats");
     return response.data;
   },
 
   async downloadPDF(id: string) {
     const response = await api.get(`/invoices/${id}/pdf`, {
-      responseType: 'blob',
+      responseType: "blob",
     });
     const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.setAttribute('download', `invoice-${id}.pdf`);
+    link.setAttribute("download", `invoice-${id}.pdf`);
     document.body.appendChild(link);
     link.click();
     link.remove();

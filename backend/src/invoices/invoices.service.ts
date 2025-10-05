@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Invoice, InvoiceStatus } from './invoice.entity';
-import { InvoiceItem } from './invoice-item.entity';
-import { CreateInvoiceDto, UpdateInvoiceDto } from './invoice.dto';
-import { User } from '../users/user.entity';
-import PDFDocument from 'pdfkit';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Invoice, InvoiceStatus } from "./invoice.entity";
+import { InvoiceItem } from "./invoice-item.entity";
+import { CreateInvoiceDto, UpdateInvoiceDto } from "./invoice.dto";
+import { User } from "../users/user.entity";
+import PDFDocument from "pdfkit";
 
 @Injectable()
 export class InvoicesService {
@@ -13,7 +13,7 @@ export class InvoicesService {
     @InjectRepository(Invoice)
     private invoicesRepository: Repository<Invoice>,
     @InjectRepository(InvoiceItem)
-    private invoiceItemsRepository: Repository<InvoiceItem>,
+    private invoiceItemsRepository: Repository<InvoiceItem>
   ) {}
 
   private calculateTotals(items: any[], taxRate: number) {
@@ -34,7 +34,7 @@ export class InvoicesService {
 
   private async generateInvoiceNumber(): Promise<string> {
     const count = await this.invoicesRepository.count();
-    const invoiceNumber = `INV-${String(count + 1).padStart(6, '0')}`;
+    const invoiceNumber = `INV-${String(count + 1).padStart(6, "0")}`;
     return invoiceNumber;
   }
 
@@ -72,19 +72,36 @@ export class InvoicesService {
   async findAll(user: User) {
     return await this.invoicesRepository.find({
       where: { userId: user.id },
-      relations: ['client', 'items'],
-      order: { createdAt: 'DESC' },
+      relations: ["client", "items"],
+      order: { createdAt: "DESC" },
     });
   }
 
   async findOne(id: string, user: User) {
     const invoice = await this.invoicesRepository.findOne({
       where: { id, userId: user.id },
-      relations: ['client', 'items', 'user'],
+      relations: ["client", "items", "user"],
     });
     if (!invoice) {
-      throw new NotFoundException('Invoice not found');
+      throw new NotFoundException("Invoice not found");
     }
+    // Remove circular relations to avoid JSON serialization errors when returning
+    if (invoice.user && (invoice.user as any).invoices) {
+      try {
+        delete (invoice.user as any).invoices;
+      } catch (e) {
+        // ignore
+      }
+    }
+    // Remove sensitive fields
+    if (invoice.user && (invoice.user as any).password) {
+      try {
+        delete (invoice.user as any).password;
+      } catch (e) {
+        // ignore
+      }
+    }
+
     return invoice;
   }
 
@@ -108,8 +125,8 @@ export class InvoicesService {
         });
       });
 
-      await this.invoiceItemsRepository.save(invoiceItems);
-
+      // Set the items relationship on the invoice before saving
+      invoice.items = invoiceItems;
       Object.assign(invoice, updateData, { taxRate: newTaxRate, ...totals });
     } else {
       Object.assign(invoice, updateData);
@@ -140,18 +157,18 @@ export class InvoicesService {
 
     const totalSales = invoices.reduce(
       (sum, invoice) => sum + parseFloat(invoice.total.toString()),
-      0,
+      0
     );
 
     const unpaidInvoices = invoices.filter(
       (invoice) =>
         invoice.status === InvoiceStatus.SENT ||
-        invoice.status === InvoiceStatus.OVERDUE,
+        invoice.status === InvoiceStatus.OVERDUE
     );
 
     const unpaidAmount = unpaidInvoices.reduce(
       (sum, invoice) => sum + parseFloat(invoice.total.toString()),
-      0,
+      0
     );
 
     return {
@@ -160,7 +177,7 @@ export class InvoicesService {
       unpaidInvoices: unpaidInvoices.length,
       unpaidAmount: parseFloat(unpaidAmount.toFixed(2)),
       paidInvoices: invoices.filter(
-        (invoice) => invoice.status === InvoiceStatus.PAID,
+        (invoice) => invoice.status === InvoiceStatus.PAID
       ).length,
     };
   }
@@ -172,19 +189,19 @@ export class InvoicesService {
       const doc = new PDFDocument({ margin: 50 });
       const buffers: Buffer[] = [];
 
-      doc.on('data', buffers.push.bind(buffers));
-      doc.on('end', () => {
+      doc.on("data", buffers.push.bind(buffers));
+      doc.on("end", () => {
         const pdfBuffer = Buffer.concat(buffers);
         resolve(pdfBuffer);
       });
-      doc.on('error', reject);
+      doc.on("error", reject);
 
       // Header
       if (user.companyLogo) {
         // Add logo if available
-        doc.fontSize(20).text(user.companyName || 'Invoice', 50, 50);
+        doc.fontSize(20).text(user.companyName || "Invoice", 50, 50);
       } else {
-        doc.fontSize(20).text(user.companyName || 'Invoice', 50, 50);
+        doc.fontSize(20).text(user.companyName || "Invoice", 50, 50);
       }
 
       doc
@@ -204,7 +221,7 @@ export class InvoicesService {
       // Client details
       doc
         .fontSize(12)
-        .text('Bill To:', 50, 230)
+        .text("Bill To:", 50, 230)
         .fontSize(10)
         .text(invoice.client.name, 50, 250)
         .text(invoice.client.email, 50, 265);
@@ -214,9 +231,11 @@ export class InvoicesService {
       }
       if (invoice.client.city) {
         doc.text(
-          `${invoice.client.city}${invoice.client.country ? ', ' + invoice.client.country : ''}`,
+          `${invoice.client.city}${
+            invoice.client.country ? ", " + invoice.client.country : ""
+          }`,
           50,
-          295,
+          295
         );
       }
 
@@ -224,10 +243,10 @@ export class InvoicesService {
       const tableTop = 350;
       doc
         .fontSize(10)
-        .text('Description', 50, tableTop)
-        .text('Qty', 300, tableTop)
-        .text('Price', 370, tableTop)
-        .text('Amount', 470, tableTop);
+        .text("Description", 50, tableTop)
+        .text("Qty", 300, tableTop)
+        .text("Price", 370, tableTop)
+        .text("Amount", 470, tableTop);
 
       doc
         .moveTo(50, tableTop + 15)
@@ -247,12 +266,8 @@ export class InvoicesService {
       // Totals
       y += 20;
       doc
-        .text('Subtotal:', 370, y)
-        .text(
-          `$${parseFloat(invoice.subtotal.toString()).toFixed(2)}`,
-          470,
-          y,
-        );
+        .text("Subtotal:", 370, y)
+        .text(`$${parseFloat(invoice.subtotal.toString()).toFixed(2)}`, 470, y);
 
       y += 20;
       doc
@@ -260,19 +275,22 @@ export class InvoicesService {
         .text(
           `$${parseFloat(invoice.taxAmount.toString()).toFixed(2)}`,
           470,
-          y,
+          y
         );
 
       y += 20;
       doc
         .fontSize(12)
-        .text('Total:', 370, y)
+        .text("Total:", 370, y)
         .text(`$${parseFloat(invoice.total.toString()).toFixed(2)}`, 470, y);
 
       // Notes
       if (invoice.notes) {
         y += 50;
-        doc.fontSize(10).text('Notes:', 50, y).text(invoice.notes, 50, y + 15);
+        doc
+          .fontSize(10)
+          .text("Notes:", 50, y)
+          .text(invoice.notes, 50, y + 15);
       }
 
       doc.end();
