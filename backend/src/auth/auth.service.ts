@@ -72,18 +72,6 @@ export class AuthService {
     const payload = { sub: user.id, email: user.email };
     const token = this.jwtService.sign(payload);
 
-    // Normalize optional fields (ensure values provided in DTO are reflected if ORM defaulted them)
-    // if (registerDto.companyName && !user.companyName)
-    //   user.companyName = registerDto.companyName;
-    // if (registerDto.taxpayerNumber && !user.taxpayerNumber)
-    //   user.taxpayerNumber = registerDto.taxpayerNumber;
-    // if (registerDto.commercialRegister && !user.commercialRegister)
-    //   user.commercialRegister = registerDto.commercialRegister;
-    // if (registerDto.poBox && !user.poBox) user.poBox = registerDto.poBox;
-    // if (registerDto.town && !user.town) user.town = registerDto.town;
-    // if (registerDto.address && !user.address)
-    //   user.address = registerDto.address;
-
     return {
       access_token: token,
       user: {
