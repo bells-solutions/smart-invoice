@@ -18,6 +18,11 @@ export enum InvoiceStatus {
   OVERDUE = "overdue",
 }
 
+export enum InvoiceType {
+  NORMAL = "normal",
+  PROFORMA = "proforma",
+}
+
 @Entity("invoices")
 export class Invoice {
   @PrimaryGeneratedColumn("uuid")
@@ -32,6 +37,13 @@ export class Invoice {
     default: InvoiceStatus.DRAFT,
   })
   status: InvoiceStatus;
+
+  @Column({
+    type: "enum",
+    enum: InvoiceType,
+    default: InvoiceType.NORMAL,
+  })
+  type: InvoiceType;
 
   @Column({ type: "date" })
   issueDate: Date;
