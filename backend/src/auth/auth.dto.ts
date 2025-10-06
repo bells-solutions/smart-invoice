@@ -25,17 +25,14 @@ export class RegisterDto {
 
   @ValidateIf((o) => o.accountType === AccountType.INDIVIDUAL)
   @IsNotEmpty({ message: "First name is required for individual accounts" })
-  @IsOptional()
   firstName?: string;
 
   @ValidateIf((o) => o.accountType === AccountType.INDIVIDUAL)
   @IsNotEmpty({ message: "Last name is required for individual accounts" })
-  @IsOptional()
   lastName?: string;
 
   @ValidateIf((o) => o.accountType === AccountType.INDIVIDUAL)
   @IsNotEmpty({ message: "Phone is required for individual accounts" })
-  @IsOptional()
   phone?: string;
 
   @ValidateIf((o) => o.accountType === AccountType.COMPANY)
@@ -46,6 +43,7 @@ export class RegisterDto {
   @IsOptional()
   address?: string;
 
+  // Company name is required for company accounts, optional for individual accounts
   @ValidateIf((o) => o.accountType === AccountType.COMPANY)
   @IsNotEmpty({ message: "Company name is required for company accounts" })
   @IsOptional()

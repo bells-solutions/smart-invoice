@@ -15,6 +15,15 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
+    // Normalize incoming DTO: convert blank strings to undefined so optional fields aren't stored as empty strings
+    const normalize = <T extends Record<string, any>>(obj: T) =>
+      Object.fromEntries(
+        Object.entries(obj).map(([k, v]) => [
+          k,
+          typeof v === "string" && v.trim() === "" ? undefined : v,
+        ])
+      ) as T;
+
     const {
       email,
       password,
@@ -28,7 +37,7 @@ export class AuthService {
       taxpayerNumber,
       commercialRegister,
       poBox,
-    } = registerDto;
+    } = normalize(registerDto as any) as RegisterDto;
 
     // Check if user already exists
     const existingUser = await this.usersRepository.findOne({
@@ -62,6 +71,18 @@ export class AuthService {
     // Generate token
     const payload = { sub: user.id, email: user.email };
     const token = this.jwtService.sign(payload);
+
+    // Normalize optional fields (ensure values provided in DTO are reflected if ORM defaulted them)
+    // if (registerDto.companyName && !user.companyName)
+    //   user.companyName = registerDto.companyName;
+    // if (registerDto.taxpayerNumber && !user.taxpayerNumber)
+    //   user.taxpayerNumber = registerDto.taxpayerNumber;
+    // if (registerDto.commercialRegister && !user.commercialRegister)
+    //   user.commercialRegister = registerDto.commercialRegister;
+    // if (registerDto.poBox && !user.poBox) user.poBox = registerDto.poBox;
+    // if (registerDto.town && !user.town) user.town = registerDto.town;
+    // if (registerDto.address && !user.address)
+    //   user.address = registerDto.address;
 
     return {
       access_token: token,

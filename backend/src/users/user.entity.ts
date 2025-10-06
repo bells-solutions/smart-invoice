@@ -20,7 +20,11 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ type: "enum", enum: ["individual", "company"] })
+  @Column({
+    type: "enum",
+    enum: ["individual", "company"],
+    default: "individual",
+  })
   accountType: "individual" | "company";
 
   @Column({ nullable: true })
