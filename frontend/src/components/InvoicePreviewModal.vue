@@ -249,7 +249,11 @@
 import { ref, watch } from "vue";
 import { invoiceService } from "@/services/invoices";
 import type { Invoice } from "@/types";
-import { ArrowDownTrayIcon, ArrowPathIcon, XMarkIcon } from "@heroicons/vue/24/outline";
+import {
+  ArrowDownTrayIcon,
+  ArrowPathIcon,
+  XMarkIcon,
+} from "@heroicons/vue/24/outline";
 
 interface Props {
   isOpen: boolean;

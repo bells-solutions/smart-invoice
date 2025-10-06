@@ -30,7 +30,9 @@
               class="p-4 bg-red-50 border border-red-200 rounded-xl"
             >
               <div class="flex items-center">
-                <ExclamationTriangleIcon class="w-5 h-5 text-red-500 mr-3 flex-shrink-0" />
+                <ExclamationTriangleIcon
+                  class="w-5 h-5 text-red-500 mr-3 flex-shrink-0"
+                />
                 <p class="text-red-700 text-sm font-medium">{{ error }}</p>
               </div>
             </div>
@@ -92,7 +94,9 @@
               class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl"
             >
               <span v-if="loading" class="flex items-center justify-center">
-                <ArrowPathIcon class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
+                <ArrowPathIcon
+                  class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                />
                 Signing in...
               </span>
               <span v-else class="flex items-center justify-center">

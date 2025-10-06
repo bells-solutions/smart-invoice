@@ -135,7 +135,9 @@
                     class="group flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200"
                     role="menuitem"
                   >
-                    <ArrowRightOnRectangleIcon class="mr-3 h-4 w-4 text-red-400 group-hover:text-red-500" />
+                    <ArrowRightOnRectangleIcon
+                      class="mr-3 h-4 w-4 text-red-400 group-hover:text-red-500"
+                    />
                     Sign out
                   </button>
                 </div>
