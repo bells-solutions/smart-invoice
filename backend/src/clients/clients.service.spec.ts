@@ -1,13 +1,13 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
-import { ClientsService } from './clients.service';
-import { Client } from './client.entity';
-import { User } from '../users/user.entity';
-import { CreateClientDto, UpdateClientDto } from './client.dto';
+import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { NotFoundException } from "@nestjs/common";
+import { ClientsService } from "./clients.service";
+import { Client } from "./client.entity";
+import { User } from "../users/user.entity";
+import { CreateClientDto, UpdateClientDto } from "./client.dto";
 
-describe('ClientsService', () => {
+describe("ClientsService", () => {
   let service: ClientsService;
   let clientRepository: Repository<Client>;
 
@@ -20,12 +20,19 @@ describe('ClientsService', () => {
   };
 
   const mockUser: User = {
-    id: 'user-1',
-    email: 'test@example.com',
-    password: 'hashed',
-    firstName: 'John',
-    lastName: 'Doe',
-    companyName: 'Test Company',
+    id: "user-1",
+    email: "test@example.com",
+    password: "hashed",
+    accountType: "individual",
+    firstName: "John",
+    lastName: "Doe",
+    phone: "+1234567890",
+    town: "Test City",
+    address: "123 Test St",
+    companyName: "Test Company",
+    taxpayerNumber: "123456789",
+    commercialRegister: "RC123456",
+    poBox: "12345",
     companyLogo: null,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -46,7 +53,7 @@ describe('ClientsService', () => {
 
     service = module.get<ClientsService>(ClientsService);
     clientRepository = module.get<Repository<Client>>(
-      getRepositoryToken(Client),
+      getRepositoryToken(Client)
     );
   });
 
@@ -54,19 +61,19 @@ describe('ClientsService', () => {
     jest.clearAllMocks();
   });
 
-  describe('create', () => {
-    it('should create a new client', async () => {
+  describe("create", () => {
+    it("should create a new client", async () => {
       const createClientDto: CreateClientDto = {
-        name: 'Client Name',
-        email: 'client@example.com',
-        phone: '1234567890',
-        address: '123 Main St',
-        city: 'New York',
-        country: 'USA',
+        name: "Client Name",
+        email: "client@example.com",
+        phone: "1234567890",
+        address: "123 Main St",
+        city: "New York",
+        country: "USA",
       };
 
       const client = {
-        id: 'client-1',
+        id: "client-1",
         ...createClientDto,
         userId: mockUser.id,
       };
@@ -85,19 +92,19 @@ describe('ClientsService', () => {
     });
   });
 
-  describe('findAll', () => {
-    it('should return all clients for a user', async () => {
+  describe("findAll", () => {
+    it("should return all clients for a user", async () => {
       const clients = [
         {
-          id: 'client-1',
-          name: 'Client 1',
-          email: 'client1@example.com',
+          id: "client-1",
+          name: "Client 1",
+          email: "client1@example.com",
           userId: mockUser.id,
         },
         {
-          id: 'client-2',
-          name: 'Client 2',
-          email: 'client2@example.com',
+          id: "client-2",
+          name: "Client 2",
+          email: "client2@example.com",
           userId: mockUser.id,
         },
       ];
@@ -109,50 +116,50 @@ describe('ClientsService', () => {
       expect(result).toEqual(clients);
       expect(mockClientRepository.find).toHaveBeenCalledWith({
         where: { userId: mockUser.id },
-        order: { createdAt: 'DESC' },
+        order: { createdAt: "DESC" },
       });
     });
   });
 
-  describe('findOne', () => {
-    it('should return a client by ID', async () => {
+  describe("findOne", () => {
+    it("should return a client by ID", async () => {
       const client = {
-        id: 'client-1',
-        name: 'Client 1',
-        email: 'client1@example.com',
+        id: "client-1",
+        name: "Client 1",
+        email: "client1@example.com",
         userId: mockUser.id,
       };
 
       mockClientRepository.findOne.mockResolvedValue(client);
 
-      const result = await service.findOne('client-1', mockUser);
+      const result = await service.findOne("client-1", mockUser);
 
       expect(result).toEqual(client);
       expect(mockClientRepository.findOne).toHaveBeenCalledWith({
-        where: { id: 'client-1', userId: mockUser.id },
+        where: { id: "client-1", userId: mockUser.id },
       });
     });
 
-    it('should throw NotFoundException if client not found', async () => {
+    it("should throw NotFoundException if client not found", async () => {
       mockClientRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('invalid-id', mockUser)).rejects.toThrow(
-        NotFoundException,
+      await expect(service.findOne("invalid-id", mockUser)).rejects.toThrow(
+        NotFoundException
       );
     });
   });
 
-  describe('update', () => {
-    it('should update a client', async () => {
+  describe("update", () => {
+    it("should update a client", async () => {
       const updateClientDto: UpdateClientDto = {
-        name: 'Updated Name',
-        email: 'updated@example.com',
+        name: "Updated Name",
+        email: "updated@example.com",
       };
 
       const client = {
-        id: 'client-1',
-        name: 'Original Name',
-        email: 'original@example.com',
+        id: "client-1",
+        name: "Original Name",
+        email: "original@example.com",
         userId: mockUser.id,
       };
 
@@ -164,25 +171,29 @@ describe('ClientsService', () => {
       mockClientRepository.findOne.mockResolvedValue(client);
       mockClientRepository.save.mockResolvedValue(updatedClient);
 
-      const result = await service.update('client-1', updateClientDto, mockUser);
+      const result = await service.update(
+        "client-1",
+        updateClientDto,
+        mockUser
+      );
 
       expect(result).toEqual(updatedClient);
       expect(mockClientRepository.save).toHaveBeenCalled();
     });
   });
 
-  describe('remove', () => {
-    it('should remove a client', async () => {
+  describe("remove", () => {
+    it("should remove a client", async () => {
       const client = {
-        id: 'client-1',
-        name: 'Client 1',
+        id: "client-1",
+        name: "Client 1",
         userId: mockUser.id,
       };
 
       mockClientRepository.findOne.mockResolvedValue(client);
       mockClientRepository.remove.mockResolvedValue(client);
 
-      const result = await service.remove('client-1', mockUser);
+      const result = await service.remove("client-1", mockUser);
 
       expect(result).toEqual({ deleted: true });
       expect(mockClientRepository.remove).toHaveBeenCalledWith(client);
