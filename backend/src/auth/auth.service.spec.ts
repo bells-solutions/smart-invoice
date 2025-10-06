@@ -95,6 +95,39 @@ describe("AuthService", () => {
         UnauthorizedException
       );
     });
+
+    it("should register a company account without firstName and lastName", async () => {
+      const registerDto: RegisterDto = {
+        email: "company@example.com",
+        password: "password123",
+        accountType: AccountType.COMPANY,
+        companyName: "Test Company",
+        taxpayerNumber: "123456789",
+        town: "Test City",
+        // firstName and lastName are optional for companies
+      };
+
+      const savedUser = {
+        id: "2",
+        email: registerDto.email,
+        accountType: registerDto.accountType,
+        companyName: registerDto.companyName,
+        taxpayerNumber: registerDto.taxpayerNumber,
+        town: registerDto.town,
+      };
+
+      mockUserRepository.findOne.mockResolvedValue(null);
+      mockUserRepository.create.mockReturnValue(savedUser);
+      mockUserRepository.save.mockResolvedValue(savedUser);
+      mockJwtService.sign.mockReturnValue("company-token");
+
+      const result = await service.register(registerDto);
+
+      expect(result.access_token).toBe("company-token");
+      expect(result.user.email).toBe(registerDto.email);
+      expect(result.user.accountType).toBe(AccountType.COMPANY);
+      expect(result.user.companyName).toBe(registerDto.companyName);
+    });
   });
 
   describe("login", () => {

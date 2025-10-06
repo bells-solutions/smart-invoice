@@ -4,6 +4,7 @@ import {
   MinLength,
   IsOptional,
   IsEnum,
+  ValidateIf,
 } from "class-validator";
 
 export enum AccountType {
@@ -22,24 +23,34 @@ export class RegisterDto {
   @IsEnum(AccountType)
   accountType: AccountType;
 
-  @IsOptional()
+  @ValidateIf((o) => o.accountType === AccountType.INDIVIDUAL)
+  @IsNotEmpty({ message: "First name is required for individual accounts" })
   firstName?: string;
 
-  @IsOptional()
+  @ValidateIf((o) => o.accountType === AccountType.INDIVIDUAL)
+  @IsNotEmpty({ message: "Last name is required for individual accounts" })
   lastName?: string;
 
-  @IsOptional()
+  @ValidateIf((o) => o.accountType === AccountType.INDIVIDUAL)
+  @IsNotEmpty({ message: "Phone is required for individual accounts" })
   phone?: string;
 
+  @ValidateIf((o) => o.accountType === AccountType.COMPANY)
+  @IsNotEmpty({ message: "Town is required for company accounts" })
   @IsOptional()
   town?: string;
 
   @IsOptional()
   address?: string;
 
+  // Company name is required for company accounts, optional for individual accounts
+  @ValidateIf((o) => o.accountType === AccountType.COMPANY)
+  @IsNotEmpty({ message: "Company name is required for company accounts" })
   @IsOptional()
   companyName?: string;
 
+  @ValidateIf((o) => o.accountType === AccountType.COMPANY)
+  @IsNotEmpty({ message: "Taxpayer number is required for company accounts" })
   @IsOptional()
   taxpayerNumber?: string;
 

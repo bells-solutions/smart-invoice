@@ -144,25 +144,22 @@
             </div>
           </div>
 
-          <!-- Name Fields (Individual) -->
-          <div
-            v-if="form.accountType === 'individual'"
-            class="grid grid-cols-2 gap-4"
-          >
+          <!-- Name Fields -->
+          <div class="grid grid-cols-2 gap-4">
             <!-- First Name -->
             <div>
               <label
                 for="firstName"
                 class="block text-sm font-medium text-gray-700 mb-1"
               >
-                First Name *
+                First Name{{ form.accountType === "company" ? "" : " *" }}
               </label>
               <div class="relative">
                 <input
                   v-model="form.firstName"
                   type="text"
                   id="firstName"
-                  required
+                  :required="form.accountType === 'individual'"
                   :class="[
                     'block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200',
                     form.firstName && !isValidFirstName
@@ -183,7 +180,13 @@
                 v-if="form.firstName && !isValidFirstName"
                 class="mt-1 text-sm text-red-600"
               >
-                First name is required
+                First name is required for individual accounts
+              </p>
+              <p
+                v-if="form.accountType === 'company'"
+                class="mt-1 text-sm text-gray-500"
+              >
+                Optional for company accounts
               </p>
             </div>
 
@@ -193,14 +196,14 @@
                 for="lastName"
                 class="block text-sm font-medium text-gray-700 mb-1"
               >
-                Last Name *
+                Last Name{{ form.accountType === "company" ? "" : " *" }}
               </label>
               <div class="relative">
                 <input
                   v-model="form.lastName"
                   type="text"
                   id="lastName"
-                  required
+                  :required="form.accountType === 'individual'"
                   :class="[
                     'block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200',
                     form.lastName && !isValidLastName
@@ -221,7 +224,13 @@
                 v-if="form.lastName && !isValidLastName"
                 class="mt-1 text-sm text-red-600"
               >
-                Last name is required
+                Last name is required for individual accounts
+              </p>
+              <p
+                v-if="form.accountType === 'company'"
+                class="mt-1 text-sm text-gray-500"
+              >
+                Optional for company accounts
               </p>
             </div>
           </div>
@@ -725,11 +734,19 @@ const isFormValid = computed(() => {
 
 // Validation functions
 function validateFirstName() {
-  isValidFirstName.value = form.value.firstName.trim().length > 0;
+  if (form.value.accountType === "individual") {
+    isValidFirstName.value = form.value.firstName.trim().length > 0;
+  } else {
+    isValidFirstName.value = true; // optional for company
+  }
 }
 
 function validateLastName() {
-  isValidLastName.value = form.value.lastName.trim().length > 0;
+  if (form.value.accountType === "individual") {
+    isValidLastName.value = form.value.lastName.trim().length > 0;
+  } else {
+    isValidLastName.value = true; // optional for company
+  }
 }
 
 function validateEmail() {
@@ -772,6 +789,9 @@ async function handleRegister() {
     validateCompanyName();
     validateTaxpayerNumber();
     validateTown();
+    // Name fields are optional for companies, but validate them if provided
+    if (form.value.firstName.trim()) validateFirstName();
+    if (form.value.lastName.trim()) validateLastName();
   }
   validateEmail();
   validatePassword();

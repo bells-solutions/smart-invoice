@@ -7,7 +7,10 @@
       >
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-4xl font-bold mb-2">Welcome back!</h1>
+            <h1 class="text-4xl font-bold mb-2">
+              Welcome back
+              {{ user?.firstName }} {{ user?.lastName || user?.companyName }}!
+            </h1>
             <p class="text-blue-100 text-lg">
               Here's what's happening with your invoices today.
             </p>
@@ -226,6 +229,7 @@ import {
 
 const stats = ref<DashboardStats | null>(null);
 const loading = ref(true);
+const user = ref(JSON.parse(localStorage.getItem("user") || "{}"));
 
 onMounted(async () => {
   try {

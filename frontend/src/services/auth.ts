@@ -17,6 +17,24 @@ export const authService = {
     poBox?: string;
   }) {
     const response = await api.post("/auth/register", data);
+    // Backend should return all provided optional fields; in case some (like companyName)
+    // come back as null while the user supplied them (observed issue), patch them locally
+    // const user = response.data?.user || {};
+    // if (data.companyName && !user.companyName)
+    //   user.companyName = data.companyName;
+
+    // if (data.taxpayerNumber && !user.taxpayerNumber)
+    //   user.taxpayerNumber = data.taxpayerNumber;
+
+    // if (data.commercialRegister && !user.commercialRegister)
+    //   user.commercialRegister = data.commercialRegister;
+
+    // if (data.poBox && !user.poBox) user.poBox = data.poBox;
+    // if (data.town && !user.town) user.town = data.town;
+    // if (data.address && !user.address) user.address = data.address;
+
+    // response.data.user = user;
+
     return response.data;
   },
 
