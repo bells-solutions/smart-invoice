@@ -6,9 +6,10 @@ import {
   ValidateNested,
   IsNumber,
   IsDateString,
-} from 'class-validator';
-import { Type } from 'class-transformer';
-import { InvoiceStatus } from './invoice.entity';
+  IsBoolean,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { InvoiceStatus } from "./invoice.entity";
 
 export class CreateInvoiceItemDto {
   @IsNotEmpty()
@@ -36,8 +37,20 @@ export class CreateInvoiceDto {
   status?: InvoiceStatus;
 
   @IsOptional()
+  @IsBoolean()
+  tvaEnabled?: boolean;
+
+  @IsOptional()
   @IsNumber()
-  taxRate?: number;
+  tvaRate?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  irEnabled?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  irRate?: number;
 
   @IsOptional()
   notes?: string;
@@ -65,8 +78,20 @@ export class UpdateInvoiceDto {
   status?: InvoiceStatus;
 
   @IsOptional()
+  @IsBoolean()
+  tvaEnabled?: boolean;
+
+  @IsOptional()
   @IsNumber()
-  taxRate?: number;
+  tvaRate?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  irEnabled?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  irRate?: number;
 
   @IsOptional()
   notes?: string;

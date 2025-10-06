@@ -121,22 +121,108 @@
               />
             </div>
 
-            <!-- Tax Rate -->
+            <!-- TVA Tax Section -->
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">
-                <span class="flex items-center">
-                  <ReceiptPercentIcon class="h-4 w-4 mr-1 text-gray-400" />
-                  Tax Rate (%)
-                </span>
-              </label>
-              <input
-                v-model.number="form.taxRate"
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0.00"
-                class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-              />
+              <div class="flex items-center justify-between">
+                <label class="block text-sm font-medium text-gray-700">
+                  <span class="flex items-center">
+                    <ReceiptPercentIcon class="h-4 w-4 mr-1 text-gray-400" />
+                    TVA Tax
+                  </span>
+                </label>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input
+                    v-model="form.tvaEnabled"
+                    type="checkbox"
+                    class="sr-only peer"
+                  />
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
+                  ></div>
+                  <span class="ml-3 text-sm font-medium text-gray-900"
+                    >Enable TVA</span
+                  >
+                </label>
+              </div>
+              <div v-if="form.tvaEnabled" class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs text-gray-500 mb-1"
+                    >TVA Rate (%)</label
+                  >
+                  <input
+                    v-model.number="form.tvaRate"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="19.25"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-500 mb-1"
+                    >TVA Amount</label
+                  >
+                  <div
+                    class="flex items-center h-10 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg"
+                  >
+                    <span class="text-gray-900 font-medium"
+                      >${{ calculateTva().toFixed(2) }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- IR Tax Section -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="block text-sm font-medium text-gray-700">
+                  <span class="flex items-center">
+                    <ReceiptPercentIcon class="h-4 w-4 mr-1 text-gray-400" />
+                    IR Tax
+                  </span>
+                </label>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input
+                    v-model="form.irEnabled"
+                    type="checkbox"
+                    class="sr-only peer"
+                  />
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
+                  ></div>
+                  <span class="ml-3 text-sm font-medium text-gray-900"
+                    >Enable IR</span
+                  >
+                </label>
+              </div>
+              <div v-if="form.irEnabled" class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs text-gray-500 mb-1"
+                    >IR Rate (%)</label
+                  >
+                  <input
+                    v-model.number="form.irRate"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="5.5"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-500 mb-1"
+                    >IR Amount</label
+                  >
+                  <div
+                    class="flex items-center h-10 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg"
+                  >
+                    <span class="text-gray-900 font-medium"
+                      >${{ calculateIr().toFixed(2) }}</span
+                    >
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -301,9 +387,13 @@
                 >${{ calculateSubtotal().toFixed(2) }}</span
               >
             </div>
-            <div class="flex justify-between mb-2">
-              <span class="text-gray-700">Tax ({{ form.taxRate }}%):</span>
-              <span class="font-bold">${{ calculateTax().toFixed(2) }}</span>
+            <div v-if="form.tvaEnabled" class="flex justify-between mb-2">
+              <span class="text-gray-700">TVA ({{ form.tvaRate }}%):</span>
+              <span class="font-bold">${{ calculateTva().toFixed(2) }}</span>
+            </div>
+            <div v-if="form.irEnabled" class="flex justify-between mb-2">
+              <span class="text-gray-700">IR ({{ form.irRate }}%):</span>
+              <span class="font-bold">${{ calculateIr().toFixed(2) }}</span>
             </div>
             <div class="flex justify-between text-lg">
               <span class="text-gray-700 font-bold">Total:</span>
@@ -398,7 +488,10 @@ const form = ref({
   dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
     .toISOString()
     .split("T")[0],
-  taxRate: 0,
+  tvaEnabled: false,
+  tvaRate: 19.25,
+  irEnabled: false,
+  irRate: 5.5,
   notes: "",
   items: [] as InvoiceItem[],
 });
@@ -414,7 +507,10 @@ onMounted(async () => {
         status: invoice.status,
         issueDate: invoice.issueDate.split("T")[0],
         dueDate: invoice.dueDate.split("T")[0],
-        taxRate: invoice.taxRate,
+        tvaEnabled: invoice.tvaEnabled,
+        tvaRate: invoice.tvaRate,
+        irEnabled: invoice.irEnabled,
+        irRate: invoice.irRate,
         notes: invoice.notes || "",
         items: invoice.items.map((item) => ({
           description: item.description,
@@ -449,12 +545,20 @@ function calculateSubtotal() {
   );
 }
 
-function calculateTax() {
-  return (calculateSubtotal() * form.value.taxRate) / 100;
+function calculateTva() {
+  return form.value.tvaEnabled
+    ? (calculateSubtotal() * form.value.tvaRate) / 100
+    : 0;
+}
+
+function calculateIr() {
+  return form.value.irEnabled
+    ? (calculateSubtotal() * form.value.irRate) / 100
+    : 0;
 }
 
 function calculateTotal() {
-  return calculateSubtotal() + calculateTax();
+  return calculateSubtotal() + calculateTva(); // IR doesn't affect the total, only displayed when enabled
 }
 
 async function saveInvoice() {
@@ -466,7 +570,10 @@ async function saveInvoice() {
       status: form.value.status,
       issueDate: form.value.issueDate,
       dueDate: form.value.dueDate,
-      taxRate: form.value.taxRate,
+      tvaEnabled: form.value.tvaEnabled,
+      tvaRate: form.value.tvaRate,
+      irEnabled: form.value.irEnabled,
+      irRate: form.value.irRate,
       notes: form.value.notes,
       items: form.value.items.map((it) => ({
         description: it.description,

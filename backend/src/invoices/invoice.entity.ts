@@ -6,52 +6,64 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
-} from 'typeorm';
-import { User } from '../users/user.entity';
-import { Client } from '../clients/client.entity';
-import { InvoiceItem } from './invoice-item.entity';
+} from "typeorm";
+import { User } from "../users/user.entity";
+import { Client } from "../clients/client.entity";
+import { InvoiceItem } from "./invoice-item.entity";
 
 export enum InvoiceStatus {
-  DRAFT = 'draft',
-  SENT = 'sent',
-  PAID = 'paid',
-  OVERDUE = 'overdue',
+  DRAFT = "draft",
+  SENT = "sent",
+  PAID = "paid",
+  OVERDUE = "overdue",
 }
 
-@Entity('invoices')
+@Entity("invoices")
 export class Invoice {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
   invoiceNumber: string;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: InvoiceStatus,
     default: InvoiceStatus.DRAFT,
   })
   status: InvoiceStatus;
 
-  @Column({ type: 'date' })
+  @Column({ type: "date" })
   issueDate: Date;
 
-  @Column({ type: 'date' })
+  @Column({ type: "date" })
   dueDate: Date;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   subtotal: number;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
-  taxRate: number;
+  @Column({ type: "boolean", default: false })
+  tvaEnabled: boolean;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  taxAmount: number;
+  @Column({ type: "decimal", precision: 5, scale: 2, default: 19.25 })
+  tvaRate: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  tvaAmount: number;
+
+  @Column({ type: "boolean", default: false })
+  irEnabled: boolean;
+
+  @Column({ type: "decimal", precision: 5, scale: 2, default: 5.5 })
+  irRate: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  irAmount: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   total: number;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: "text", nullable: true })
   notes: string;
 
   @CreateDateColumn()
@@ -60,13 +72,13 @@ export class Invoice {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.invoices, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.invoices, { onDelete: "CASCADE" })
   user: User;
 
   @Column()
   userId: string;
 
-  @ManyToOne(() => Client, (client) => client.invoices, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Client, (client) => client.invoices, { onDelete: "CASCADE" })
   client: Client;
 
   @Column()

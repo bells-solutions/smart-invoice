@@ -1,4 +1,5 @@
 # smart-invoice
+
 SmartInvoice is a lightweight SaaS for small businesses and freelancers to quickly create, manage, and send professional invoices and receipts. Built with NestJS, PostgreSQL, Vue 3, and TailwindCSS, it combines simplicity, speed, and scalability to help businesses stay organized and save time.
 
 ## Features
@@ -6,14 +7,18 @@ SmartInvoice is a lightweight SaaS for small businesses and freelancers to quick
 - **User Authentication**: Secure JWT-based registration and login
 - **Client Management**: Create, edit, and manage client information
 - **Invoice Creation**: Create invoices with multiple items and automatic totals
-- **Tax Calculation**: Optional tax rate with automatic calculation
-- **PDF Export**: Generate professional PDF invoices with branding
+- **Dual Tax System**:
+  - **TVA Tax**: Optional TVA (Value Added Tax) with toggle control, defaulting to 19.25%
+  - **IR Tax**: Optional IR (Income Tax) with toggle control, defaulting to 5.5%
+  - Both taxes can be enabled/disabled independently and are calculated based on subtotal
+- **PDF Export**: Generate professional PDF invoices with branding showing applicable taxes
 - **Dashboard**: Track total sales, unpaid invoices, and key metrics
 - **Invoice Status Tracking**: Track invoice status (Draft, Sent, Paid, Overdue)
 
 ## Tech Stack
 
 ### Backend
+
 - NestJS - TypeScript framework for building scalable server-side applications
 - PostgreSQL - Relational database
 - TypeORM - ORM for TypeScript and JavaScript
@@ -21,6 +26,7 @@ SmartInvoice is a lightweight SaaS for small businesses and freelancers to quick
 - PDFKit - PDF generation library
 
 ### Frontend
+
 - Vue 3 - Progressive JavaScript framework
 - TypeScript - Typed superset of JavaScript
 - Tailwind CSS - Utility-first CSS framework
@@ -44,6 +50,7 @@ SmartInvoice is a lightweight SaaS for small businesses and freelancers to quick
 If you have Docker installed, you can run PostgreSQL in a container:
 
 **Using Docker Compose (Recommended):**
+
 ```bash
 # Start PostgreSQL container
 docker compose up -d
@@ -57,16 +64,19 @@ docker compose ps
 ```
 
 To stop the database:
+
 ```bash
 docker compose down
 ```
 
 To stop and remove all data:
+
 ```bash
 docker compose down -v
 ```
 
 **Using Docker Run (Alternative):**
+
 ```bash
 # Create a volume for data persistence
 docker volume create smartinvoice-postgres-data
@@ -86,12 +96,14 @@ docker ps | grep smartinvoice-postgres
 ```
 
 To stop the database:
+
 ```bash
 docker stop smartinvoice-postgres
 docker rm smartinvoice-postgres
 ```
 
 To stop and remove all data:
+
 ```bash
 docker stop smartinvoice-postgres
 docker rm smartinvoice-postgres
@@ -101,11 +113,13 @@ docker volume rm smartinvoice-postgres-data
 **Option 2: Using Local PostgreSQL Installation**
 
 Make sure PostgreSQL is running and create the database:
+
 ```bash
 createdb smartinvoice
 ```
 
 Or using psql:
+
 ```bash
 psql -U postgres
 CREATE DATABASE smartinvoice;
@@ -115,16 +129,19 @@ CREATE DATABASE smartinvoice;
 ### Backend Setup
 
 1. Navigate to the backend directory:
+
 ```bash
 cd backend
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Create a `.env` file based on `.env.example`:
+
 ```bash
 cp .env.example .env
 ```
@@ -135,6 +152,7 @@ cp .env.example .env
    If using a local PostgreSQL installation, update the credentials as needed.
 
 5. Start the backend server:
+
 ```bash
 npm run start:dev
 ```
@@ -144,16 +162,19 @@ The backend will be running at `http://localhost:3000`
 ### Frontend Setup
 
 1. Navigate to the frontend directory:
+
 ```bash
 cd frontend
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -174,6 +195,7 @@ The frontend will be running at `http://localhost:5173`
 ### Backend Tests (Jest)
 
 Run backend tests:
+
 ```bash
 cd backend
 npm test                  # Run all tests
@@ -184,6 +206,7 @@ npm run test:cov          # Run tests with coverage
 ### Frontend Tests (Vitest)
 
 Run frontend tests:
+
 ```bash
 cd frontend
 npm test                  # Run all tests
@@ -194,6 +217,7 @@ npm run test:coverage     # Run tests with coverage
 ### Run All Tests
 
 From the root directory:
+
 ```bash
 npm test                  # Run both backend and frontend tests
 npm run test:coverage     # Run all tests with coverage
@@ -202,6 +226,7 @@ npm run test:coverage     # Run all tests with coverage
 ## Building for Production
 
 ### Backend
+
 ```bash
 cd backend
 npm run build
@@ -209,6 +234,7 @@ npm start
 ```
 
 ### Frontend
+
 ```bash
 cd frontend
 npm run build

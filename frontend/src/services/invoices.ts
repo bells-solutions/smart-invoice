@@ -16,11 +16,17 @@ function normalizeInvoice(inv: Invoice): Invoice {
   if ((inv as any).subtotal !== undefined) {
     out.subtotal = toNumber((inv as any).subtotal);
   }
-  if ((inv as any).taxRate !== undefined) {
-    out.taxRate = toNumber((inv as any).taxRate);
+  if ((inv as any).tvaRate !== undefined) {
+    out.tvaRate = toNumber((inv as any).tvaRate);
   }
-  if ((inv as any).taxAmount !== undefined) {
-    out.taxAmount = toNumber((inv as any).taxAmount);
+  if ((inv as any).tvaAmount !== undefined) {
+    out.tvaAmount = toNumber((inv as any).tvaAmount);
+  }
+  if ((inv as any).irRate !== undefined) {
+    out.irRate = toNumber((inv as any).irRate);
+  }
+  if ((inv as any).irAmount !== undefined) {
+    out.irAmount = toNumber((inv as any).irAmount);
   }
   if ((inv as any).total !== undefined) {
     out.total = toNumber((inv as any).total);

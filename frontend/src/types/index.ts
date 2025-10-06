@@ -25,10 +25,10 @@ export interface InvoiceItem {
 }
 
 export enum InvoiceStatus {
-  DRAFT = 'draft',
-  SENT = 'sent',
-  PAID = 'paid',
-  OVERDUE = 'overdue',
+  DRAFT = "draft",
+  SENT = "sent",
+  PAID = "paid",
+  OVERDUE = "overdue",
 }
 
 export interface Invoice {
@@ -38,8 +38,12 @@ export interface Invoice {
   issueDate: string;
   dueDate: string;
   subtotal: number;
-  taxRate: number;
-  taxAmount: number;
+  tvaEnabled: boolean;
+  tvaRate: number;
+  tvaAmount: number;
+  irEnabled: boolean;
+  irRate: number;
+  irAmount: number;
   total: number;
   notes?: string;
   clientId: string;
