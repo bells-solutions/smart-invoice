@@ -16,18 +16,26 @@ export class InvoicesService {
     private invoiceItemsRepository: Repository<InvoiceItem>
   ) {}
 
-  private calculateTotals(items: any[], taxRate: number) {
+  private calculateTotals(
+    items: any[],
+    tvaEnabled: boolean = false,
+    tvaRate: number = 19.25,
+    irEnabled: boolean = false,
+    irRate: number = 5.5
+  ) {
     const subtotal = items.reduce((sum, item) => {
       const amount = item.quantity * item.unitPrice;
       return sum + amount;
     }, 0);
 
-    const taxAmount = (subtotal * taxRate) / 100;
-    const total = subtotal + taxAmount;
+    const tvaAmount = tvaEnabled ? (subtotal * tvaRate) / 100 : 0;
+    const irAmount = irEnabled ? (subtotal * irRate) / 100 : 0;
+    const total = subtotal + tvaAmount; // IR doesn't affect the total, only displayed when enabled
 
     return {
       subtotal: parseFloat(subtotal.toFixed(2)),
-      taxAmount: parseFloat(taxAmount.toFixed(2)),
+      tvaAmount: parseFloat(tvaAmount.toFixed(2)),
+      irAmount: parseFloat(irAmount.toFixed(2)),
       total: parseFloat(total.toFixed(2)),
     };
   }
@@ -39,16 +47,33 @@ export class InvoicesService {
   }
 
   async create(createInvoiceDto: CreateInvoiceDto, user: User) {
-    const { items, taxRate = 0, status, ...invoiceData } = createInvoiceDto;
+    const {
+      items,
+      tvaEnabled = false,
+      tvaRate = 19.25,
+      irEnabled = false,
+      irRate = 5.5,
+      status,
+      ...invoiceData
+    } = createInvoiceDto;
 
-    const totals = this.calculateTotals(items, taxRate);
+    const totals = this.calculateTotals(
+      items,
+      tvaEnabled,
+      tvaRate,
+      irEnabled,
+      irRate
+    );
     const invoiceNumber = await this.generateInvoiceNumber();
 
     const invoice = this.invoicesRepository.create({
       ...invoiceData,
       invoiceNumber,
       userId: user.id,
-      taxRate,
+      tvaEnabled,
+      tvaRate,
+      irEnabled,
+      irRate,
       status: status || InvoiceStatus.DRAFT,
       ...totals,
     });
@@ -108,13 +133,26 @@ export class InvoicesService {
   async update(id: string, updateInvoiceDto: UpdateInvoiceDto, user: User) {
     const invoice = await this.findOne(id, user);
 
-    const { items, taxRate, ...updateData } = updateInvoiceDto;
+    const { items, tvaEnabled, tvaRate, irEnabled, irRate, ...updateData } =
+      updateInvoiceDto;
 
     if (items) {
       await this.invoiceItemsRepository.delete({ invoiceId: id });
 
-      const newTaxRate = taxRate !== undefined ? taxRate : invoice.taxRate;
-      const totals = this.calculateTotals(items, newTaxRate);
+      const newTvaEnabled =
+        tvaEnabled !== undefined ? tvaEnabled : invoice.tvaEnabled;
+      const newTvaRate = tvaRate !== undefined ? tvaRate : invoice.tvaRate;
+      const newIrEnabled =
+        irEnabled !== undefined ? irEnabled : invoice.irEnabled;
+      const newIrRate = irRate !== undefined ? irRate : invoice.irRate;
+
+      const totals = this.calculateTotals(
+        items,
+        newTvaEnabled,
+        newTvaRate,
+        newIrEnabled,
+        newIrRate
+      );
 
       const invoiceItems = items.map((item) => {
         const amount = item.quantity * item.unitPrice;
@@ -127,15 +165,43 @@ export class InvoicesService {
 
       // Set the items relationship on the invoice before saving
       invoice.items = invoiceItems;
-      Object.assign(invoice, updateData, { taxRate: newTaxRate, ...totals });
+      Object.assign(invoice, updateData, {
+        tvaEnabled: newTvaEnabled,
+        tvaRate: newTvaRate,
+        irEnabled: newIrEnabled,
+        irRate: newIrRate,
+        ...totals,
+      });
     } else {
       Object.assign(invoice, updateData);
-      if (taxRate !== undefined) {
-        invoice.taxRate = taxRate;
+      if (
+        tvaEnabled !== undefined ||
+        tvaRate !== undefined ||
+        irEnabled !== undefined ||
+        irRate !== undefined
+      ) {
+        const newTvaEnabled =
+          tvaEnabled !== undefined ? tvaEnabled : invoice.tvaEnabled;
+        const newTvaRate = tvaRate !== undefined ? tvaRate : invoice.tvaRate;
+        const newIrEnabled =
+          irEnabled !== undefined ? irEnabled : invoice.irEnabled;
+        const newIrRate = irRate !== undefined ? irRate : invoice.irRate;
+
+        invoice.tvaEnabled = newTvaEnabled;
+        invoice.tvaRate = newTvaRate;
+        invoice.irEnabled = newIrEnabled;
+        invoice.irRate = newIrRate;
+
         const items = await this.invoiceItemsRepository.find({
           where: { invoiceId: id },
         });
-        const totals = this.calculateTotals(items, taxRate);
+        const totals = this.calculateTotals(
+          items,
+          newTvaEnabled,
+          newTvaRate,
+          newIrEnabled,
+          newIrRate
+        );
         Object.assign(invoice, totals);
       }
     }
@@ -474,17 +540,33 @@ export class InvoicesService {
         { align: "right" }
       );
 
-      // Tax
-      yPosition += 20;
-      doc.fillColor(colors.secondary).font("Helvetica");
-      doc.text(`Tax (${invoice.taxRate}%):`, totalsX + 10, yPosition);
-      doc.fillColor(colors.dark).font("Helvetica-Bold");
-      doc.text(
-        formatCurrency(parseFloat(invoice.taxAmount.toString())),
-        totalsX + 140,
-        yPosition,
-        { align: "right" }
-      );
+      // TVA Tax
+      if (invoice.tvaEnabled) {
+        yPosition += 20;
+        doc.fillColor(colors.secondary).font("Helvetica");
+        doc.text(`TVA (${invoice.tvaRate}%):`, totalsX + 10, yPosition);
+        doc.fillColor(colors.dark).font("Helvetica-Bold");
+        doc.text(
+          formatCurrency(parseFloat(invoice.tvaAmount.toString())),
+          totalsX + 140,
+          yPosition,
+          { align: "right" }
+        );
+      }
+
+      // IR Tax
+      if (invoice.irEnabled) {
+        yPosition += 20;
+        doc.fillColor(colors.secondary).font("Helvetica");
+        doc.text(`IR (${invoice.irRate}%):`, totalsX + 10, yPosition);
+        doc.fillColor(colors.dark).font("Helvetica-Bold");
+        doc.text(
+          formatCurrency(parseFloat(invoice.irAmount.toString())),
+          totalsX + 140,
+          yPosition,
+          { align: "right" }
+        );
+      }
 
       // Total with accent background
       yPosition += 25;

@@ -211,12 +211,26 @@
                           >${{ invoice.subtotal.toFixed(2) }}</span
                         >
                       </div>
-                      <div class="flex justify-between text-sm">
+                      <div
+                        v-if="invoice.tvaEnabled"
+                        class="flex justify-between text-sm"
+                      >
                         <span class="text-gray-600"
-                          >Tax ({{ invoice.taxRate }}%):</span
+                          >TVA ({{ invoice.tvaRate }}%):</span
                         >
                         <span class="font-medium"
-                          >${{ invoice.taxAmount.toFixed(2) }}</span
+                          >${{ invoice.tvaAmount.toFixed(2) }}</span
+                        >
+                      </div>
+                      <div
+                        v-if="invoice.irEnabled"
+                        class="flex justify-between text-sm"
+                      >
+                        <span class="text-gray-600"
+                          >IR ({{ invoice.irRate }}%):</span
+                        >
+                        <span class="font-medium"
+                          >${{ invoice.irAmount.toFixed(2) }}</span
                         >
                       </div>
                       <div
