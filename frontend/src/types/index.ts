@@ -1,9 +1,16 @@
 export interface User {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  accountType: "individual" | "company";
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  town?: string;
+  address?: string;
   companyName?: string;
+  taxpayerNumber?: string;
+  commercialRegister?: string;
+  poBox?: string;
 }
 
 export interface Client {

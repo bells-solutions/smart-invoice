@@ -1,4 +1,15 @@
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  MinLength,
+  IsOptional,
+  IsEnum,
+} from "class-validator";
+
+export enum AccountType {
+  INDIVIDUAL = "individual",
+  COMPANY = "company",
+}
 
 export class RegisterDto {
   @IsEmail()
@@ -8,13 +19,35 @@ export class RegisterDto {
   @MinLength(6)
   password: string;
 
-  @IsNotEmpty()
-  firstName: string;
+  @IsEnum(AccountType)
+  accountType: AccountType;
 
-  @IsNotEmpty()
-  lastName: string;
+  @IsOptional()
+  firstName?: string;
 
+  @IsOptional()
+  lastName?: string;
+
+  @IsOptional()
+  phone?: string;
+
+  @IsOptional()
+  town?: string;
+
+  @IsOptional()
+  address?: string;
+
+  @IsOptional()
   companyName?: string;
+
+  @IsOptional()
+  taxpayerNumber?: string;
+
+  @IsOptional()
+  commercialRegister?: string;
+
+  @IsOptional()
+  poBox?: string;
 }
 
 export class LoginDto {

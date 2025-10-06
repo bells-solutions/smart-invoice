@@ -38,8 +38,117 @@
             </div>
           </div>
 
-          <!-- Name Fields -->
-          <div class="grid grid-cols-2 gap-4">
+          <!-- Account Type -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-4">
+              Account Type *
+            </label>
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Individual Account -->
+              <div
+                @click="form.accountType = 'individual'"
+                :class="[
+                  'relative cursor-pointer rounded-lg border-2 p-4 transition-all duration-200 hover:shadow-md',
+                  form.accountType === 'individual'
+                    ? 'border-blue-500 bg-blue-50 shadow-md'
+                    : 'border-gray-200 bg-white hover:border-gray-300',
+                ]"
+              >
+                <div class="flex items-center">
+                  <div
+                    :class="[
+                      'flex h-10 w-10 items-center justify-center rounded-full',
+                      form.accountType === 'individual'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-100 text-gray-400',
+                    ]"
+                  >
+                    <UserIcon class="h-5 w-5" />
+                  </div>
+                  <div class="ml-3">
+                    <h3 class="text-sm font-medium text-gray-900">
+                      Individual
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-1">Personal account</p>
+                  </div>
+                </div>
+                <div
+                  v-if="form.accountType === 'individual'"
+                  class="absolute top-2 right-2"
+                >
+                  <div
+                    class="h-4 w-4 rounded-full bg-blue-500 flex items-center justify-center"
+                  >
+                    <svg
+                      class="h-2.5 w-2.5 text-white"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Company Account -->
+              <div
+                @click="form.accountType = 'company'"
+                :class="[
+                  'relative cursor-pointer rounded-lg border-2 p-4 transition-all duration-200 hover:shadow-md',
+                  form.accountType === 'company'
+                    ? 'border-blue-500 bg-blue-50 shadow-md'
+                    : 'border-gray-200 bg-white hover:border-gray-300',
+                ]"
+              >
+                <div class="flex items-center">
+                  <div
+                    :class="[
+                      'flex h-10 w-10 items-center justify-center rounded-full',
+                      form.accountType === 'company'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-100 text-gray-400',
+                    ]"
+                  >
+                    <BuildingOfficeIcon class="h-5 w-5" />
+                  </div>
+                  <div class="ml-3">
+                    <h3 class="text-sm font-medium text-gray-900">Company</h3>
+                    <p class="text-xs text-gray-500 mt-1">Business account</p>
+                  </div>
+                </div>
+                <div
+                  v-if="form.accountType === 'company'"
+                  class="absolute top-2 right-2"
+                >
+                  <div
+                    class="h-4 w-4 rounded-full bg-blue-500 flex items-center justify-center"
+                  >
+                    <svg
+                      class="h-2.5 w-2.5 text-white"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Name Fields (Individual) -->
+          <div
+            v-if="form.accountType === 'individual'"
+            class="grid grid-cols-2 gap-4"
+          >
             <!-- First Name -->
             <div>
               <label
@@ -117,30 +226,183 @@
             </div>
           </div>
 
-          <!-- Company Name -->
-          <div>
+          <!-- Phone (Individual) -->
+          <div v-if="form.accountType === 'individual'">
+            <label
+              for="phone"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Phone *
+            </label>
+            <div class="relative">
+              <input
+                v-model="form.phone"
+                type="tel"
+                id="phone"
+                required
+                :class="[
+                  'block w-full pl-10 pr-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200',
+                  form.phone && !isValidPhone
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                    : 'border-gray-300',
+                ]"
+                placeholder="+1234567890"
+                @blur="validatePhone"
+              />
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+              >
+                <svg
+                  class="h-5 w-5 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                  />
+                </svg>
+              </div>
+              <div
+                v-if="form.phone && !isValidPhone"
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+                <ExclamationCircleIcon class="h-5 w-5 text-red-500" />
+              </div>
+            </div>
+            <p
+              v-if="form.phone && !isValidPhone"
+              class="mt-1 text-sm text-red-600"
+            >
+              Please enter a valid phone number
+            </p>
+          </div>
+
+          <!-- Company Name (Company) -->
+          <div v-if="form.accountType === 'company'">
             <label
               for="companyName"
               class="block text-sm font-medium text-gray-700 mb-1"
             >
-              Company Name
+              Company Name *
             </label>
             <div class="relative">
               <input
                 v-model="form.companyName"
                 type="text"
                 id="companyName"
-                :class="'block w-full px-3 py-2 pl-10 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200'"
+                required
+                :class="[
+                  'block w-full px-3 py-2 pl-10 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200',
+                  form.companyName && !isValidCompanyName
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                    : 'border-gray-300',
+                ]"
                 placeholder="Your Company Ltd."
+                @blur="validateCompanyName"
               />
               <div
                 class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
               >
                 <BuildingOfficeIcon class="h-5 w-5 text-gray-400" />
               </div>
+              <div
+                v-if="form.companyName && !isValidCompanyName"
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+                <ExclamationCircleIcon class="h-5 w-5 text-red-500" />
+              </div>
             </div>
-            <p class="mt-1 text-sm text-gray-500">
-              Optional - Leave blank if individual
+            <p
+              v-if="form.companyName && !isValidCompanyName"
+              class="mt-1 text-sm text-red-600"
+            >
+              Company name is required
+            </p>
+          </div>
+
+          <!-- Taxpayer Number (Company) -->
+          <div v-if="form.accountType === 'company'">
+            <label
+              for="taxpayerNumber"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Taxpayer Number *
+            </label>
+            <div class="relative">
+              <input
+                v-model="form.taxpayerNumber"
+                type="text"
+                id="taxpayerNumber"
+                required
+                :class="[
+                  'block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200',
+                  form.taxpayerNumber && !isValidTaxpayerNumber
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                    : 'border-gray-300',
+                ]"
+                placeholder="123456789"
+                @blur="validateTaxpayerNumber"
+              />
+              <div
+                v-if="form.taxpayerNumber && !isValidTaxpayerNumber"
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+                <ExclamationCircleIcon class="h-5 w-5 text-red-500" />
+              </div>
+            </div>
+            <p
+              v-if="form.taxpayerNumber && !isValidTaxpayerNumber"
+              class="mt-1 text-sm text-red-600"
+            >
+              Taxpayer number is required
+            </p>
+          </div>
+
+          <!-- Town -->
+          <div>
+            <label
+              for="town"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Town{{ form.accountType === "company" ? " *" : "" }}
+            </label>
+            <div class="relative">
+              <input
+                v-model="form.town"
+                type="text"
+                id="town"
+                :required="form.accountType === 'company'"
+                :class="[
+                  'block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200',
+                  form.town && !isValidTown
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                    : 'border-gray-300',
+                ]"
+                placeholder="City"
+                @blur="validateTown"
+              />
+              <div
+                v-if="form.town && !isValidTown"
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+                <ExclamationCircleIcon class="h-5 w-5 text-red-500" />
+              </div>
+            </div>
+            <p
+              v-if="form.town && !isValidTown"
+              class="mt-1 text-sm text-red-600"
+            >
+              Town is required for companies
+            </p>
+            <p
+              v-if="form.accountType === 'individual'"
+              class="mt-1 text-sm text-gray-500"
+            >
+              Optional
             </p>
           </div>
 
@@ -264,6 +526,66 @@
             </p>
           </div>
 
+          <!-- Commercial Register (Company, Optional) -->
+          <div v-if="form.accountType === 'company'">
+            <label
+              for="commercialRegister"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Commercial Register
+            </label>
+            <div class="relative">
+              <input
+                v-model="form.commercialRegister"
+                type="text"
+                id="commercialRegister"
+                :class="'block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200'"
+                placeholder="RC 123456"
+              />
+            </div>
+            <p class="mt-1 text-sm text-gray-500">Optional</p>
+          </div>
+
+          <!-- Address -->
+          <div>
+            <label
+              for="address"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Address
+            </label>
+            <div class="relative">
+              <input
+                v-model="form.address"
+                type="text"
+                id="address"
+                :class="'block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200'"
+                placeholder="123 Main St"
+              />
+            </div>
+            <p class="mt-1 text-sm text-gray-500">Optional</p>
+          </div>
+
+          <!-- PO Box (Company, Optional) -->
+          <div v-if="form.accountType === 'company'">
+            <label
+              for="poBox"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              PO Box
+            </label>
+            <div class="relative">
+              <input
+                v-model="form.poBox"
+                type="text"
+                id="poBox"
+                :class="'block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200'"
+                placeholder="12345"
+              />
+            </div>
+            <p class="mt-1 text-sm text-gray-500">Optional</p>
+          </div>
+
           <!-- Submit Button -->
           <button
             type="submit"
@@ -307,6 +629,7 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import {
   UserPlusIcon,
+  UserIcon,
   ExclamationCircleIcon,
   EnvelopeIcon,
   BuildingOfficeIcon,
@@ -320,11 +643,18 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const form = ref({
+  accountType: "individual" as "individual" | "company",
   firstName: "",
   lastName: "",
   email: "",
   password: "",
+  phone: "",
+  town: "",
+  address: "",
   companyName: "",
+  taxpayerNumber: "",
+  commercialRegister: "",
+  poBox: "",
 });
 
 const loading = ref(false);
@@ -336,6 +666,10 @@ const isValidFirstName = ref(true);
 const isValidLastName = ref(true);
 const isValidEmail = ref(true);
 const isValidPassword = ref(true);
+const isValidPhone = ref(true);
+const isValidTown = ref(true);
+const isValidCompanyName = ref(true);
+const isValidTaxpayerNumber = ref(true);
 
 // Password strength calculation
 const passwordStrength = computed(() => {
@@ -370,12 +704,23 @@ const passwordStrengthText = computed(() => {
 
 // Form validation
 const isFormValid = computed(() => {
-  return (
-    form.value.firstName.trim().length > 0 &&
-    form.value.lastName.trim().length > 0 &&
-    isValidEmail.value &&
-    isValidPassword.value
-  );
+  if (form.value.accountType === "individual") {
+    return (
+      form.value.firstName.trim().length > 0 &&
+      form.value.lastName.trim().length > 0 &&
+      isValidPhone.value &&
+      isValidEmail.value &&
+      isValidPassword.value
+    );
+  } else {
+    return (
+      form.value.companyName.trim().length > 0 &&
+      form.value.taxpayerNumber.trim().length > 0 &&
+      form.value.town.trim().length > 0 &&
+      isValidEmail.value &&
+      isValidPassword.value
+    );
+  }
 });
 
 // Validation functions
@@ -396,10 +741,38 @@ function validatePassword() {
   isValidPassword.value = form.value.password.length >= 6;
 }
 
+function validatePhone() {
+  const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+  isValidPhone.value = phoneRegex.test(form.value.phone);
+}
+
+function validateTown() {
+  if (form.value.accountType === "company") {
+    isValidTown.value = form.value.town.trim().length > 0;
+  } else {
+    isValidTown.value = true; // optional for individual
+  }
+}
+
+function validateCompanyName() {
+  isValidCompanyName.value = form.value.companyName.trim().length > 0;
+}
+
+function validateTaxpayerNumber() {
+  isValidTaxpayerNumber.value = form.value.taxpayerNumber.trim().length > 0;
+}
+
 async function handleRegister() {
   // Validate all fields before submission
-  validateFirstName();
-  validateLastName();
+  if (form.value.accountType === "individual") {
+    validateFirstName();
+    validateLastName();
+    validatePhone();
+  } else {
+    validateCompanyName();
+    validateTaxpayerNumber();
+    validateTown();
+  }
   validateEmail();
   validatePassword();
 
