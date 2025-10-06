@@ -213,6 +213,6 @@ describe("Invoices Component", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.text()).toContain("$110.00");
+    expect(wrapper.text()).toContain("$119.25");
   });
 });

@@ -1,28 +1,41 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { User } from '../users/user.entity';
-import { RegisterDto, LoginDto } from './auth.dto';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import * as bcrypt from "bcrypt";
+import { User } from "../users/user.entity";
+import { RegisterDto, LoginDto } from "./auth.dto";
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private jwtService: JwtService,
+    private jwtService: JwtService
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const { email, password, firstName, lastName, companyName } = registerDto;
+    const {
+      email,
+      password,
+      accountType,
+      firstName,
+      lastName,
+      phone,
+      town,
+      address,
+      companyName,
+      taxpayerNumber,
+      commercialRegister,
+      poBox,
+    } = registerDto;
 
     // Check if user already exists
     const existingUser = await this.usersRepository.findOne({
       where: { email },
     });
     if (existingUser) {
-      throw new UnauthorizedException('User already exists');
+      throw new UnauthorizedException("User already exists");
     }
 
     // Hash password
@@ -32,9 +45,16 @@ export class AuthService {
     const user = this.usersRepository.create({
       email,
       password: hashedPassword,
+      accountType,
       firstName,
       lastName,
+      phone,
+      town,
+      address,
       companyName,
+      taxpayerNumber,
+      commercialRegister,
+      poBox,
     });
 
     await this.usersRepository.save(user);
@@ -48,9 +68,16 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
+        accountType: user.accountType,
         firstName: user.firstName,
         lastName: user.lastName,
+        phone: user.phone,
+        town: user.town,
+        address: user.address,
         companyName: user.companyName,
+        taxpayerNumber: user.taxpayerNumber,
+        commercialRegister: user.commercialRegister,
+        poBox: user.poBox,
       },
     };
   }
@@ -60,12 +87,12 @@ export class AuthService {
 
     const user = await this.usersRepository.findOne({ where: { email } });
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException("Invalid credentials");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException("Invalid credentials");
     }
 
     const payload = { sub: user.id, email: user.email };
@@ -76,9 +103,16 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
+        accountType: user.accountType,
         firstName: user.firstName,
         lastName: user.lastName,
+        phone: user.phone,
+        town: user.town,
+        address: user.address,
         companyName: user.companyName,
+        taxpayerNumber: user.taxpayerNumber,
+        commercialRegister: user.commercialRegister,
+        poBox: user.poBox,
       },
     };
   }

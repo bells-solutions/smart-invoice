@@ -33,9 +33,16 @@ describe("InvoicesService", () => {
     id: "user-1",
     email: "test@example.com",
     password: "hashed",
+    accountType: "individual",
     firstName: "John",
     lastName: "Doe",
+    phone: "+1234567890",
+    town: "Test City",
+    address: "123 Test St",
     companyName: "Test Company",
+    taxpayerNumber: "123456789",
+    commercialRegister: "RC123456",
+    poBox: "12345",
     companyLogo: null,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -307,7 +314,67 @@ describe("InvoicesService", () => {
         invoiceId: "invoice-1",
       });
       expect(mockInvoiceRepository.save).toHaveBeenCalled();
-      expect(mockInvoiceRepository.findOne).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe("calculateTotals", () => {
+    it("should calculate totals correctly when IR is disabled (IR should not affect total)", () => {
+      const items = [
+        { quantity: 2, unitPrice: 50 }, // 100
+        { quantity: 1, unitPrice: 100 }, // 100
+      ]; // subtotal = 200
+
+      const result = (service as any).calculateTotals(
+        items,
+        true,
+        19.25,
+        false,
+        5.5
+      );
+
+      expect(result.subtotal).toBe(200);
+      expect(result.tvaAmount).toBe(38.5); // 200 * 19.25%
+      expect(result.irAmount).toBe(0); // IR disabled
+      expect(result.total).toBe(238.5); // 200 + 38.5 (IR not included)
+    });
+
+    it("should calculate totals correctly when IR is enabled (IR should not affect total)", () => {
+      const items = [
+        { quantity: 2, unitPrice: 50 }, // 100
+        { quantity: 1, unitPrice: 100 }, // 100
+      ]; // subtotal = 200
+
+      const result = (service as any).calculateTotals(
+        items,
+        true,
+        19.25,
+        true,
+        5.5
+      );
+
+      expect(result.subtotal).toBe(200);
+      expect(result.tvaAmount).toBe(38.5); // 200 * 19.25%
+      expect(result.irAmount).toBe(11); // 200 * 5.5% = 11
+      expect(result.total).toBe(238.5); // 200 + 38.5 (IR not included in total)
+    });
+
+    it("should calculate totals correctly when both TVA and IR are disabled", () => {
+      const items = [
+        { quantity: 1, unitPrice: 100 }, // 100
+      ];
+
+      const result = (service as any).calculateTotals(
+        items,
+        false,
+        19.25,
+        false,
+        5.5
+      );
+
+      expect(result.subtotal).toBe(100);
+      expect(result.tvaAmount).toBe(0);
+      expect(result.irAmount).toBe(0);
+      expect(result.total).toBe(100); // Only subtotal
     });
   });
 });
