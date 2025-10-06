@@ -12,19 +12,7 @@
               <div
                 class="bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-lg mr-3"
               >
-                <svg
-                  class="w-8 h-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
+                <DocumentTextIcon class="w-8 h-8 text-white" />
               </div>
               <div>
                 <h1
@@ -48,25 +36,7 @@
                 }"
               >
                 <div class="flex items-center">
-                  <svg
-                    class="w-4 h-4 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"
-                    />
-                  </svg>
+                  <BriefcaseIcon class="w-4 h-4 mr-2" />
                   Dashboard
                 </div>
                 <div
@@ -83,19 +53,7 @@
                 }"
               >
                 <div class="flex items-center">
-                  <svg
-                    class="w-4 h-4 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
+                  <UsersIcon class="w-4 h-4 mr-2" />
                   Clients
                 </div>
                 <div
@@ -113,19 +71,7 @@
                 }"
               >
                 <div class="flex items-center">
-                  <svg
-                    class="w-4 h-4 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
+                  <DocumentTextIcon class="w-4 h-4 mr-2" />
                   Invoices
                 </div>
                 <div
@@ -144,19 +90,7 @@
                 to="/invoices/new"
                 class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
               >
-                <svg
-                  class="w-4 h-4 mr-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
+                <PlusIcon class="w-4 h-4 mr-1" />
                 New Invoice
               </router-link>
             </div>
@@ -176,19 +110,7 @@
                       {{ getInitials() }}
                     </span>
                   </div>
-                  <svg
-                    class="ml-2 h-4 w-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+                  <ChevronDownIcon class="ml-2 h-4 w-4 text-gray-400" />
                 </div>
               </button>
 
@@ -213,19 +135,7 @@
                     class="group flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200"
                     role="menuitem"
                   >
-                    <svg
-                      class="mr-3 h-4 w-4 text-red-400 group-hover:text-red-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
+                    <ArrowRightOnRectangleIcon class="mr-3 h-4 w-4 text-red-400 group-hover:text-red-500" />
                     Sign out
                   </button>
                 </div>
@@ -238,34 +148,8 @@
                 @click="toggleMobileMenu"
                 class="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
               >
-                <svg
-                  v-if="!showMobileMenu"
-                  class="block h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-                <svg
-                  v-else
-                  class="block h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <Bars3Icon v-if="!showMobileMenu" class="block h-6 w-6" />
+                <XMarkIcon v-else class="block h-6 w-6" />
               </button>
             </div>
           </div>
@@ -325,19 +209,7 @@
             <div
               class="bg-gradient-to-r from-blue-600 to-purple-600 p-1 rounded mr-2"
             >
-              <svg
-                class="w-4 h-4 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
+              <DocumentTextIcon class="w-4 h-4 text-white" />
             </div>
             <span class="text-sm text-gray-600"
               >© 2025 SmartInvoice. Professional invoicing made simple.</span
@@ -354,6 +226,16 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import {
+  DocumentTextIcon,
+  BriefcaseIcon,
+  UsersIcon,
+  PlusIcon,
+  ChevronDownIcon,
+  ArrowRightOnRectangleIcon,
+  Bars3Icon,
+  XMarkIcon,
+} from "@heroicons/vue/24/outline";
 
 const router = useRouter();
 const authStore = useAuthStore();
