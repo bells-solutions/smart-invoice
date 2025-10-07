@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
+import { createI18n } from "vue-i18n";
 import Invoices from "./Invoices.vue";
 import { invoiceService } from "@/services/invoices";
 import type { Invoice } from "@/types";
@@ -54,6 +55,35 @@ const router = createRouter({
   routes: [{ path: "/invoices", component: Invoices }],
 });
 
+const i18n = createI18n({
+  legacy: false,
+  locale: "en",
+  messages: {
+    en: {
+      invoices: {
+        title: "All Invoices",
+        description: "Manage and track all your invoices in one place",
+        newInvoice: "New Invoice",
+        loadingInvoices: "Loading invoices...",
+        noInvoicesYet: "No invoices yet",
+        noInvoicesDescription: "Create your first invoice to get started",
+        createFirstInvoice: "Create First Invoice",
+      },
+    },
+    fr: {
+      invoices: {
+        title: "Toutes les factures",
+        description: "Gérez et suivez toutes vos factures en un seul endroit",
+        newInvoice: "Nouvelle facture",
+        loadingInvoices: "Chargement des factures...",
+        noInvoicesYet: "Aucune facture pour le moment",
+        noInvoicesDescription: "Créez votre première facture pour commencer",
+        createFirstInvoice: "Créer la première facture",
+      },
+    },
+  },
+});
+
 describe("Invoices Component", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -64,7 +94,7 @@ describe("Invoices Component", () => {
   it("should render invoices table", async () => {
     const wrapper = mount(Invoices, {
       global: {
-        plugins: [router],
+        plugins: [router, i18n],
       },
     });
 
@@ -80,7 +110,7 @@ describe("Invoices Component", () => {
   it("should show loading state initially", () => {
     const wrapper = mount(Invoices, {
       global: {
-        plugins: [router],
+        plugins: [router, i18n],
       },
     });
 
@@ -92,7 +122,7 @@ describe("Invoices Component", () => {
 
     const wrapper = mount(Invoices, {
       global: {
-        plugins: [router],
+        plugins: [router, i18n],
       },
     });
 
@@ -106,7 +136,7 @@ describe("Invoices Component", () => {
   it("should open preview modal when eye icon is clicked", async () => {
     const wrapper = mount(Invoices, {
       global: {
-        plugins: [router],
+        plugins: [router, i18n],
       },
     });
 
@@ -128,7 +158,7 @@ describe("Invoices Component", () => {
   it("should close preview modal when close event is emitted", async () => {
     const wrapper = mount(Invoices, {
       global: {
-        plugins: [router],
+        plugins: [router, i18n],
       },
     });
 
@@ -158,7 +188,7 @@ describe("Invoices Component", () => {
 
     const wrapper = mount(Invoices, {
       global: {
-        plugins: [router],
+        plugins: [router, i18n],
       },
     });
 
@@ -177,7 +207,7 @@ describe("Invoices Component", () => {
   it("should display invoice status with correct styling", async () => {
     const wrapper = mount(Invoices, {
       global: {
-        plugins: [router],
+        plugins: [router, i18n],
       },
     });
 
@@ -192,7 +222,7 @@ describe("Invoices Component", () => {
   it("should format dates correctly in the table", async () => {
     const wrapper = mount(Invoices, {
       global: {
-        plugins: [router],
+        plugins: [router, i18n],
       },
     });
 
@@ -207,7 +237,7 @@ describe("Invoices Component", () => {
   it("should display total with correct formatting", async () => {
     const wrapper = mount(Invoices, {
       global: {
-        plugins: [router],
+        plugins: [router, i18n],
       },
     });
 
