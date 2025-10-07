@@ -15,7 +15,7 @@ export class Client {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   name: string;
 
   @Column()
