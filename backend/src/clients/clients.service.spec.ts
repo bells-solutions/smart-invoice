@@ -70,10 +70,41 @@ describe("ClientsService", () => {
         address: "123 Main St",
         city: "New York",
         country: "USA",
+        clientType: "individual",
       };
 
       const client = {
         id: "client-1",
+        ...createClientDto,
+        userId: mockUser.id,
+      };
+
+      mockClientRepository.create.mockReturnValue(client);
+      mockClientRepository.save.mockResolvedValue(client);
+
+      const result = await service.create(createClientDto, mockUser);
+
+      expect(result).toEqual(client);
+      expect(mockClientRepository.create).toHaveBeenCalledWith({
+        ...createClientDto,
+        userId: mockUser.id,
+      });
+      expect(mockClientRepository.save).toHaveBeenCalledWith(client);
+    });
+
+    it("should create a new company client without contact person name", async () => {
+      const createClientDto: CreateClientDto = {
+        email: "company@example.com",
+        clientType: "company",
+        companyName: "ABC Corp",
+        phone: "1234567890",
+        address: "123 Main St",
+        city: "New York",
+        country: "USA",
+      };
+
+      const client = {
+        id: "client-2",
         ...createClientDto,
         userId: mockUser.id,
       };

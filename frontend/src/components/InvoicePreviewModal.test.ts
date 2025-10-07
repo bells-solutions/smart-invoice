@@ -5,7 +5,7 @@ import { nextTick } from "vue";
 import InvoicePreviewModal from "./InvoicePreviewModal.vue";
 import { invoiceService } from "@/services/invoices";
 import type { Invoice } from "@/types";
-import { InvoiceStatus } from "@/types";
+import { InvoiceStatus, InvoiceType } from "@/types";
 
 // Mock the invoice service
 vi.mock("@/services/invoices", () => ({
@@ -18,6 +18,7 @@ vi.mock("@/services/invoices", () => ({
 const mockInvoice: Invoice = {
   id: "1",
   invoiceNumber: "INV-000001",
+  type: InvoiceType.NORMAL,
   status: InvoiceStatus.SENT,
   issueDate: "2024-01-15",
   dueDate: "2024-02-15",
@@ -39,6 +40,7 @@ const mockInvoice: Invoice = {
     address: "123 Main St",
     city: "New York",
     country: "USA",
+    clientType: "individual",
   },
   items: [
     {

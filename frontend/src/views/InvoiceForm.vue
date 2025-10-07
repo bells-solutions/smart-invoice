@@ -65,7 +65,11 @@
                   :key="client.id"
                   :value="client.id"
                 >
-                  {{ client.name }}
+                  {{
+                    client.clientType === "company"
+                      ? client.companyName || client.name
+                      : client.name
+                  }}
                 </option>
               </select>
             </div>
@@ -520,23 +524,21 @@ onMounted(async () => {
 
     if (isEdit.value) {
       const invoice = await invoiceService.getOne(route.params.id as string);
-      form.value = {
-        clientId: invoice.clientId,
-        type: invoice.type,
-        status: invoice.status,
-        issueDate: invoice.issueDate.split("T")[0],
-        dueDate: invoice.dueDate.split("T")[0],
-        tvaEnabled: invoice.tvaEnabled,
-        tvaRate: invoice.tvaRate,
-        irEnabled: invoice.irEnabled,
-        irRate: invoice.irRate,
-        notes: invoice.notes || "",
-        items: invoice.items.map((item) => ({
-          description: item.description,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-        })),
-      };
+      form.value.clientId = invoice.clientId;
+      form.value.type = invoice.type;
+      form.value.status = invoice.status;
+      form.value.issueDate = invoice.issueDate.split("T")[0];
+      form.value.dueDate = invoice.dueDate.split("T")[0];
+      form.value.tvaEnabled = invoice.tvaEnabled;
+      form.value.tvaRate = invoice.tvaRate;
+      form.value.irEnabled = invoice.irEnabled;
+      form.value.irRate = invoice.irRate;
+      form.value.notes = invoice.notes || "";
+      form.value.items = invoice.items.map((item) => ({
+        description: item.description,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+      }));
     } else {
       addItem();
     }
@@ -584,8 +586,7 @@ async function saveInvoice() {
   try {
     isSaving.value = true;
     // Build a plain payload to avoid sending reactive proxies
-    const payload = {
-      clientId: form.value.clientId,
+    const payload: any = {
       type: form.value.type,
       status: form.value.status,
       issueDate: form.value.issueDate,
@@ -601,6 +602,11 @@ async function saveInvoice() {
         unitPrice: Number(it.unitPrice),
       })),
     };
+
+    // Only include clientId for new invoices or draft invoices
+    if (!isEdit.value || form.value.status === "draft") {
+      payload.clientId = form.value.clientId;
+    }
 
     if (isEdit.value) {
       await invoiceService.update(route.params.id as string, payload);

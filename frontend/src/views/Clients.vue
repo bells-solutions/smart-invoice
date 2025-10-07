@@ -86,6 +86,11 @@
               <th
                 class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
               >
+                Type
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+              >
                 <div class="flex items-center">
                   <EnvelopeIcon class="w-4 h-4 mr-1 text-gray-400" />
                   Email
@@ -135,6 +140,40 @@
                     <div class="text-sm font-medium text-gray-900">
                       {{ client.name }}
                     </div>
+                    <div
+                      v-if="
+                        client.clientType === 'company' && client.companyName
+                      "
+                      class="text-xs text-gray-500"
+                    >
+                      {{ client.companyName }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div
+                    :class="[
+                      'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                      client.clientType === 'individual'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-purple-100 text-purple-800',
+                    ]"
+                  >
+                    <component
+                      :is="
+                        client.clientType === 'individual'
+                          ? UserIcon
+                          : BuildingOfficeIcon
+                      "
+                      class="w-3 h-3 mr-1"
+                    />
+                    {{
+                      client.clientType === "individual"
+                        ? "Individual"
+                        : "Company"
+                    }}
                   </div>
                 </div>
               </td>
@@ -195,13 +234,13 @@
     <!-- Client Form Modal -->
     <div
       v-if="showForm"
-      class="fixed inset-0 bg-gray-600/70 bg-opacity-50 flex items-center justify-center z-50"
+      class="fixed inset-0 bg-gray-600/70 bg-opacity-50 flex items-center justify-center z-50 p-4"
     >
       <div
-        class="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 border border-gray-100"
+        class="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-gray-100 flex flex-col max-h-[90vh]"
       >
         <!-- Modal Header -->
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between p-6 pb-4 flex-shrink-0">
           <div class="flex items-center">
             <div class="bg-blue-100 p-2 rounded-lg mr-3">
               <UserPlusIcon class="w-6 h-6 text-blue-600" />
@@ -218,141 +257,248 @@
           </button>
         </div>
 
-        <form @submit.prevent="saveClient" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Name *
-            </label>
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-              >
-                <UserIcon class="h-5 w-5 text-gray-400" />
+        <!-- Scrollable Form Content -->
+        <div class="flex-1 overflow-y-auto px-6 pb-4">
+          <form @submit.prevent="saveClient" class="space-y-4">
+            <!-- Client Type Selection -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-3">
+                Client Type *
+              </label>
+              <div class="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  @click="form.clientType = 'individual'"
+                  :class="[
+                    'flex items-center justify-center px-4 py-3 border rounded-lg transition-all duration-200',
+                    form.clientType === 'individual'
+                      ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm'
+                      : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50',
+                  ]"
+                >
+                  <UserIcon class="w-5 h-5 mr-2" />
+                  Individual
+                </button>
+                <button
+                  type="button"
+                  @click="form.clientType = 'company'"
+                  :class="[
+                    'flex items-center justify-center px-4 py-3 border rounded-lg transition-all duration-200',
+                    form.clientType === 'company'
+                      ? 'border-purple-500 bg-purple-50 text-purple-700 shadow-sm'
+                      : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50',
+                  ]"
+                >
+                  <BuildingOfficeIcon class="w-5 h-5 mr-2" />
+                  Company
+                </button>
               </div>
-              <input
-                v-model="form.name"
-                type="text"
-                required
-                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                placeholder="Client name"
-              />
             </div>
-          </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Email *
-            </label>
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-              >
-                <EnvelopeIcon class="h-5 w-5 text-gray-400" />
+            <!-- Individual Fields -->
+            <div v-if="form.clientType === 'individual'" class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name *
+                </label>
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <UserIcon class="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    v-model="form.name"
+                    type="text"
+                    required
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    placeholder="John Doe"
+                  />
+                </div>
               </div>
-              <input
-                v-model="form.email"
-                type="email"
-                required
-                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                placeholder="client@example.com"
-              />
             </div>
-          </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Phone
-            </label>
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-              >
-                <PhoneIcon class="h-5 w-5 text-gray-400" />
+            <!-- Company Fields -->
+            <div v-if="form.clientType === 'company'" class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Company Name *
+                </label>
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <BuildingOfficeIcon class="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    v-model="form.companyName"
+                    type="text"
+                    required
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    placeholder="ABC Corporation"
+                  />
+                </div>
               </div>
-              <input
-                v-model="form.phone"
-                type="text"
-                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                placeholder="+1 (555) 123-4567"
-              />
-            </div>
-          </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Address
-            </label>
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-              >
-                <MapPinIcon class="h-5 w-5 text-gray-400" />
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Contact Person Name
+                </label>
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <UserIcon class="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    v-model="form.name"
+                    type="text"
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    placeholder="John Smith"
+                  />
+                </div>
               </div>
-              <input
-                v-model="form.address"
-                type="text"
-                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                placeholder="123 Main St"
-              />
-            </div>
-          </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              City
-            </label>
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-              >
-                <BuildingOfficeIcon class="h-5 w-5 text-gray-400" />
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Taxpayer Number
+                </label>
+                <input
+                  v-model="form.taxpayerNumber"
+                  type="text"
+                  class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  placeholder="123456789"
+                />
               </div>
-              <input
-                v-model="form.city"
-                type="text"
-                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                placeholder="New York"
-              />
-            </div>
-          </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Country
-            </label>
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-              >
-                <GlobeAmericasIcon class="h-5 w-5 text-gray-400" />
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Commercial Register
+                </label>
+                <input
+                  v-model="form.commercialRegister"
+                  type="text"
+                  class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  placeholder="CR123456"
+                />
               </div>
-              <input
-                v-model="form.country"
-                type="text"
-                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                placeholder="United States"
-              />
             </div>
-          </div>
 
-          <div class="flex justify-end space-x-3 pt-4">
-            <button
-              type="button"
-              @click="closeForm"
-              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-            >
-              <XMarkIcon class="w-4 h-4 mr-2" />
-              Cancel
-            </button>
-            <button
-              type="submit"
-              class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-            >
-              <CheckIcon class="w-4 h-4 mr-2" />
-              {{ editingClient ? "Update" : "Save" }}
-            </button>
-          </div>
-        </form>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Email *
+              </label>
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <EnvelopeIcon class="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  v-model="form.email"
+                  type="email"
+                  required
+                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  placeholder="client@example.com"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Phone
+              </label>
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <PhoneIcon class="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  v-model="form.phone"
+                  type="text"
+                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  placeholder="+1 (555) 123-4567"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Address
+              </label>
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <MapPinIcon class="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  v-model="form.address"
+                  type="text"
+                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  placeholder="123 Main St"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                City
+              </label>
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <BuildingOfficeIcon class="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  v-model="form.city"
+                  type="text"
+                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  placeholder="New York"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Country
+              </label>
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <GlobeAmericasIcon class="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  v-model="form.country"
+                  type="text"
+                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  placeholder="United States"
+                />
+              </div>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-4">
+              <button
+                type="button"
+                @click="closeForm"
+                class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+              >
+                <XMarkIcon class="w-4 h-4 mr-2" />
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+              >
+                <CheckIcon class="w-4 h-4 mr-2" />
+                {{ editingClient ? "Update" : "Save" }}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </Layout>
@@ -390,6 +536,10 @@ const form = ref({
   address: "",
   city: "",
   country: "",
+  clientType: "individual" as "individual" | "company",
+  companyName: "",
+  taxpayerNumber: "",
+  commercialRegister: "",
 });
 
 onMounted(async () => {
@@ -415,6 +565,10 @@ function editClient(client: Client) {
     address: client.address || "",
     city: client.city || "",
     country: client.country || "",
+    clientType: client.clientType || "individual",
+    companyName: client.companyName || "",
+    taxpayerNumber: client.taxpayerNumber || "",
+    commercialRegister: client.commercialRegister || "",
   };
   showForm.value = true;
 }
@@ -454,6 +608,10 @@ function closeForm() {
     address: "",
     city: "",
     country: "",
+    clientType: "individual",
+    companyName: "",
+    taxpayerNumber: "",
+    commercialRegister: "",
   };
 }
 </script>

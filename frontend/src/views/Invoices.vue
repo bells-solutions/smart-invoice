@@ -140,13 +140,25 @@
                       class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center"
                     >
                       <span class="text-xs font-medium text-white">
-                        {{ invoice.client?.name.charAt(0).toUpperCase() }}
+                        {{
+                          (invoice.client?.clientType === "company"
+                            ? invoice.client?.companyName ||
+                              invoice.client?.name
+                            : invoice.client?.name
+                          )
+                            ?.charAt(0)
+                            .toUpperCase()
+                        }}
                       </span>
                     </div>
                   </div>
                   <div class="ml-3">
                     <div class="text-sm font-medium text-gray-900">
-                      {{ invoice.client?.name }}
+                      {{
+                        invoice.client?.clientType === "company"
+                          ? invoice.client?.companyName || invoice.client?.name
+                          : invoice.client?.name
+                      }}
                     </div>
                   </div>
                 </div>
