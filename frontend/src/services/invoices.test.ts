@@ -11,6 +11,30 @@ vi.mock("./api", () => ({
   },
 }));
 
+// Mock window and document for downloadPDF test
+const mockWindow = {
+  URL: {
+    createObjectURL: vi.fn(() => "blob:test-url"),
+  },
+};
+
+const mockDocument = {
+  createElement: vi.fn(),
+  body: {
+    appendChild: vi.fn(),
+  },
+};
+
+Object.defineProperty(global, "window", {
+  value: mockWindow,
+  writable: true,
+});
+
+Object.defineProperty(global, "document", {
+  value: mockDocument,
+  writable: true,
+});
+
 describe("Invoice Service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -156,22 +180,27 @@ describe("Invoice Service", () => {
 
       vi.mocked(api.get).mockResolvedValue({ data: mockBlob });
 
-      // Mock window.URL.createObjectURL and document methods
-      global.URL.createObjectURL = vi.fn(() => "blob:test-url");
+      // Mock document.createElement to return a mock link element
       const mockLink = {
         href: "",
         setAttribute: vi.fn(),
         click: vi.fn(),
         remove: vi.fn(),
       };
-      document.createElement = vi.fn(() => mockLink as any);
-      document.body.appendChild = vi.fn();
+      vi.mocked(document.createElement).mockReturnValue(mockLink as any);
 
       await invoiceService.downloadPDF("1");
 
       expect(api.get).toHaveBeenCalledWith("/invoices/1/pdf", {
         responseType: "blob",
       });
+      expect(window.URL.createObjectURL).toHaveBeenCalledWith(expect.any(Blob));
+      expect(document.createElement).toHaveBeenCalledWith("a");
+      expect(mockLink.setAttribute).toHaveBeenCalledWith(
+        "download",
+        "invoice-1.pdf"
+      );
+      expect(document.body.appendChild).toHaveBeenCalledWith(mockLink);
       expect(mockLink.click).toHaveBeenCalled();
       expect(mockLink.remove).toHaveBeenCalled();
     });
