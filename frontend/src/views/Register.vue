@@ -2,6 +2,44 @@
   <div
     class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
   >
+    <!-- Language Switcher -->
+    <div class="absolute top-4 right-4 z-10">
+      <div class="relative">
+        <button
+          data-testid="language-switcher"
+          @click.stop="toggleLanguageMenu"
+          class="flex items-center px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 shadow-sm"
+        >
+          <GlobeAltIcon class="w-4 h-4 mr-2" />
+          {{ currentLanguage.toUpperCase() }}
+          <ChevronDownIcon class="ml-2 h-4 w-4" />
+        </button>
+
+        <!-- Language Dropdown -->
+        <div
+          v-if="showLanguageMenu"
+          data-testid="language-dropdown"
+          class="absolute right-0 top-full mt-1 w-32 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[100] border border-gray-200"
+        >
+          <div class="py-1">
+            <button
+              v-for="lang in availableLanguages"
+              :key="lang.code"
+              :data-testid="`language-${lang.code}`"
+              @click.stop="changeLanguage(lang.code)"
+              class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200"
+              :class="{
+                'bg-blue-50 text-blue-700': currentLanguage === lang.code,
+              }"
+            >
+              <span class="mr-2">{{ lang.flag }}</span>
+              {{ lang.name }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="max-w-md w-full space-y-8">
       <!-- Header -->
       <div class="text-center">
@@ -11,10 +49,10 @@
           <UserPlusIcon class="h-6 w-6 text-white" />
         </div>
         <h2 class="mt-6 text-3xl font-bold text-gray-900">
-          Create your account
+          {{ $t("register.createAccount") }}
         </h2>
         <p class="mt-2 text-sm text-gray-600">
-          Join SmartInvoice and start creating professional invoices
+          {{ $t("register.joinSmartInvoice") }}
         </p>
       </div>
 
@@ -41,7 +79,7 @@
           <!-- Account Type -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-4">
-              Account Type *
+              {{ $t("register.accountTypeRequired") }}
             </label>
             <div class="grid grid-cols-2 gap-4">
               <!-- Individual Account -->
@@ -67,9 +105,11 @@
                   </div>
                   <div class="ml-3">
                     <h3 class="text-sm font-medium text-gray-900">
-                      Individual
+                      {{ $t("register.individual") }}
                     </h3>
-                    <p class="text-xs text-gray-500 mt-1">Personal account</p>
+                    <p class="text-xs text-gray-500 mt-1">
+                      {{ $t("register.personalAccount") }}
+                    </p>
                   </div>
                 </div>
                 <div
@@ -116,8 +156,12 @@
                     <BuildingOfficeIcon class="h-5 w-5" />
                   </div>
                   <div class="ml-3">
-                    <h3 class="text-sm font-medium text-gray-900">Company</h3>
-                    <p class="text-xs text-gray-500 mt-1">Business account</p>
+                    <h3 class="text-sm font-medium text-gray-900">
+                      {{ $t("register.company") }}
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-1">
+                      {{ $t("register.businessAccount") }}
+                    </p>
                   </div>
                 </div>
                 <div
@@ -152,7 +196,11 @@
                 for="firstName"
                 class="block text-sm font-medium text-gray-700 mb-1"
               >
-                First Name{{ form.accountType === "company" ? "" : " *" }}
+                {{
+                  form.accountType === "company"
+                    ? $t("register.firstName")
+                    : $t("register.firstNameRequired")
+                }}
               </label>
               <div class="relative">
                 <input
@@ -180,13 +228,13 @@
                 v-if="form.firstName && !isValidFirstName"
                 class="mt-1 text-sm text-red-600"
               >
-                First name is required for individual accounts
+                {{ $t("register.firstNameRequiredIndividual") }}
               </p>
               <p
                 v-if="form.accountType === 'company'"
                 class="mt-1 text-sm text-gray-500"
               >
-                Optional for company accounts
+                {{ $t("register.optionalCompany") }}
               </p>
             </div>
 
@@ -196,7 +244,11 @@
                 for="lastName"
                 class="block text-sm font-medium text-gray-700 mb-1"
               >
-                Last Name{{ form.accountType === "company" ? "" : " *" }}
+                {{
+                  form.accountType === "company"
+                    ? $t("register.lastName")
+                    : $t("register.lastNameRequired")
+                }}
               </label>
               <div class="relative">
                 <input
@@ -224,13 +276,13 @@
                 v-if="form.lastName && !isValidLastName"
                 class="mt-1 text-sm text-red-600"
               >
-                Last name is required for individual accounts
+                {{ $t("register.lastNameRequiredIndividual") }}
               </p>
               <p
                 v-if="form.accountType === 'company'"
                 class="mt-1 text-sm text-gray-500"
               >
-                Optional for company accounts
+                {{ $t("register.optionalCompany") }}
               </p>
             </div>
           </div>
@@ -241,7 +293,7 @@
               for="phone"
               class="block text-sm font-medium text-gray-700 mb-1"
             >
-              Phone *
+              {{ $t("register.phoneRequired") }}
             </label>
             <div class="relative">
               <input
@@ -286,7 +338,7 @@
               v-if="form.phone && !isValidPhone"
               class="mt-1 text-sm text-red-600"
             >
-              Please enter a valid phone number
+              {{ $t("register.enterValidPhone") }}
             </p>
           </div>
 
@@ -296,7 +348,7 @@
               for="companyName"
               class="block text-sm font-medium text-gray-700 mb-1"
             >
-              Company Name *
+              {{ $t("register.companyNameRequired") }}
             </label>
             <div class="relative">
               <input
@@ -329,7 +381,7 @@
               v-if="form.companyName && !isValidCompanyName"
               class="mt-1 text-sm text-red-600"
             >
-              Company name is required
+              {{ $t("register.companyNameRequiredField") }}
             </p>
           </div>
 
@@ -339,7 +391,7 @@
               for="taxpayerNumber"
               class="block text-sm font-medium text-gray-700 mb-1"
             >
-              Taxpayer Number *
+              {{ $t("register.taxpayerNumberRequired") }}
             </label>
             <div class="relative">
               <input
@@ -367,7 +419,7 @@
               v-if="form.taxpayerNumber && !isValidTaxpayerNumber"
               class="mt-1 text-sm text-red-600"
             >
-              Taxpayer number is required
+              {{ $t("register.taxpayerNumberRequiredField") }}
             </p>
           </div>
 
@@ -377,7 +429,11 @@
               for="town"
               class="block text-sm font-medium text-gray-700 mb-1"
             >
-              Town{{ form.accountType === "company" ? " *" : "" }}
+              {{
+                form.accountType === "company"
+                  ? $t("register.townRequired")
+                  : $t("register.town")
+              }}
             </label>
             <div class="relative">
               <input
@@ -405,13 +461,13 @@
               v-if="form.town && !isValidTown"
               class="mt-1 text-sm text-red-600"
             >
-              Town is required for companies
+              {{ $t("register.townRequiredCompany") }}
             </p>
             <p
               v-if="form.accountType === 'individual'"
               class="mt-1 text-sm text-gray-500"
             >
-              Optional
+              {{ $t("register.optional") }}
             </p>
           </div>
 
@@ -421,7 +477,7 @@
               for="email"
               class="block text-sm font-medium text-gray-700 mb-1"
             >
-              Email Address *
+              {{ $t("register.emailAddressRequired") }}
             </label>
             <div class="relative">
               <input
@@ -454,7 +510,7 @@
               v-if="form.email && !isValidEmail"
               class="mt-1 text-sm text-red-600"
             >
-              Please enter a valid email address
+              {{ $t("register.invalidEmail") }}
             </p>
           </div>
 
@@ -464,7 +520,7 @@
               for="password"
               class="block text-sm font-medium text-gray-700 mb-1"
             >
-              Password *
+              {{ $t("register.passwordRequired") }}
             </label>
             <div class="relative">
               <input
@@ -479,7 +535,7 @@
                     ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
                     : 'border-gray-300',
                 ]"
-                placeholder="Create a strong password"
+                placeholder="{{ $t('register.createStrongPassword') }}"
                 @blur="validatePassword"
               />
               <div
@@ -531,7 +587,7 @@
               v-if="form.password && !isValidPassword"
               class="mt-1 text-sm text-red-600"
             >
-              Password must be at least 6 characters long
+              {{ $t("register.passwordMinLength") }}
             </p>
           </div>
 
@@ -541,7 +597,7 @@
               for="commercialRegister"
               class="block text-sm font-medium text-gray-700 mb-1"
             >
-              Commercial Register
+              {{ $t("register.commercialRegister") }}
             </label>
             <div class="relative">
               <input
@@ -561,7 +617,7 @@
               for="address"
               class="block text-sm font-medium text-gray-700 mb-1"
             >
-              Address
+              {{ $t("register.address") }}
             </label>
             <div class="relative">
               <input
@@ -581,7 +637,7 @@
               for="poBox"
               class="block text-sm font-medium text-gray-700 mb-1"
             >
-              PO Box
+              {{ $t("register.poBox") }}
             </label>
             <div class="relative">
               <input
@@ -611,19 +667,23 @@
                 class="h-5 w-5 text-blue-300 group-hover:text-blue-200"
               />
             </span>
-            {{ loading ? "Creating Account..." : "Create Account" }}
+            {{
+              loading
+                ? $t("register.creatingAccount")
+                : $t("register.createAccountButton")
+            }}
           </button>
         </form>
 
         <!-- Login Link -->
         <div class="mt-6 text-center">
           <p class="text-sm text-gray-600">
-            Already have an account?
+            {{ $t("register.alreadyHaveAccount") }}
             <router-link
               to="/login"
               class="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200"
             >
-              Sign in here
+              {{ $t("register.signInHere") }}
             </router-link>
           </p>
         </div>
@@ -633,8 +693,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useAuthStore } from "@/stores/auth";
 import {
   UserPlusIcon,
@@ -646,7 +707,11 @@ import {
   EyeIcon,
   EyeSlashIcon,
   ArrowPathIcon,
+  GlobeAltIcon,
+  ChevronDownIcon,
 } from "@heroicons/vue/24/outline";
+
+const { locale, t } = useI18n();
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -669,6 +734,14 @@ const form = ref({
 const loading = ref(false);
 const error = ref("");
 const showPassword = ref(false);
+const showLanguageMenu = ref(false);
+
+const currentLanguage = computed(() => locale.value);
+
+const availableLanguages = [
+  { code: "en", name: "English", flag: "🇺🇸" },
+  { code: "fr", name: "Français", flag: "🇫🇷" },
+];
 
 // Validation states
 const isValidFirstName = ref(true);
@@ -814,4 +887,36 @@ async function handleRegister() {
     loading.value = false;
   }
 }
+
+function toggleLanguageMenu() {
+  showLanguageMenu.value = !showLanguageMenu.value;
+}
+
+function changeLanguage(langCode: string) {
+  locale.value = langCode;
+  localStorage.setItem("user-language", langCode);
+  showLanguageMenu.value = false;
+}
+
+function handleClickOutside(event: MouseEvent) {
+  if (showLanguageMenu.value) {
+    showLanguageMenu.value = false;
+  }
+}
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+  // Load saved language preference
+  const savedLanguage = localStorage.getItem("user-language");
+  if (
+    savedLanguage &&
+    availableLanguages.some((lang) => lang.code === savedLanguage)
+  ) {
+    locale.value = savedLanguage;
+  }
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>

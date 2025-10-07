@@ -4,8 +4,10 @@
     <div class="mb-8">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div class="mb-4 sm:mb-0">
-          <h1 class="text-3xl font-bold text-gray-900">Invoices</h1>
-          <p class="mt-1 text-gray-600">Manage and track all your invoices</p>
+          <h1 class="text-3xl font-bold text-gray-900">
+            {{ $t("invoices.title") }}
+          </h1>
+          <p class="mt-1 text-gray-600">{{ $t("invoices.description") }}</p>
         </div>
         <div class="flex flex-col sm:flex-row gap-3">
           <router-link
@@ -13,7 +15,7 @@
             class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           >
             <PlusIcon class="w-5 h-5 mr-2" />
-            New Invoice
+            {{ $t("invoices.newInvoice") }}
           </router-link>
         </div>
       </div>
@@ -24,7 +26,9 @@
       <div
         class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
       ></div>
-      <span class="ml-3 text-gray-600">Loading invoices...</span>
+      <span class="ml-3 text-gray-600">{{
+        $t("invoices.loadingInvoices")
+      }}</span>
     </div>
 
     <!-- Empty State -->
@@ -37,17 +41,18 @@
       >
         <DocumentTextIcon class="w-12 h-12 text-blue-600" />
       </div>
-      <h3 class="text-xl font-semibold text-gray-900 mb-2">No invoices yet</h3>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">
+        {{ $t("invoices.noInvoicesYet") }}
+      </h3>
       <p class="text-gray-600 mb-6">
-        Create your first invoice to get started with managing your business
-        finances.
+        {{ $t("invoices.noInvoicesDescription") }}
       </p>
       <router-link
         to="/invoices/new"
         class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
       >
         <PlusIcon class="w-5 h-5 mr-2" />
-        Create Your First Invoice
+        {{ $t("invoices.createFirstInvoice") }}
       </router-link>
     </div>
 
@@ -244,6 +249,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { invoiceService } from "@/services/invoices";
 import type { Invoice } from "@/types";
 import Layout from "@/components/Layout.vue";
@@ -260,6 +266,8 @@ import {
   PencilSquareIcon,
   ArrowDownTrayIcon,
 } from "@heroicons/vue/24/outline";
+
+const { t } = useI18n();
 
 const invoices = ref<Invoice[]>([]);
 const loading = ref(true);

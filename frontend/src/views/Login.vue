@@ -2,6 +2,44 @@
   <div
     class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4"
   >
+    <!-- Language Switcher -->
+    <div class="absolute top-4 right-4 z-10" data-testid="language-switcher">
+      <div class="relative">
+        <button
+          data-testid="language-switcher"
+          @click.stop="toggleLanguageMenu"
+          class="flex items-center px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 shadow-sm"
+        >
+          <GlobeAltIcon class="w-4 h-4 mr-2" />
+          {{ currentLanguage.toUpperCase() }}
+          <ChevronDownIcon class="ml-2 h-4 w-4" />
+        </button>
+
+        <!-- Language Dropdown -->
+        <div
+          v-if="showLanguageMenu"
+          class="absolute right-0 top-full mt-1 w-32 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[100] border border-gray-200"
+          data-testid="language-dropdown"
+        >
+          <div class="py-1">
+            <button
+              v-for="lang in availableLanguages"
+              :key="lang.code"
+              :data-testid="`language-${lang.code}`"
+              @click.stop="changeLanguage(lang.code)"
+              class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200"
+              :class="{
+                'bg-blue-50 text-blue-700': currentLanguage === lang.code,
+              }"
+            >
+              <span class="mr-2">{{ lang.flag }}</span>
+              {{ lang.name }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="max-w-md w-full">
       <!-- Logo/Brand Section -->
       <div class="text-center mb-8">
@@ -13,9 +51,9 @@
         <h1
           class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2"
         >
-          Welcome Back
+          {{ $t("auth.welcomeBack") }}
         </h1>
-        <p class="text-gray-600">Sign in to your SmartInvoice account</p>
+        <p class="text-gray-600">{{ $t("auth.signInDescription") }}</p>
       </div>
 
       <!-- Login Card -->
@@ -43,7 +81,7 @@
                 class="block text-sm font-semibold text-gray-700"
                 for="email"
               >
-                Email Address
+                {{ $t("auth.emailAddress") }}
               </label>
               <div class="relative">
                 <div
@@ -57,7 +95,7 @@
                   id="email"
                   required
                   class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
-                  placeholder="Enter your email"
+                  :placeholder="$t('auth.enterEmail')"
                 />
               </div>
             </div>
@@ -68,7 +106,7 @@
                 class="block text-sm font-semibold text-gray-700"
                 for="password"
               >
-                Password
+                {{ $t("auth.password") }}
               </label>
               <div class="relative">
                 <div
@@ -82,7 +120,7 @@
                   id="password"
                   required
                   class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
-                  placeholder="Enter your password"
+                  :placeholder="$t('auth.enterPassword')"
                 />
               </div>
             </div>
@@ -97,11 +135,11 @@
                 <ArrowPathIcon
                   class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                 />
-                Signing in...
+                {{ $t("auth.signingIn") }}
               </span>
               <span v-else class="flex items-center justify-center">
                 <ArrowRightOnRectangleIcon class="w-5 h-5 mr-2" />
-                Sign In
+                {{ $t("auth.signIn") }}
               </span>
             </button>
           </form>
@@ -111,12 +149,12 @@
         <div class="px-8 pb-8">
           <div class="text-center">
             <p class="text-gray-600 text-sm">
-              Don't have an account?
+              {{ $t("auth.dontHaveAccount") }}
               <router-link
                 to="/register"
                 class="font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-200"
               >
-                Create one here
+                {{ $t("auth.createOneHere") }}
               </router-link>
             </p>
           </div>
@@ -126,7 +164,7 @@
       <!-- Additional Info -->
       <div class="mt-8 text-center">
         <p class="text-xs text-gray-500">
-          Secure login powered by SmartInvoice
+          {{ $t("auth.secureLogin") }}
         </p>
       </div>
     </div>
@@ -134,8 +172,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useAuthStore } from "@/stores/auth";
 import {
   DocumentTextIcon,
@@ -144,8 +183,11 @@ import {
   LockClosedIcon,
   ArrowPathIcon,
   ArrowRightOnRectangleIcon,
+  GlobeAltIcon,
+  ChevronDownIcon,
 } from "@heroicons/vue/24/outline";
 
+const { locale, t } = useI18n();
 const router = useRouter();
 const authStore = useAuthStore();
 
@@ -153,6 +195,30 @@ const email = ref("");
 const password = ref("");
 const loading = ref(false);
 const error = ref("");
+const showLanguageMenu = ref(false);
+
+const currentLanguage = computed(() => locale.value);
+
+const availableLanguages = [
+  { code: "en", name: "English", flag: "🇺🇸" },
+  { code: "fr", name: "Français", flag: "🇫🇷" },
+];
+
+function toggleLanguageMenu() {
+  showLanguageMenu.value = !showLanguageMenu.value;
+}
+
+function changeLanguage(langCode: string) {
+  locale.value = langCode;
+  localStorage.setItem("user-language", langCode);
+  showLanguageMenu.value = false;
+}
+
+function handleClickOutside(event: MouseEvent) {
+  if (showLanguageMenu.value) {
+    showLanguageMenu.value = false;
+  }
+}
 
 async function handleLogin() {
   loading.value = true;
@@ -162,9 +228,25 @@ async function handleLogin() {
     await authStore.login(email.value, password.value);
     router.push("/dashboard");
   } catch (err: any) {
-    error.value = err.response?.data?.message || "Login failed";
+    error.value = err.response?.data?.message || t("auth.loginFailed");
   } finally {
     loading.value = false;
   }
 }
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+  // Load saved language preference
+  const savedLanguage = localStorage.getItem("user-language");
+  if (
+    savedLanguage &&
+    availableLanguages.some((lang) => lang.code === savedLanguage)
+  ) {
+    locale.value = savedLanguage;
+  }
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>

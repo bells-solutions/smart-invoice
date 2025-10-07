@@ -4,9 +4,11 @@
     <div class="mb-8">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div class="mb-4 sm:mb-0">
-          <h1 class="text-3xl font-bold text-gray-900">Clients</h1>
+          <h1 class="text-3xl font-bold text-gray-900">
+            {{ $t("clients.title") }}
+          </h1>
           <p class="mt-1 text-gray-600">
-            Manage and organize your client relationships
+            {{ $t("clients.description") }}
           </p>
         </div>
         <div class="flex flex-col sm:flex-row gap-3">
@@ -15,7 +17,7 @@
             class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           >
             <UserPlusIcon class="w-5 h-5 mr-2" />
-            Add New Client
+            {{ $t("clients.addNewClient") }}
           </button>
         </div>
       </div>
@@ -26,7 +28,7 @@
       <div
         class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
       ></div>
-      <span class="ml-3 text-gray-600">Loading clients...</span>
+      <span class="ml-3 text-gray-600">{{ $t("clients.loadingClients") }}</span>
     </div>
 
     <!-- Empty State -->
@@ -39,17 +41,18 @@
       >
         <UsersIcon class="w-12 h-12 text-blue-600" />
       </div>
-      <h3 class="text-xl font-semibold text-gray-900 mb-2">No clients yet</h3>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">
+        {{ $t("clients.noClientsYet") }}
+      </h3>
       <p class="text-gray-600 mb-6">
-        Start building your client base by adding your first client to manage
-        your business relationships.
+        {{ $t("clients.noClientsDescription") }}
       </p>
       <button
         @click="showForm = true"
         class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
       >
         <UserPlusIcon class="w-5 h-5 mr-2" />
-        Add Your First Client
+        {{ $t("clients.addFirstClient") }}
       </button>
     </div>
 
@@ -63,7 +66,9 @@
         class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200"
       >
         <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-gray-900">All Clients</h3>
+          <h3 class="text-lg font-semibold text-gray-900">
+            {{ $t("clients.title") }}
+          </h3>
           <div class="text-sm text-gray-600">
             {{ clients.length }} client{{ clients.length !== 1 ? "s" : "" }}
           </div>
@@ -80,20 +85,20 @@
               >
                 <div class="flex items-center">
                   <UserIcon class="w-4 h-4 mr-1 text-gray-400" />
-                  Name
+                  {{ $t("clients.name") }}
                 </div>
               </th>
               <th
                 class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
               >
-                Type
+                {{ $t("clients.type") }}
               </th>
               <th
                 class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
               >
                 <div class="flex items-center">
                   <EnvelopeIcon class="w-4 h-4 mr-1 text-gray-400" />
-                  Email
+                  {{ $t("clients.email") }}
                 </div>
               </th>
               <th
@@ -101,7 +106,7 @@
               >
                 <div class="flex items-center">
                   <PhoneIcon class="w-4 h-4 mr-1 text-gray-400" />
-                  Phone
+                  {{ $t("clients.phone") }}
                 </div>
               </th>
               <th
@@ -109,13 +114,13 @@
               >
                 <div class="flex items-center">
                   <MapPinIcon class="w-4 h-4 mr-1 text-gray-400" />
-                  Location
+                  {{ $t("clients.location") }}
                 </div>
               </th>
               <th
                 class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
               >
-                Actions
+                {{ $t("clients.actions") }}
               </th>
             </tr>
           </thead>
@@ -171,8 +176,8 @@
                     />
                     {{
                       client.clientType === "individual"
-                        ? "Individual"
-                        : "Company"
+                        ? $t("register.individual")
+                        : $t("register.company")
                     }}
                   </div>
                 </div>
@@ -214,14 +219,14 @@
                     class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-md transition-colors duration-200"
                   >
                     <PencilIcon class="w-4 h-4 mr-1" />
-                    Edit
+                    {{ $t("clients.edit") }}
                   </button>
                   <button
                     @click="deleteClient(client.id)"
                     class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-900 hover:bg-red-50 rounded-md transition-colors duration-200"
                   >
                     <TrashIcon class="w-4 h-4 mr-1" />
-                    Delete
+                    {{ $t("clients.delete") }}
                   </button>
                 </div>
               </td>
@@ -246,7 +251,11 @@
               <UserPlusIcon class="w-6 h-6 text-blue-600" />
             </div>
             <h3 class="text-xl font-bold text-gray-900">
-              {{ editingClient ? "Edit Client" : "Add Client" }}
+              {{
+                editingClient
+                  ? $t("clients.editClient")
+                  : $t("clients.addClient")
+              }}
             </h3>
           </div>
           <button
@@ -263,7 +272,7 @@
             <!-- Client Type Selection -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-3">
-                Client Type *
+                {{ $t("clients.clientTypeRequired") }}
               </label>
               <div class="grid grid-cols-2 gap-3">
                 <button
@@ -299,7 +308,7 @@
             <div v-if="form.clientType === 'individual'" class="space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name *
+                  {{ $t("clients.fullNameRequired") }}
                 </label>
                 <div class="relative">
                   <div
@@ -322,7 +331,7 @@
             <div v-if="form.clientType === 'company'" class="space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Company Name *
+                  {{ $t("register.companyNameRequired") }}
                 </label>
                 <div class="relative">
                   <div
@@ -342,7 +351,7 @@
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Contact Person Name
+                  {{ $t("clients.contactPersonName") }}
                 </label>
                 <div class="relative">
                   <div
@@ -361,7 +370,7 @@
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Taxpayer Number
+                  {{ $t("register.taxpayerNumber") }}
                 </label>
                 <input
                   v-model="form.taxpayerNumber"
@@ -373,7 +382,7 @@
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Commercial Register
+                  {{ $t("register.commercialRegister") }}
                 </label>
                 <input
                   v-model="form.commercialRegister"
@@ -386,7 +395,7 @@
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Email *
+                {{ $t("clients.clientEmailRequired") }}
               </label>
               <div class="relative">
                 <div
@@ -406,7 +415,7 @@
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Phone
+                {{ $t("clients.phone") }}
               </label>
               <div class="relative">
                 <div
@@ -425,7 +434,7 @@
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Address
+                {{ $t("register.address") }}
               </label>
               <div class="relative">
                 <div
@@ -444,7 +453,7 @@
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                City
+                {{ $t("clients.city") }}
               </label>
               <div class="relative">
                 <div
@@ -463,7 +472,7 @@
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Country
+                {{ $t("clients.country") }}
               </label>
               <div class="relative">
                 <div
@@ -487,14 +496,18 @@
                 class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
               >
                 <XMarkIcon class="w-4 h-4 mr-2" />
-                Cancel
+                {{ $t("common.cancel") }}
               </button>
               <button
                 type="submit"
                 class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
               >
                 <CheckIcon class="w-4 h-4 mr-2" />
-                {{ editingClient ? "Update" : "Save" }}
+                {{
+                  editingClient
+                    ? $t("clients.update")
+                    : $t("clients.saveClient")
+                }}
               </button>
             </div>
           </form>
@@ -506,6 +519,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { clientService } from "@/services/clients";
 import type { Client } from "@/types";
 import Layout from "@/components/Layout.vue";
@@ -523,6 +537,8 @@ import {
   PencilIcon,
   TrashIcon,
 } from "@heroicons/vue/24/outline";
+
+const { t } = useI18n();
 
 const clients = ref<Client[]>([]);
 const loading = ref(true);
@@ -588,7 +604,7 @@ async function saveClient() {
 }
 
 async function deleteClient(id: string) {
-  if (!confirm("Are you sure you want to delete this client?")) return;
+  if (!confirm(t("clients.deleteClientConfirm"))) return;
 
   try {
     await clientService.delete(id);

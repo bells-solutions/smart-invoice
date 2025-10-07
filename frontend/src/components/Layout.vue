@@ -37,7 +37,7 @@
               >
                 <div class="flex items-center">
                   <BriefcaseIcon class="w-4 h-4 mr-2" />
-                  Dashboard
+                  {{ $t("navigation.dashboard") }}
                 </div>
                 <div
                   v-if="$route.path === '/dashboard'"
@@ -54,7 +54,7 @@
               >
                 <div class="flex items-center">
                   <UsersIcon class="w-4 h-4 mr-2" />
-                  Clients
+                  {{ $t("navigation.clients") }}
                 </div>
                 <div
                   v-if="$route.path === '/clients'"
@@ -72,7 +72,7 @@
               >
                 <div class="flex items-center">
                   <DocumentTextIcon class="w-4 h-4 mr-2" />
-                  Invoices
+                  {{ $t("navigation.invoices") }}
                 </div>
                 <div
                   v-if="$route.path.startsWith('/invoices')"
@@ -84,16 +84,39 @@
 
           <!-- User Menu -->
           <div class="flex items-center">
-            <!-- Quick Actions -->
-            <div class="hidden md:flex items-center space-x-2 mr-4">
-              <router-link
-                to="/invoices/new"
-                class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
+            <!-- Language Switcher -->
+            <div class="relative mr-4">
+              <button
+                @click.stop="toggleLanguageMenu"
+                class="flex items-center px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
               >
-                <PlusIcon class="w-4 h-4 mr-1" />
-                New Invoice
-              </router-link>
+                <GlobeAltIcon class="w-4 h-4 mr-2" />
+                {{ currentLanguage.toUpperCase() }}
+                <ChevronDownIcon class="ml-2 h-4 w-4" />
+              </button>
+
+              <!-- Language Dropdown -->
+              <div
+                v-if="showLanguageMenu"
+                class="absolute right-0 top-full mt-1 w-32 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[100] border border-gray-200"
+              >
+                <div class="py-1">
+                  <button
+                    v-for="lang in availableLanguages"
+                    :key="lang.code"
+                    @click.stop="changeLanguage(lang.code)"
+                    class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200"
+                    :class="{
+                      'bg-blue-50 text-blue-700': currentLanguage === lang.code,
+                    }"
+                  >
+                    <span class="mr-2">{{ lang.flag }}</span>
+                    {{ lang.name }}
+                  </button>
+                </div>
+              </div>
             </div>
+            <!-- Add Quick Actions here -->
 
             <!-- User Profile Dropdown -->
             <div class="relative ml-3" ref="userMenuRef">
@@ -139,7 +162,7 @@
                     <UsersIcon
                       class="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500"
                     />
-                    Profile
+                    {{ $t("navigation.profile") }}
                   </router-link>
                   <button
                     @click="handleLogout"
@@ -149,7 +172,7 @@
                     <ArrowRightOnRectangleIcon
                       class="mr-3 h-4 w-4 text-red-400 group-hover:text-red-500"
                     />
-                    Sign out
+                    {{ $t("navigation.logout") }}
                   </button>
                 </div>
               </div>
@@ -180,35 +203,35 @@
             class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
             @click="closeMobileMenu"
           >
-            Dashboard
+            {{ $t("navigation.dashboard") }}
           </router-link>
           <router-link
             to="/clients"
             class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
             @click="closeMobileMenu"
           >
-            Clients
+            {{ $t("navigation.clients") }}
           </router-link>
           <router-link
             to="/invoices"
             class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
             @click="closeMobileMenu"
           >
-            Invoices
+            {{ $t("navigation.invoices") }}
           </router-link>
           <router-link
             to="/profile"
             class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
             @click="closeMobileMenu"
           >
-            Profile
+            {{ $t("navigation.profile") }}
           </router-link>
           <router-link
             to="/invoices/new"
             class="block px-3 py-2 rounded-md text-base font-medium bg-blue-600 text-white hover:bg-blue-700"
             @click="closeMobileMenu"
           >
-            New Invoice
+            {{ $t("invoices.newInvoice") }}
           </router-link>
         </div>
       </div>
@@ -243,8 +266,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useAuthStore } from "@/stores/auth";
 import {
   DocumentTextIcon,
@@ -255,14 +279,24 @@ import {
   ArrowRightOnRectangleIcon,
   Bars3Icon,
   XMarkIcon,
+  GlobeAltIcon,
 } from "@heroicons/vue/24/outline";
 
+const { locale, t } = useI18n();
 const router = useRouter();
 const authStore = useAuthStore();
 
 const showUserMenu = ref(false);
 const showMobileMenu = ref(false);
+const showLanguageMenu = ref(false);
 const userMenuRef = ref<HTMLElement | null>(null);
+
+const currentLanguage = computed(() => locale.value);
+
+const availableLanguages = [
+  { code: "en", name: "English", flag: "🇺🇸" },
+  { code: "fr", name: "Français", flag: "🇫🇷" },
+];
 
 function toggleUserMenu() {
   showUserMenu.value = !showUserMenu.value;
@@ -272,8 +306,18 @@ function toggleMobileMenu() {
   showMobileMenu.value = !showMobileMenu.value;
 }
 
+function toggleLanguageMenu() {
+  showLanguageMenu.value = !showLanguageMenu.value;
+}
+
 function closeMobileMenu() {
   showMobileMenu.value = false;
+}
+
+function changeLanguage(langCode: string) {
+  locale.value = langCode;
+  localStorage.setItem("user-language", langCode);
+  showLanguageMenu.value = false;
 }
 
 function handleClickOutside(event: MouseEvent) {
@@ -283,6 +327,10 @@ function handleClickOutside(event: MouseEvent) {
     showUserMenu.value
   ) {
     showUserMenu.value = false;
+  }
+  // Language menu click outside is handled by the button click stop propagation
+  if (showLanguageMenu.value) {
+    showLanguageMenu.value = false;
   }
 }
 
@@ -303,6 +351,14 @@ function handleLogout() {
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
+  // Load saved language preference
+  const savedLanguage = localStorage.getItem("user-language");
+  if (
+    savedLanguage &&
+    availableLanguages.some((lang) => lang.code === savedLanguage)
+  ) {
+    locale.value = savedLanguage;
+  }
 });
 
 onUnmounted(() => {
