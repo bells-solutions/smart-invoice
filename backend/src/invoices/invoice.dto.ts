@@ -9,7 +9,7 @@ import {
   IsBoolean,
 } from "class-validator";
 import { Type } from "class-transformer";
-import { InvoiceStatus } from "./invoice.entity";
+import { InvoiceStatus, InvoiceType } from "./invoice.entity";
 
 export class CreateInvoiceItemDto {
   @IsNotEmpty()
@@ -35,6 +35,10 @@ export class CreateInvoiceDto {
   @IsOptional()
   @IsEnum(InvoiceStatus)
   status?: InvoiceStatus;
+
+  @IsOptional()
+  @IsEnum(InvoiceType)
+  type?: InvoiceType;
 
   @IsOptional()
   @IsBoolean()
@@ -76,6 +80,10 @@ export class UpdateInvoiceDto {
   @IsOptional()
   @IsEnum(InvoiceStatus)
   status?: InvoiceStatus;
+
+  @IsOptional()
+  @IsEnum(InvoiceType)
+  type?: InvoiceType;
 
   @IsOptional()
   @IsBoolean()

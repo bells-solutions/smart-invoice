@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Invoice, InvoiceStatus } from "./invoice.entity";
+import { Invoice, InvoiceStatus, InvoiceType } from "./invoice.entity";
 import { InvoiceItem } from "./invoice-item.entity";
 import { CreateInvoiceDto, UpdateInvoiceDto } from "./invoice.dto";
 import { User } from "../users/user.entity";
@@ -40,9 +40,12 @@ export class InvoicesService {
     };
   }
 
-  private async generateInvoiceNumber(): Promise<string> {
-    const count = await this.invoicesRepository.count();
-    const invoiceNumber = `INV-${String(count + 1).padStart(6, "0")}`;
+  private async generateInvoiceNumber(
+    type: InvoiceType = InvoiceType.NORMAL
+  ): Promise<string> {
+    const count = await this.invoicesRepository.count({ where: { type } });
+    const prefix = type === InvoiceType.PROFORMA ? "PRO" : "INV";
+    const invoiceNumber = `${prefix}-${String(count + 1).padStart(6, "0")}`;
     return invoiceNumber;
   }
 
@@ -64,7 +67,9 @@ export class InvoicesService {
       irEnabled,
       irRate
     );
-    const invoiceNumber = await this.generateInvoiceNumber();
+    const invoiceNumber = await this.generateInvoiceNumber(
+      invoiceData.type || InvoiceType.NORMAL
+    );
 
     const invoice = this.invoicesRepository.create({
       ...invoiceData,
@@ -258,9 +263,17 @@ export class InvoicesService {
         size: "A4",
         bufferPages: true,
         info: {
-          Title: `Invoice ${invoice.invoiceNumber}`,
+          Title: `${
+            invoice.type === InvoiceType.PROFORMA
+              ? "Proforma Invoice"
+              : "Invoice"
+          } ${invoice.invoiceNumber}`,
           Author: user.companyName || `${user.firstName} ${user.lastName}`,
-          Subject: `Invoice for ${invoice.client.name}`,
+          Subject: `${
+            invoice.type === InvoiceType.PROFORMA
+              ? "Proforma Invoice"
+              : "Invoice"
+          } for ${invoice.client.name}`,
           Keywords: "invoice, bill, payment",
           CreationDate: new Date(),
         },
@@ -382,7 +395,11 @@ export class InvoicesService {
       // Invoice title with modern styling
       drawRoundedRect(380, 15, 140, 40, 8, colors.primary);
       doc.fillColor("white").fontSize(16).font("Helvetica-Bold");
-      doc.text("INVOICE", 410, 27);
+      doc.text(
+        invoice.type === InvoiceType.PROFORMA ? "PROFORMA INVOICE" : "INVOICE",
+        410,
+        27
+      );
 
       // Invoice number with background
       drawRoundedRect(380, 65, 140, 35, 6, colors.light);

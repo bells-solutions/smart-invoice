@@ -70,6 +70,23 @@
               </select>
             </div>
 
+            <!-- Invoice Type -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                <span class="flex items-center">
+                  <DocumentTextIcon class="h-4 w-4 mr-1 text-gray-400" />
+                  Invoice Type
+                </span>
+              </label>
+              <select
+                v-model="form.type"
+                class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+              >
+                <option value="normal">📄 Normal Invoice</option>
+                <option value="proforma">📋 Proforma Invoice</option>
+              </select>
+            </div>
+
             <!-- Status -->
             <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">
@@ -458,7 +475,7 @@ import { ref, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { clientService } from "@/services/clients";
 import { invoiceService } from "@/services/invoices";
-import type { Client, InvoiceItem, InvoiceStatus } from "@/types";
+import type { Client, InvoiceItem, InvoiceStatus, InvoiceType } from "@/types";
 import Layout from "@/components/Layout.vue";
 import {
   DocumentTextIcon,
@@ -483,6 +500,7 @@ const isSaving = ref(false);
 
 const form = ref({
   clientId: "",
+  type: "normal" as InvoiceType,
   status: "draft" as InvoiceStatus,
   issueDate: new Date().toISOString().split("T")[0],
   dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
@@ -504,6 +522,7 @@ onMounted(async () => {
       const invoice = await invoiceService.getOne(route.params.id as string);
       form.value = {
         clientId: invoice.clientId,
+        type: invoice.type,
         status: invoice.status,
         issueDate: invoice.issueDate.split("T")[0],
         dueDate: invoice.dueDate.split("T")[0],
@@ -567,6 +586,7 @@ async function saveInvoice() {
     // Build a plain payload to avoid sending reactive proxies
     const payload = {
       clientId: form.value.clientId,
+      type: form.value.type,
       status: form.value.status,
       issueDate: form.value.issueDate,
       dueDate: form.value.dueDate,

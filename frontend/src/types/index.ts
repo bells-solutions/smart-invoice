@@ -38,9 +38,15 @@ export enum InvoiceStatus {
   OVERDUE = "overdue",
 }
 
+export enum InvoiceType {
+  NORMAL = "normal",
+  PROFORMA = "proforma",
+}
+
 export interface Invoice {
   id: string;
   invoiceNumber: string;
+  type: InvoiceType;
   status: InvoiceStatus;
   issueDate: string;
   dueDate: string;

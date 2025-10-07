@@ -3,7 +3,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { NotFoundException } from "@nestjs/common";
 import { InvoicesService } from "./invoices.service";
-import { Invoice, InvoiceStatus } from "./invoice.entity";
+import { Invoice, InvoiceStatus, InvoiceType } from "./invoice.entity";
 import { InvoiceItem } from "./invoice-item.entity";
 import { User } from "../users/user.entity";
 import { CreateInvoiceDto } from "./invoice.dto";
@@ -139,6 +139,57 @@ describe("InvoicesService", () => {
       expect(result.invoiceNumber).toBe("INV-000001");
       expect(mockInvoiceRepository.create).toHaveBeenCalled();
       expect(mockInvoiceItemRepository.save).toHaveBeenCalled();
+    });
+
+    it("should create a proforma invoice with PRO- prefix", async () => {
+      const createInvoiceDto: CreateInvoiceDto = {
+        clientId: "client-1",
+        issueDate: "2024-01-01",
+        dueDate: "2024-02-01",
+        type: InvoiceType.PROFORMA,
+        items: [
+          {
+            description: "Item 1",
+            quantity: 2,
+            unitPrice: 50,
+          },
+        ],
+      };
+
+      const savedInvoice = {
+        id: "invoice-1",
+        invoiceNumber: "PRO-000001",
+        userId: mockUser.id,
+        clientId: "client-1",
+        issueDate: new Date("2024-01-01"),
+        dueDate: new Date("2024-02-01"),
+        type: InvoiceType.PROFORMA,
+        status: InvoiceStatus.DRAFT,
+        subtotal: 100,
+        tvaEnabled: false,
+        tvaRate: 19.25,
+        tvaAmount: 0,
+        irEnabled: false,
+        irRate: 5.5,
+        irAmount: 0,
+        total: 100,
+        notes: undefined,
+        items: [],
+        client: { name: "Test Client" },
+        user: mockUser,
+      };
+
+      mockInvoiceRepository.count.mockResolvedValue(0);
+      mockInvoiceRepository.create.mockReturnValue(savedInvoice);
+      mockInvoiceRepository.save.mockResolvedValue(savedInvoice);
+      mockInvoiceItemRepository.create.mockReturnValue({});
+      mockInvoiceItemRepository.save.mockResolvedValue([]);
+      mockInvoiceRepository.findOne.mockResolvedValue(savedInvoice);
+
+      const result = await service.create(createInvoiceDto, mockUser);
+
+      expect(result.invoiceNumber).toBe("PRO-000001");
+      expect(result.type).toBe(InvoiceType.PROFORMA);
     });
   });
 
