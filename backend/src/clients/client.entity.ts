@@ -6,13 +6,13 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
-} from 'typeorm';
-import { User } from '../users/user.entity';
-import { Invoice } from '../invoices/invoice.entity';
+} from "typeorm";
+import { User } from "../users/user.entity";
+import { Invoice } from "../invoices/invoice.entity";
 
-@Entity('clients')
+@Entity("clients")
 export class Client {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
@@ -33,13 +33,29 @@ export class Client {
   @Column({ nullable: true })
   country: string;
 
+  @Column({
+    type: "enum",
+    enum: ["individual", "company"],
+    default: "individual",
+  })
+  clientType: "individual" | "company";
+
+  @Column({ nullable: true })
+  companyName?: string;
+
+  @Column({ nullable: true })
+  taxpayerNumber?: string;
+
+  @Column({ nullable: true })
+  commercialRegister?: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.clients, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.clients, { onDelete: "CASCADE" })
   user: User;
 
   @Column()
