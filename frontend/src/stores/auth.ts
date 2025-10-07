@@ -44,11 +44,30 @@ export const useAuthStore = defineStore("auth", () => {
     isAuthenticated.value = false;
   }
 
+  async function updateProfile(updateData: {
+    accountType?: "individual" | "company";
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    town?: string;
+    address?: string;
+    companyName?: string;
+    taxpayerNumber?: string;
+    commercialRegister?: string;
+    poBox?: string;
+  }) {
+    const response = await authService.updateProfile(updateData);
+    authService.setUser(response);
+    user.value = response;
+    return response;
+  }
+
   return {
     user,
     isAuthenticated,
     login,
     register,
     logout,
+    updateProfile,
   };
 });
