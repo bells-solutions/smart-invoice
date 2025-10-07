@@ -43,6 +43,22 @@ export const authService = {
     return response.data;
   },
 
+  async updateProfile(updateData: {
+    accountType?: "individual" | "company";
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    town?: string;
+    address?: string;
+    companyName?: string;
+    taxpayerNumber?: string;
+    commercialRegister?: string;
+    poBox?: string;
+  }) {
+    const response = await api.put("/users/me", updateData);
+    return response.data;
+  },
+
   setToken(token: string) {
     localStorage.setItem("token", token);
   },
