@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsEnum } from "class-validator";
 
 export class CreateClientDto {
   @IsNotEmpty()
@@ -18,6 +18,18 @@ export class CreateClientDto {
 
   @IsOptional()
   country?: string;
+
+  @IsEnum(["individual", "company"])
+  clientType: "individual" | "company";
+
+  @IsOptional()
+  companyName?: string;
+
+  @IsOptional()
+  taxpayerNumber?: string;
+
+  @IsOptional()
+  commercialRegister?: string;
 }
 
 export class UpdateClientDto {
@@ -39,4 +51,17 @@ export class UpdateClientDto {
 
   @IsOptional()
   country?: string;
+
+  @IsOptional()
+  @IsEnum(["individual", "company"])
+  clientType?: "individual" | "company";
+
+  @IsOptional()
+  companyName?: string;
+
+  @IsOptional()
+  taxpayerNumber?: string;
+
+  @IsOptional()
+  commercialRegister?: string;
 }
