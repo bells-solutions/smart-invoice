@@ -1,8 +1,15 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsEnum } from "class-validator";
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsEnum,
+  ValidateIf,
+} from "class-validator";
 
 export class CreateClientDto {
+  @ValidateIf((o) => o.clientType === "individual")
   @IsNotEmpty()
-  name: string;
+  name?: string;
 
   @IsEmail()
   email: string;
@@ -22,7 +29,8 @@ export class CreateClientDto {
   @IsEnum(["individual", "company"])
   clientType: "individual" | "company";
 
-  @IsOptional()
+  @ValidateIf((o) => o.clientType === "company")
+  @IsNotEmpty()
   companyName?: string;
 
   @IsOptional()
