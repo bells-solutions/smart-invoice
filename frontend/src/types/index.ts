@@ -22,6 +22,10 @@ export interface Client {
   address?: string;
   city?: string;
   country?: string;
+  clientType: "individual" | "company";
+  companyName?: string;
+  taxpayerNumber?: string;
+  commercialRegister?: string;
 }
 
 export interface InvoiceItem {
