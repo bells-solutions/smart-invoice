@@ -11,6 +11,7 @@ export interface User {
   taxpayerNumber?: string;
   commercialRegister?: string;
   poBox?: string;
+  companyLogo?: string;
 }
 
 export interface Client {

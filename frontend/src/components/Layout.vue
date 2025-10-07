@@ -130,6 +130,17 @@
                   </p>
                 </div>
                 <div class="py-1">
+                  <router-link
+                    to="/profile"
+                    @click="showUserMenu = false"
+                    class="group flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200"
+                    role="menuitem"
+                  >
+                    <UsersIcon
+                      class="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500"
+                    />
+                    Profile
+                  </router-link>
                   <button
                     @click="handleLogout"
                     class="group flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200"
@@ -184,6 +195,13 @@
             @click="closeMobileMenu"
           >
             Invoices
+          </router-link>
+          <router-link
+            to="/profile"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+            @click="closeMobileMenu"
+          >
+            Profile
           </router-link>
           <router-link
             to="/invoices/new"
