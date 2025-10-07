@@ -57,6 +57,12 @@ const router = createRouter({
       component: () => import("@/views/InvoiceForm.vue"),
       meta: { title: "Edit Invoice", requiresAuth: true },
     },
+    {
+      path: "/profile",
+      name: "Profile",
+      component: () => import("@/views/Profile.vue"),
+      meta: { title: "Profile", requiresAuth: true },
+    },
   ],
 });
 
