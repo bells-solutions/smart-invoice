@@ -4,14 +4,16 @@
     <div class="mb-8">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div class="mb-4 sm:mb-0">
-          <h1 class="text-3xl font-bold text-gray-900">Profile Settings</h1>
+          <h1 class="text-3xl font-bold text-gray-900">
+            {{ $t("profile.title") }}
+          </h1>
           <p class="mt-1 text-gray-600">
-            Manage your personal information and account preferences
+            {{ $t("profile.description") }}
           </p>
         </div>
         <div class="flex items-center space-x-3">
           <div class="text-sm text-gray-500">
-            Account:
+            {{ $t("profile.account") }}:
             <span class="font-medium text-gray-700 capitalize">{{
               user?.accountType
             }}</span>
@@ -59,7 +61,9 @@
                   <CheckCircleIcon class="h-6 w-6 text-green-400" />
                 </div>
                 <div class="ml-4">
-                  <h3 class="text-sm font-medium text-green-800">Success!</h3>
+                  <h3 class="text-sm font-medium text-green-800">
+                    {{ $t("profile.success") }}
+                  </h3>
                   <p class="text-sm text-green-700 mt-1">{{ success }}</p>
                 </div>
               </div>
@@ -75,7 +79,9 @@
                   <ExclamationCircleIcon class="h-6 w-6 text-red-400" />
                 </div>
                 <div class="ml-4">
-                  <h3 class="text-sm font-medium text-red-800">Error</h3>
+                  <h3 class="text-sm font-medium text-red-800">
+                    {{ $t("profile.error") }}
+                  </h3>
                   <p class="text-sm text-red-700 mt-1">{{ error }}</p>
                 </div>
               </div>
@@ -84,7 +90,7 @@
             <!-- Account Type Section -->
             <div class="bg-gray-50 rounded-xl p-6">
               <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                Account Type
+                {{ $t("profile.accountType") }}
               </h3>
               <div class="flex items-center space-x-4">
                 <div class="flex items-center">
@@ -112,8 +118,8 @@
                     <div class="text-sm text-gray-600">
                       {{
                         user?.accountType === "individual"
-                          ? "Personal account for individual use"
-                          : "Business account for companies"
+                          ? $t("profile.personalAccountDescription")
+                          : $t("profile.businessAccountDescription")
                       }}
                     </div>
                   </div>
@@ -138,8 +144,7 @@
                   </div>
                   <div class="ml-3">
                     <p class="text-sm text-blue-700">
-                      Account type cannot be changed after registration. If you
-                      need to change your account type, please contact support.
+                      {{ $t("profile.accountTypeChangeNote") }}
                     </p>
                   </div>
                 </div>
@@ -152,7 +157,7 @@
               class="bg-gray-50 rounded-xl p-6"
             >
               <h3 class="text-lg font-semibold text-gray-900 mb-6">
-                Personal Information
+                {{ $t("profile.personalInformation") }}
               </h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -160,7 +165,7 @@
                     for="firstName"
                     class="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    First Name *
+                    {{ $t("profile.firstNameRequired") }}
                   </label>
                   <input
                     id="firstName"
@@ -176,7 +181,7 @@
                     for="lastName"
                     class="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Last Name *
+                    {{ $t("profile.lastNameRequired") }}
                   </label>
                   <input
                     id="lastName"
@@ -208,7 +213,7 @@
                     for="phone"
                     class="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Phone Number *
+                    {{ $t("profile.phoneNumberRequired") }}
                   </label>
                   <input
                     id="phone"
@@ -228,7 +233,7 @@
               class="bg-gray-50 rounded-xl p-6"
             >
               <h3 class="text-lg font-semibold text-gray-900 mb-6">
-                Company Information
+                {{ $t("profile.companyInformation") }}
               </h3>
               <div class="space-y-6">
                 <div>
@@ -236,7 +241,7 @@
                     for="companyName"
                     class="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Company Name *
+                    {{ $t("profile.companyNameRequired") }}
                   </label>
                   <input
                     id="companyName"
@@ -253,7 +258,7 @@
                       for="taxpayerNumber"
                       class="block text-sm font-medium text-gray-700 mb-2"
                     >
-                      Taxpayer Number *
+                      {{ $t("profile.taxpayerNumberRequired") }}
                     </label>
                     <input
                       id="taxpayerNumber"
@@ -269,7 +274,7 @@
                       for="commercialRegister"
                       class="block text-sm font-medium text-gray-700 mb-2"
                     >
-                      Commercial Register
+                      {{ $t("profile.commercialRegister") }}
                     </label>
                     <input
                       id="commercialRegister"
@@ -284,7 +289,7 @@
                       for="town"
                       class="block text-sm font-medium text-gray-700 mb-2"
                     >
-                      Town *
+                      {{ $t("profile.townRequired") }}
                     </label>
                     <input
                       id="town"
@@ -300,7 +305,7 @@
                       for="poBox"
                       class="block text-sm font-medium text-gray-700 mb-2"
                     >
-                      PO Box
+                      {{ $t("profile.poBox") }}
                     </label>
                     <input
                       id="poBox"
@@ -317,14 +322,14 @@
             <!-- Address Section -->
             <div class="bg-gray-50 rounded-xl p-6">
               <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                Address Information
+                {{ $t("profile.addressInformation") }}
               </h3>
               <div>
                 <label
                   for="address"
                   class="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Full Address
+                  {{ $t("profile.fullAddress") }}
                 </label>
                 <textarea
                   id="address"
@@ -345,7 +350,7 @@
                 @click="resetForm"
                 class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors duration-200"
               >
-                Reset Changes
+                {{ $t("profile.resetChanges") }}
               </button>
               <button
                 type="submit"
@@ -357,7 +362,9 @@
                   class="animate-spin -ml-1 mr-3 h-5 w-5"
                 />
                 <CloudArrowUpIcon v-else class="w-5 h-5 mr-2" />
-                {{ loading ? "Updating..." : "Save Changes" }}
+                {{
+                  loading ? $t("profile.updating") : $t("profile.saveChanges")
+                }}
               </button>
             </div>
           </form>
@@ -369,6 +376,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { useAuthStore } from "@/stores/auth";
 import Layout from "@/components/Layout.vue";
 import {
@@ -379,6 +387,8 @@ import {
   ArrowPathIcon,
   CloudArrowUpIcon,
 } from "@heroicons/vue/24/outline";
+
+const { t } = useI18n();
 
 const authStore = useAuthStore();
 
@@ -438,9 +448,9 @@ async function handleUpdate() {
     });
 
     await authStore.updateProfile(updateData);
-    success.value = "Profile updated successfully!";
+    success.value = t("profile.profileUpdated");
   } catch (err: any) {
-    error.value = err.message || "Failed to update profile";
+    error.value = err.message || t("profile.updateFailed");
   } finally {
     loading.value = false;
   }

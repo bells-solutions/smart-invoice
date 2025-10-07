@@ -8,11 +8,11 @@
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-4xl font-bold mb-2">
-              Welcome back
+              {{ $t("dashboard.welcomeBack") }}
               {{ user?.firstName }} {{ user?.lastName || user?.companyName }}!
             </h1>
             <p class="text-blue-100 text-lg">
-              Here's what's happening with your invoices today.
+              {{ $t("dashboard.heresWhatsHappening") }}
             </p>
           </div>
           <div class="hidden md:block">
@@ -26,7 +26,9 @@
       <div
         class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
       ></div>
-      <span class="ml-3 text-gray-600">Loading your dashboard...</span>
+      <span class="ml-3 text-gray-600">{{
+        $t("dashboard.loadingDashboard")
+      }}</span>
     </div>
 
     <div v-else>
@@ -38,7 +40,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-600 mb-1">
-                Total Invoices
+                {{ $t("dashboard.totalInvoices") }}
               </p>
               <p class="text-3xl font-bold text-gray-900">
                 {{ stats?.totalInvoices || 0 }}
@@ -50,7 +52,7 @@
           </div>
           <div class="mt-4 flex items-center text-sm">
             <CheckCircleIcon class="w-4 h-4 text-green-500 mr-1" />
-            <span class="text-gray-600">All time</span>
+            <span class="text-gray-600">{{ $t("dashboard.allTime") }}</span>
           </div>
         </div>
 
@@ -60,7 +62,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-600 mb-1">
-                Total Revenue
+                {{ $t("dashboard.totalRevenue") }}
               </p>
               <p class="text-3xl font-bold text-green-600">
                 ${{ stats?.totalSales?.toFixed(2) || "0.00" }}
@@ -72,7 +74,9 @@
           </div>
           <div class="mt-4 flex items-center text-sm">
             <CheckCircleIcon class="w-4 h-4 text-green-500 mr-1" />
-            <span class="text-green-600">+12% from last month</span>
+            <span class="text-green-600"
+              >+12% {{ $t("dashboard.fromLastMonth") }}</span
+            >
           </div>
         </div>
 
@@ -82,7 +86,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-600 mb-1">
-                Pending Payments
+                {{ $t("dashboard.pendingPayments") }}
               </p>
               <p class="text-3xl font-bold text-orange-600">
                 {{ stats?.unpaidInvoices || 0 }}
@@ -94,7 +98,9 @@
           </div>
           <div class="mt-4 flex items-center text-sm">
             <ExclamationTriangleIcon class="w-4 h-4 text-orange-500 mr-1" />
-            <span class="text-orange-600">Needs attention</span>
+            <span class="text-orange-600">{{
+              $t("dashboard.needsAttention")
+            }}</span>
           </div>
         </div>
 
@@ -104,7 +110,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-600 mb-1">
-                Outstanding Amount
+                {{ $t("dashboard.outstandingAmount") }}
               </p>
               <p class="text-3xl font-bold text-red-600">
                 ${{ stats?.unpaidAmount?.toFixed(2) || "0.00" }}
@@ -116,7 +122,9 @@
           </div>
           <div class="mt-4 flex items-center text-sm">
             <ExclamationTriangleIcon class="w-4 h-4 text-red-500 mr-1" />
-            <span class="text-red-600">Action required</span>
+            <span class="text-red-600">{{
+              $t("dashboard.actionRequired")
+            }}</span>
           </div>
         </div>
       </div>
@@ -130,8 +138,12 @@
             <BoltIcon class="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h3 class="text-xl font-bold text-gray-900">Quick Actions</h3>
-            <p class="text-gray-600">Get started with common tasks</p>
+            <h3 class="text-xl font-bold text-gray-900">
+              {{ $t("dashboard.quickActions") }}
+            </h3>
+            <p class="text-gray-600">
+              {{ $t("dashboard.getStartedCommonTasks") }}
+            </p>
           </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -142,8 +154,12 @@
             <div class="flex items-center">
               <PlusIcon class="w-8 h-8 mr-3" />
               <div>
-                <div class="font-semibold text-lg">Create Invoice</div>
-                <div class="text-blue-100 text-sm">Start a new invoice</div>
+                <div class="font-semibold text-lg">
+                  {{ $t("dashboard.createInvoice") }}
+                </div>
+                <div class="text-blue-100 text-sm">
+                  {{ $t("dashboard.startNewInvoice") }}
+                </div>
               </div>
             </div>
           </router-link>
@@ -155,8 +171,12 @@
             <div class="flex items-center">
               <UsersIcon class="w-8 h-8 mr-3" />
               <div>
-                <div class="font-semibold text-lg">Manage Clients</div>
-                <div class="text-green-100 text-sm">Add or edit clients</div>
+                <div class="font-semibold text-lg">
+                  {{ $t("dashboard.manageClients") }}
+                </div>
+                <div class="text-green-100 text-sm">
+                  {{ $t("dashboard.addOrEditClients") }}
+                </div>
               </div>
             </div>
           </router-link>
@@ -168,8 +188,12 @@
             <div class="flex items-center">
               <DocumentTextIcon class="w-8 h-8 mr-3" />
               <div>
-                <div class="font-semibold text-lg">View Invoices</div>
-                <div class="text-purple-100 text-sm">See all your invoices</div>
+                <div class="font-semibold text-lg">
+                  {{ $t("dashboard.viewInvoices") }}
+                </div>
+                <div class="text-purple-100 text-sm">
+                  {{ $t("dashboard.seeAllInvoices") }}
+                </div>
               </div>
             </div>
           </router-link>
@@ -184,23 +208,28 @@
               <ClockIcon class="w-6 h-6 text-indigo-600" />
             </div>
             <div>
-              <h3 class="text-xl font-bold text-gray-900">Recent Activity</h3>
-              <p class="text-gray-600">Your latest invoice updates</p>
+              <h3 class="text-xl font-bold text-gray-900">
+                {{ $t("dashboard.recentActivity") }}
+              </h3>
+              <p class="text-gray-600">
+                {{ $t("dashboard.latestInvoiceUpdates") }}
+              </p>
             </div>
           </div>
           <router-link
             to="/invoices"
             class="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center"
           >
-            View all
+            {{ $t("dashboard.viewAll") }}
+
             <ChevronRightIcon class="w-4 h-4 ml-1" />
           </router-link>
         </div>
         <div class="text-center py-8 text-gray-500">
           <InboxIcon class="w-12 h-12 mx-auto mb-4 text-gray-300" />
-          <p>Recent activity will appear here</p>
+          <p>{{ $t("dashboard.recentActivityAppearHere") }}</p>
           <p class="text-sm text-gray-400 mt-1">
-            Create your first invoice to get started
+            {{ $t("dashboard.createFirstInvoice") }}
           </p>
         </div>
       </div>
@@ -210,6 +239,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { invoiceService } from "@/services/invoices";
 import type { DashboardStats } from "@/types";
 import Layout from "@/components/Layout.vue";
@@ -230,6 +260,7 @@ import {
 const stats = ref<DashboardStats | null>(null);
 const loading = ref(true);
 const user = ref(JSON.parse(localStorage.getItem("user") || "{}"));
+const { t } = useI18n();
 
 onMounted(async () => {
   try {
