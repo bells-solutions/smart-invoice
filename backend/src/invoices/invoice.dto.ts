@@ -57,6 +57,14 @@ export class CreateInvoiceDto {
   irRate?: number;
 
   @IsOptional()
+  @IsBoolean()
+  discountEnabled?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  discountRate?: number;
+
+  @IsOptional()
   notes?: string;
 
   @IsArray()
@@ -100,6 +108,14 @@ export class UpdateInvoiceDto {
   @IsOptional()
   @IsNumber()
   irRate?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  discountEnabled?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  discountRate?: number;
 
   @IsOptional()
   notes?: string;

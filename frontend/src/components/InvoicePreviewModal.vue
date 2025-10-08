@@ -262,6 +262,19 @@
                         }}</span>
                       </div>
                       <div
+                        v-if="invoice.discountEnabled"
+                        class="flex justify-between text-sm"
+                      >
+                        <span class="text-gray-600">{{
+                          t("invoices.preview.summary.discount", {
+                            rate: invoice.discountRate,
+                          })
+                        }}</span>
+                        <span class="font-medium text-red-600"
+                          >-{{ formatAmount(invoice.discountAmount) }}</span
+                        >
+                      </div>
+                      <div
                         class="border-t border-gray-300 pt-2 flex justify-between text-lg font-bold"
                       >
                         <span>{{ t("invoices.preview.summary.total") }}</span>

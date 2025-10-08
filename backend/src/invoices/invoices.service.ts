@@ -21,7 +21,9 @@ export class InvoicesService {
     tvaEnabled: boolean = false,
     tvaRate: number = 19.25,
     irEnabled: boolean = false,
-    irRate: number = 5.5
+    irRate: number = 5.5,
+    discountEnabled: boolean = false,
+    discountRate: number = 0
   ) {
     const subtotal = items.reduce((sum, item) => {
       const amount = item.quantity * item.unitPrice;
@@ -30,12 +32,17 @@ export class InvoicesService {
 
     const tvaAmount = tvaEnabled ? (subtotal * tvaRate) / 100 : 0;
     const irAmount = irEnabled ? (subtotal * irRate) / 100 : 0;
-    const total = subtotal + tvaAmount; // IR doesn't affect the total, only displayed when enabled
+    const subtotalWithTva = subtotal + tvaAmount;
+    const discountAmount = discountEnabled
+      ? (subtotalWithTva * discountRate) / 100
+      : 0;
+    const total = subtotalWithTva - discountAmount;
 
     return {
       subtotal: parseFloat(subtotal.toFixed(2)),
       tvaAmount: parseFloat(tvaAmount.toFixed(2)),
       irAmount: parseFloat(irAmount.toFixed(2)),
+      discountAmount: parseFloat(discountAmount.toFixed(2)),
       total: parseFloat(total.toFixed(2)),
     };
   }
@@ -56,6 +63,8 @@ export class InvoicesService {
       tvaRate = 19.25,
       irEnabled = false,
       irRate = 5.5,
+      discountEnabled = false,
+      discountRate = 0,
       status,
       ...invoiceData
     } = createInvoiceDto;
@@ -65,7 +74,9 @@ export class InvoicesService {
       tvaEnabled,
       tvaRate,
       irEnabled,
-      irRate
+      irRate,
+      discountEnabled,
+      discountRate
     );
     const invoiceNumber = await this.generateInvoiceNumber(
       invoiceData.type || InvoiceType.NORMAL
@@ -79,6 +90,8 @@ export class InvoicesService {
       tvaRate,
       irEnabled,
       irRate,
+      discountEnabled,
+      discountRate,
       status: status || InvoiceStatus.DRAFT,
       ...totals,
     });
@@ -138,8 +151,16 @@ export class InvoicesService {
   async update(id: string, updateInvoiceDto: UpdateInvoiceDto, user: User) {
     const invoice = await this.findOne(id, user);
 
-    const { items, tvaEnabled, tvaRate, irEnabled, irRate, ...updateData } =
-      updateInvoiceDto;
+    const {
+      items,
+      tvaEnabled,
+      tvaRate,
+      irEnabled,
+      irRate,
+      discountEnabled,
+      discountRate,
+      ...updateData
+    } = updateInvoiceDto;
 
     if (items) {
       await this.invoiceItemsRepository.delete({ invoiceId: id });
@@ -150,13 +171,21 @@ export class InvoicesService {
       const newIrEnabled =
         irEnabled !== undefined ? irEnabled : invoice.irEnabled;
       const newIrRate = irRate !== undefined ? irRate : invoice.irRate;
+      const newDiscountEnabled =
+        discountEnabled !== undefined
+          ? discountEnabled
+          : invoice.discountEnabled;
+      const newDiscountRate =
+        discountRate !== undefined ? discountRate : invoice.discountRate;
 
       const totals = this.calculateTotals(
         items,
         newTvaEnabled,
         newTvaRate,
         newIrEnabled,
-        newIrRate
+        newIrRate,
+        newDiscountEnabled,
+        newDiscountRate
       );
 
       const invoiceItems = items.map((item) => {
@@ -175,6 +204,8 @@ export class InvoicesService {
         tvaRate: newTvaRate,
         irEnabled: newIrEnabled,
         irRate: newIrRate,
+        discountEnabled: newDiscountEnabled,
+        discountRate: newDiscountRate,
         ...totals,
       });
     } else {
@@ -183,7 +214,9 @@ export class InvoicesService {
         tvaEnabled !== undefined ||
         tvaRate !== undefined ||
         irEnabled !== undefined ||
-        irRate !== undefined
+        irRate !== undefined ||
+        discountEnabled !== undefined ||
+        discountRate !== undefined
       ) {
         const newTvaEnabled =
           tvaEnabled !== undefined ? tvaEnabled : invoice.tvaEnabled;
@@ -191,11 +224,19 @@ export class InvoicesService {
         const newIrEnabled =
           irEnabled !== undefined ? irEnabled : invoice.irEnabled;
         const newIrRate = irRate !== undefined ? irRate : invoice.irRate;
+        const newDiscountEnabled =
+          discountEnabled !== undefined
+            ? discountEnabled
+            : invoice.discountEnabled;
+        const newDiscountRate =
+          discountRate !== undefined ? discountRate : invoice.discountRate;
 
         invoice.tvaEnabled = newTvaEnabled;
         invoice.tvaRate = newTvaRate;
         invoice.irEnabled = newIrEnabled;
         invoice.irRate = newIrRate;
+        invoice.discountEnabled = newDiscountEnabled;
+        invoice.discountRate = newDiscountRate;
 
         const items = await this.invoiceItemsRepository.find({
           where: { invoiceId: id },
@@ -205,7 +246,9 @@ export class InvoicesService {
           newTvaEnabled,
           newTvaRate,
           newIrEnabled,
-          newIrRate
+          newIrRate,
+          newDiscountEnabled,
+          newDiscountRate
         );
         Object.assign(invoice, totals);
       }
