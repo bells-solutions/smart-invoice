@@ -48,6 +48,8 @@ describe("InvoicesService", () => {
     updatedAt: new Date(),
     clients: [],
     invoices: [],
+    profilePicture: "",
+    currency: "XAF",
   };
 
   beforeEach(async () => {
