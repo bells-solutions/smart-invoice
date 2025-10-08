@@ -87,6 +87,7 @@ export class AuthService {
         taxpayerNumber: user.taxpayerNumber,
         commercialRegister: user.commercialRegister,
         poBox: user.poBox,
+        currency: user.currency,
       },
     };
   }
@@ -122,6 +123,7 @@ export class AuthService {
         taxpayerNumber: user.taxpayerNumber,
         commercialRegister: user.commercialRegister,
         poBox: user.poBox,
+        currency: user.currency,
       },
     };
   }

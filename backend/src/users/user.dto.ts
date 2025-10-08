@@ -40,4 +40,8 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   companyLogo?: string;
+
+  @IsOptional()
+  @IsString()
+  currency?: string;
 }
