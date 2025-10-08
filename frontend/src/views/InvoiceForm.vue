@@ -200,9 +200,9 @@
                   <div
                     class="flex items-center h-10 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg"
                   >
-                    <span class="text-gray-900 font-medium"
-                      >${{ calculateTva().toFixed(2) }}</span
-                    >
+                    <span class="text-gray-900 font-medium">{{
+                      formatAmount(calculateTva())
+                    }}</span>
                   </div>
                 </div>
               </div>
@@ -252,9 +252,9 @@
                   <div
                     class="flex items-center h-10 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg"
                   >
-                    <span class="text-gray-900 font-medium"
-                      >${{ calculateIr().toFixed(2) }}</span
-                    >
+                    <span class="text-gray-900 font-medium">{{
+                      formatAmount(calculateIr())
+                    }}</span>
                   </div>
                 </div>
               </div>
@@ -354,7 +354,9 @@
                     >{{ t("invoiceForm.unitPriceRequired") }}</label
                   >
                   <div class="relative">
-                    <span class="absolute left-3 top-2 text-gray-500">$</span>
+                    <span class="absolute left-3 top-2 text-gray-500">{{
+                      currencySymbol
+                    }}</span>
                     <input
                       v-model.number="item.unitPrice"
                       type="number"
@@ -376,9 +378,9 @@
                   <div
                     class="flex items-center justify-center h-10 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg"
                   >
-                    <span class="text-gray-900 font-medium"
-                      >${{ (item.quantity * item.unitPrice).toFixed(2) }}</span
-                    >
+                    <span class="text-gray-900 font-medium">{{
+                      formatAmount(item.quantity * item.unitPrice)
+                    }}</span>
                   </div>
                 </div>
 
@@ -426,23 +428,25 @@
           <div class="w-64">
             <div class="flex justify-between mb-2">
               <span class="text-gray-700">{{ t("invoiceForm.subtotal") }}</span>
-              <span class="font-bold"
-                >${{ calculateSubtotal().toFixed(2) }}</span
-              >
+              <span class="font-bold">{{
+                formatAmount(calculateSubtotal())
+              }}</span>
             </div>
             <div v-if="form.tvaEnabled" class="flex justify-between mb-2">
               <span class="text-gray-700">TVA ({{ form.tvaRate }}%):</span>
-              <span class="font-bold">${{ calculateTva().toFixed(2) }}</span>
+              <span class="font-bold">{{ formatAmount(calculateTva()) }}</span>
             </div>
             <div v-if="form.irEnabled" class="flex justify-between mb-2">
               <span class="text-gray-700">IR ({{ form.irRate }}%):</span>
-              <span class="font-bold">${{ calculateIr().toFixed(2) }}</span>
+              <span class="font-bold">{{ formatAmount(calculateIr()) }}</span>
             </div>
             <div class="flex justify-between text-lg">
               <span class="text-gray-700 font-bold">{{
                 t("invoiceForm.total")
               }}</span>
-              <span class="font-bold">${{ calculateTotal().toFixed(2) }}</span>
+              <span class="font-bold">{{
+                formatAmount(calculateTotal())
+              }}</span>
             </div>
           </div>
         </div>
@@ -504,6 +508,7 @@ import { useRouter, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { clientService } from "@/services/clients";
 import { invoiceService } from "@/services/invoices";
+import { useCurrency } from "@/composables/useCurrency";
 import type { Client, InvoiceItem, InvoiceStatus, InvoiceType } from "@/types";
 import Layout from "@/components/Layout.vue";
 import {
@@ -521,6 +526,7 @@ import {
 } from "@heroicons/vue/24/outline";
 
 const { t } = useI18n();
+const { formatAmount, currencySymbol } = useCurrency();
 
 const router = useRouter();
 const route = useRoute();
