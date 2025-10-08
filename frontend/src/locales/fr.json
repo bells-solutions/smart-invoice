@@ -264,6 +264,14 @@
     "success": "Succès !",
     "error": "Erreur",
     "profileUpdated": "Profil mis à jour avec succès !",
-    "updateFailed": "Échec de la mise à jour du profil"
+    "updateFailed": "Échec de la mise à jour du profil",
+    "removeProfilePicture": "Supprimer la photo de profil",
+    "profilePictureUpdated": "Photo de profil mise à jour avec succès !",
+    "profilePictureUploadFailed": "Échec du téléchargement de la photo de profil",
+    "profilePictureDeleted": "Photo de profil supprimée avec succès !",
+    "profilePictureDeleteFailed": "Échec de la suppression de la photo de profil",
+    "confirmDeleteProfilePicture": "Êtes-vous sûr de vouloir supprimer votre photo de profil ?",
+    "invalidFileType": "Veuillez sélectionner un fichier image valide (JPG, PNG, GIF)",
+    "fileTooLarge": "La taille du fichier doit être inférieure à 5 Mo"
   }
 }

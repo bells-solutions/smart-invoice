@@ -32,18 +32,67 @@
           class="px-8 py-6 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700"
         >
           <div class="flex items-center">
-            <div class="flex-shrink-0">
+            <div class="flex-shrink-0 relative">
               <div
-                class="h-16 w-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+                v-if="user?.profilePicture"
+                class="h-32 w-32 rounded-full overflow-hidden border-4 border-white/30"
               >
-                <UserIcon class="h-8 w-8 text-white" />
+                <img
+                  :src="user.profilePicture"
+                  :alt="user.firstName || 'Profile'"
+                  class="h-full w-full object-cover"
+                />
               </div>
+              <div
+                v-else
+                class="h-32 w-32 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+              >
+                <UserIcon class="h-28 w-28 text-white" />
+              </div>
+              <!-- Upload button overlay -->
+              <label
+                for="profile-picture-upload"
+                :class="[
+                  'absolute inset-0 flex h-32 w-32 items-center justify-center bg-black/40 rounded-full transition-opacity cursor-pointer',
+                  profilePictureUploading
+                    ? 'opacity-100'
+                    : 'opacity-0 hover:opacity-100',
+                ]"
+              >
+                <ArrowPathIcon
+                  v-if="profilePictureUploading"
+                  class="h-6 w-6 text-white animate-spin"
+                />
+                <CloudArrowUpIcon v-else class="h-6 w-6 text-white" />
+              </label>
+              <input
+                id="profile-picture-upload"
+                type="file"
+                accept="image/*"
+                @change="handleProfilePictureUpload"
+                :disabled="profilePictureUploading"
+                class="hidden"
+              />
             </div>
             <div class="ml-6">
               <h2 class="text-2xl font-bold text-white">
                 {{ user?.firstName }} {{ user?.lastName || user?.companyName }}
               </h2>
               <p class="text-blue-100">{{ user?.email }}</p>
+              <div v-if="user?.profilePicture" class="mt-2">
+                <button
+                  @click="handleDeleteProfilePicture"
+                  :disabled="profilePictureUploading"
+                  type="button"
+                  class="text-sm bg-blue-300 p-2 rounded-xl text-red-200 hover:cursor-pointer hover:text-red-100 transition-colors disabled:opacity-50"
+                >
+                  {{
+                    profilePictureUploading
+                      ? $t("common.loading")
+                      : $t("profile.removeProfilePicture")
+                  }}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -434,6 +483,7 @@ const form = ref({
 const loading = ref(false);
 const error = ref("");
 const success = ref("");
+const profilePictureUploading = ref(false);
 
 function initializeForm() {
   const currentUser = authStore.user;
@@ -481,6 +531,65 @@ async function handleUpdate() {
     loading.value = false;
   }
 }
+
+async function handleProfilePictureUpload(event: Event) {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  if (!file) return;
+
+  // Validate file type
+  if (!file.type.startsWith("image/")) {
+    error.value = t("profile.invalidFileType");
+    return;
+  }
+
+  // Validate file size (5MB limit)
+  if (file.size > 5 * 1024 * 1024) {
+    error.value = t("profile.fileTooLarge");
+    return;
+  }
+
+  profilePictureUploading.value = true;
+  error.value = "";
+  success.value = "";
+
+  try {
+    await authStore.uploadProfilePicture(file);
+    success.value = t("profile.profilePictureUpdated");
+  } catch (err: any) {
+    error.value = err.message || t("profile.profilePictureUploadFailed");
+  } finally {
+    profilePictureUploading.value = false;
+    // Reset the input
+    target.value = "";
+  }
+}
+
+async function handleDeleteProfilePicture() {
+  if (!confirm(t("profile.confirmDeleteProfilePicture"))) {
+    return;
+  }
+
+  profilePictureUploading.value = true;
+  error.value = "";
+  success.value = "";
+
+  try {
+    await authStore.deleteProfilePicture();
+    success.value = t("profile.profilePictureDeleted");
+  } catch (err: any) {
+    error.value = err.message || t("profile.profilePictureDeleteFailed");
+  } finally {
+    profilePictureUploading.value = false;
+  }
+}
+
+// setTimeout for error and success messages
+setTimeout(() => {
+  if (error.value) error.value = "";
+  if (success.value) success.value = "";
+}, 4000);
 
 onMounted(() => {
   initializeForm();

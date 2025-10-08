@@ -57,6 +57,9 @@ export class User {
   @Column({ nullable: true })
   companyLogo: string;
 
+  @Column({ nullable: true })
+  profilePicture: string;
+
   @Column({ nullable: true, default: "XAF" })
   currency?: string;
 

@@ -264,6 +264,14 @@
     "success": "Success!",
     "error": "Error",
     "profileUpdated": "Profile updated successfully!",
-    "updateFailed": "Failed to update profile"
+    "updateFailed": "Failed to update profile",
+    "removeProfilePicture": "Remove profile picture",
+    "profilePictureUpdated": "Profile picture updated successfully!",
+    "profilePictureUploadFailed": "Failed to upload profile picture",
+    "profilePictureDeleted": "Profile picture removed successfully!",
+    "profilePictureDeleteFailed": "Failed to remove profile picture",
+    "confirmDeleteProfilePicture": "Are you sure you want to remove your profile picture?",
+    "invalidFileType": "Please select a valid image file (JPG, PNG, GIF)",
+    "fileTooLarge": "File size must be less than 5MB"
   }
 }

@@ -2,12 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./user.entity";
+import { UploadService } from "../upload/upload.service";
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>
+    private usersRepository: Repository<User>,
+    private uploadService: UploadService
   ) {}
 
   async findOne(id: string): Promise<User | null> {
@@ -21,5 +23,51 @@ export class UsersService {
       throw new Error("User not found");
     }
     return updatedUser;
+  }
+
+  async updateProfilePicture(
+    userId: string,
+    file: Express.Multer.File
+  ): Promise<User> {
+    // Get current user to check if they have an existing profile picture
+    const user = await this.findOne(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Delete old profile picture if it exists
+    if (user.profilePicture) {
+      await this.uploadService.deleteProfilePicture(user.profilePicture);
+    }
+
+    // Upload new profile picture
+    const profilePictureUrl = await this.uploadService.uploadProfilePicture(
+      file,
+      userId
+    );
+
+    // Update user with new profile picture URL
+    await this.usersRepository.update(userId, {
+      profilePicture: profilePictureUrl,
+    });
+
+    return this.findOne(userId);
+  }
+
+  async deleteProfilePicture(userId: string): Promise<User> {
+    const user = await this.findOne(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Delete profile picture from storage if it exists
+    if (user.profilePicture) {
+      await this.uploadService.deleteProfilePicture(user.profilePicture);
+    }
+
+    // Remove profile picture URL from user
+    await this.usersRepository.update(userId, { profilePicture: null });
+
+    return this.findOne(userId);
   }
 }

@@ -59,6 +59,23 @@ export const authService = {
     return response.data;
   },
 
+  async uploadProfilePicture(file: File) {
+    const formData = new FormData();
+    formData.append("profilePicture", file);
+
+    const response = await api.post("/users/me/profile-picture", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  },
+
+  async deleteProfilePicture() {
+    const response = await api.delete("/users/me/profile-picture");
+    return response.data;
+  },
+
   setToken(token: string) {
     localStorage.setItem("token", token);
   },
