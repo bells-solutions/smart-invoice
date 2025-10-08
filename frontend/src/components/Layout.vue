@@ -88,11 +88,11 @@
             <div class="relative mr-4">
               <button
                 @click.stop="toggleLanguageMenu"
-                class="flex items-center px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                class="flex items-center px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-300 transition-colors duration-200"
               >
-                <GlobeAltIcon class="w-4 h-4 mr-2" />
+                <GlobeAltIcon class="w-4 h-4 mr-2 text-black" />
                 {{ currentLanguage.toUpperCase() }}
-                <ChevronDownIcon class="ml-2 h-4 w-4" />
+                <ChevronDownIcon class="ml-1.5 h-4 w-4" />
               </button>
 
               <!-- Language Dropdown -->
@@ -119,7 +119,7 @@
             <!-- Add Quick Actions here -->
 
             <!-- User Profile Dropdown -->
-            <div class="relative ml-3" ref="userMenuRef">
+            <div class="relative" ref="userMenuRef">
               <button
                 @click="toggleUserMenu"
                 class="flex items-center max-w-xs bg-white rounded-full p-2 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hover:bg-gray-50 transition-colors duration-200"
@@ -127,11 +127,22 @@
               >
                 <div class="flex items-center">
                   <div
-                    class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center"
+                    class="h-10 w-10 rounded-full overflow-hidden border-2 border-gray-200"
                   >
-                    <span class="text-sm font-medium text-white">
-                      {{ getInitials() }}
-                    </span>
+                    <img
+                      v-if="authStore.user?.profilePicture"
+                      :src="authStore.user.profilePicture"
+                      :alt="authStore.user.firstName || 'Profile'"
+                      class="h-full w-full object-cover"
+                    />
+                    <div
+                      v-else
+                      class="h-full w-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center"
+                    >
+                      <span class="text-sm font-medium text-white">
+                        {{ getInitials() }}
+                      </span>
+                    </div>
                   </div>
                   <ChevronDownIcon class="ml-2 h-4 w-4 text-gray-400" />
                 </div>
@@ -274,7 +285,6 @@ import {
   DocumentTextIcon,
   BriefcaseIcon,
   UsersIcon,
-  PlusIcon,
   ChevronDownIcon,
   ArrowRightOnRectangleIcon,
   Bars3Icon,
@@ -282,7 +292,7 @@ import {
   GlobeAltIcon,
 } from "@heroicons/vue/24/outline";
 
-const { locale, t } = useI18n();
+const { locale } = useI18n();
 const router = useRouter();
 const authStore = useAuthStore();
 

@@ -63,6 +63,20 @@ export const useAuthStore = defineStore("auth", () => {
     return response;
   }
 
+  async function uploadProfilePicture(file: File) {
+    const response = await authService.uploadProfilePicture(file);
+    authService.setUser(response);
+    user.value = response;
+    return response;
+  }
+
+  async function deleteProfilePicture() {
+    const response = await authService.deleteProfilePicture();
+    authService.setUser(response);
+    user.value = response;
+    return response;
+  }
+
   return {
     user,
     isAuthenticated,
@@ -70,5 +84,7 @@ export const useAuthStore = defineStore("auth", () => {
     register,
     logout,
     updateProfile,
+    uploadProfilePicture,
+    deleteProfilePicture,
   };
 });

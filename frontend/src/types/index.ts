@@ -12,6 +12,7 @@ export interface User {
   commercialRegister?: string;
   poBox?: string;
   companyLogo?: string;
+  profilePicture?: string;
   currency?: string;
 }
 
