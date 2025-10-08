@@ -72,6 +72,15 @@ export class Invoice {
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   irAmount: number;
 
+  @Column({ type: "boolean", default: false })
+  discountEnabled: boolean;
+
+  @Column({ type: "decimal", precision: 5, scale: 2, default: 0 })
+  discountRate: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  discountAmount: number;
+
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   total: number;
 

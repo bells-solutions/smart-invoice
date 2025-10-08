@@ -99,6 +99,7 @@
         "subtotal": "Subtotal:",
         "tva": "TVA ({rate}%) :",
         "ir": "IR ({rate}%) :",
+        "discount": "Discount ({rate}%) :",
         "total": "Total:"
       },
       "notes": "Notes"
@@ -136,6 +137,10 @@
     "enableIr": "Enable IR",
     "irRate": "IR Rate (%)",
     "irAmount": "IR Amount",
+    "discount": "Discount",
+    "enableDiscount": "Enable Discount",
+    "discountRate": "Discount Rate (%)",
+    "discountAmount": "Discount Amount",
     "invoiceItems": "Invoice Items",
     "addItem": "Add Item",
     "description": "Description",

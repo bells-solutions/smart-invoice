@@ -99,6 +99,7 @@
         "subtotal": "Sous-total :",
         "tva": "TVA ({rate}%) :",
         "ir": "IR ({rate}%) :",
+        "discount": "Remise ({rate}%) :",
         "total": "Total :"
       },
       "notes": "Notes"
@@ -136,6 +137,10 @@
     "enableIr": "Activer IR",
     "irRate": "Taux IR (%)",
     "irAmount": "Montant IR",
+    "discount": "Remise",
+    "enableDiscount": "Activer Remise",
+    "discountRate": "Taux Remise (%)",
+    "discountAmount": "Montant Remise",
     "invoiceItems": "Éléments de la facture",
     "addItem": "Ajouter un élément",
     "description": "Description",

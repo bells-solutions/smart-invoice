@@ -64,6 +64,9 @@ export interface Invoice {
   irEnabled: boolean;
   irRate: number;
   irAmount: number;
+  discountEnabled: boolean;
+  discountRate: number;
+  discountAmount: number;
   total: number;
   notes?: string;
   clientId: string;

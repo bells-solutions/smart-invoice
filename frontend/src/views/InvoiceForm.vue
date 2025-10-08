@@ -259,6 +259,59 @@
                 </div>
               </div>
             </div>
+
+            <!-- Discount Section -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="block text-sm font-medium text-gray-700">
+                  <span class="flex items-center">
+                    <TagIcon class="h-4 w-4 mr-1 text-gray-400" />
+                    {{ t("invoiceForm.discount") }}
+                  </span>
+                </label>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input
+                    v-model="form.discountEnabled"
+                    type="checkbox"
+                    class="sr-only peer"
+                  />
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
+                  ></div>
+                  <span class="ml-3 text-sm font-medium text-gray-900">{{
+                    t("invoiceForm.enableDiscount")
+                  }}</span>
+                </label>
+              </div>
+              <div v-if="form.discountEnabled" class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs text-gray-500 mb-1">{{
+                    t("invoiceForm.discountRate")
+                  }}</label>
+                  <input
+                    v-model.number="form.discountRate"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="100"
+                    placeholder="10"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-500 mb-1">{{
+                    t("invoiceForm.discountAmount")
+                  }}</label>
+                  <div
+                    class="flex items-center h-10 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg"
+                  >
+                    <span class="text-gray-900 font-medium">{{
+                      formatAmount(calculateDiscount())
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -440,6 +493,16 @@
               <span class="text-gray-700">IR ({{ form.irRate }}%):</span>
               <span class="font-bold">{{ formatAmount(calculateIr()) }}</span>
             </div>
+            <div v-if="form.discountEnabled" class="flex justify-between mb-2">
+              <span class="text-gray-700"
+                >{{ t("invoiceForm.discount") }} ({{
+                  form.discountRate
+                }}%):</span
+              >
+              <span class="font-bold text-red-600"
+                >-{{ formatAmount(calculateDiscount()) }}</span
+              >
+            </div>
             <div class="flex justify-between text-lg">
               <span class="text-gray-700 font-bold">{{
                 t("invoiceForm.total")
@@ -523,6 +586,7 @@ import {
   TrashIcon,
   ArrowLeftIcon,
   CheckIcon,
+  TagIcon,
 } from "@heroicons/vue/24/outline";
 
 const { t } = useI18n();
@@ -547,6 +611,8 @@ const form = ref({
   tvaRate: 19.25,
   irEnabled: false,
   irRate: 5.5,
+  discountEnabled: false,
+  discountRate: 0,
   notes: "",
   items: [] as InvoiceItem[],
 });
@@ -566,6 +632,8 @@ onMounted(async () => {
       form.value.tvaRate = invoice.tvaRate;
       form.value.irEnabled = invoice.irEnabled;
       form.value.irRate = invoice.irRate;
+      form.value.discountEnabled = invoice.discountEnabled;
+      form.value.discountRate = invoice.discountRate;
       form.value.notes = invoice.notes || "";
       form.value.items = invoice.items.map((item) => ({
         description: item.description,
@@ -611,8 +679,16 @@ function calculateIr() {
     : 0;
 }
 
+function calculateDiscount() {
+  const subtotalWithTva = calculateSubtotal() + calculateTva();
+  return form.value.discountEnabled
+    ? (subtotalWithTva * form.value.discountRate) / 100
+    : 0;
+}
+
 function calculateTotal() {
-  return calculateSubtotal() + calculateTva(); // IR doesn't affect the total, only displayed when enabled
+  const subtotalWithTva = calculateSubtotal() + calculateTva();
+  return subtotalWithTva - calculateDiscount();
 }
 
 async function saveInvoice() {
@@ -628,6 +704,8 @@ async function saveInvoice() {
       tvaRate: form.value.tvaRate,
       irEnabled: form.value.irEnabled,
       irRate: form.value.irRate,
+      discountEnabled: form.value.discountEnabled,
+      discountRate: form.value.discountRate,
       notes: form.value.notes,
       items: form.value.items.map((it) => ({
         description: it.description,
