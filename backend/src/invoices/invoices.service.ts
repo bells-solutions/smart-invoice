@@ -403,10 +403,17 @@ export class InvoicesService {
           .text(statusText, x + 8, y + 7);
       };
 
-      const formatCurrency = (amount: number) => `$${amount.toFixed(2)}`;
+      const formatCurrency = (amount: number) => {
+        const currency = user.currency || "USD";
+        const formatter = new Intl.NumberFormat(user.language || "en", {
+          style: "currency",
+          currency: currency,
+        });
+        return formatter.format(amount);
+      };
 
       const formatDate = (date: Date) => {
-        return date.toLocaleDateString("en-US", {
+        return date.toLocaleDateString(user.language || "en", {
           year: "numeric",
           month: "long",
           day: "numeric",

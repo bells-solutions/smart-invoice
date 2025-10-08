@@ -44,4 +44,8 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   currency?: string;
+
+  @IsOptional()
+  @IsString()
+  language?: string;
 }

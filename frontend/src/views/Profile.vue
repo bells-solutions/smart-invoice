@@ -414,6 +414,29 @@
               </div>
             </div>
 
+            <!-- Language Section -->
+            <div class="bg-gray-50 rounded-xl p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                {{ $t("profile.languageSettings") }}
+              </h3>
+              <div>
+                <label
+                  for="language"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  {{ $t("profile.preferredLanguage") }}
+                </label>
+                <select
+                  id="language"
+                  v-model="form.language"
+                  class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                >
+                  <option value="en">{{ $t("profile.language.en") }}</option>
+                  <option value="fr">{{ $t("profile.language.fr") }}</option>
+                </select>
+              </div>
+            </div>
+
             <!-- Submit Section -->
             <div
               class="flex flex-col sm:flex-row justify-end gap-4 pt-6 border-t border-gray-200"
@@ -478,6 +501,7 @@ const form = ref({
   commercialRegister: "",
   poBox: "",
   currency: "USD",
+  language: "en",
 });
 
 const loading = ref(false);
@@ -499,6 +523,7 @@ function initializeForm() {
       commercialRegister: currentUser.commercialRegister || "",
       poBox: currentUser.poBox || "",
       currency: currentUser.currency || "USD",
+      language: currentUser.language || "en",
     };
   }
 }
