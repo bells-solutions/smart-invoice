@@ -251,6 +251,13 @@
     "poBox": "PO Box",
     "addressInformation": "Address Information",
     "fullAddress": "Full Address",
+    "currencySettings": "Currency Settings",
+    "preferredCurrency": "Preferred Currency",
+    "currency": {
+      "usd": "US Dollar (USD)",
+      "eur": "Euro (EUR)",
+      "xaf": "Central African Franc (XAF)"
+    },
     "resetChanges": "Reset Changes",
     "updating": "Updating...",
     "saveChanges": "Save Changes",
