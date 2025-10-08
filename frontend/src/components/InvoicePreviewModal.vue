@@ -189,12 +189,12 @@
                         <td
                           class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
                         >
-                          ${{ item.unitPrice.toFixed(2) }}
+                          {{ formatAmount(item.unitPrice) }}
                         </td>
                         <td
                           class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                         >
-                          ${{ (item.quantity * item.unitPrice).toFixed(2) }}
+                          {{ formatAmount(item.quantity * item.unitPrice) }}
                         </td>
                       </tr>
                     </tbody>
@@ -207,9 +207,9 @@
                     <div class="w-64 space-y-2">
                       <div class="flex justify-between text-sm">
                         <span class="text-gray-600">Subtotal:</span>
-                        <span class="font-medium"
-                          >${{ invoice.subtotal.toFixed(2) }}</span
-                        >
+                        <span class="font-medium">{{
+                          formatAmount(invoice.subtotal)
+                        }}</span>
                       </div>
                       <div
                         v-if="invoice.tvaEnabled"
@@ -218,9 +218,9 @@
                         <span class="text-gray-600"
                           >TVA ({{ invoice.tvaRate }}%):</span
                         >
-                        <span class="font-medium"
-                          >${{ invoice.tvaAmount.toFixed(2) }}</span
-                        >
+                        <span class="font-medium">{{
+                          formatAmount(invoice.tvaAmount)
+                        }}</span>
                       </div>
                       <div
                         v-if="invoice.irEnabled"
@@ -229,15 +229,15 @@
                         <span class="text-gray-600"
                           >IR ({{ invoice.irRate }}%):</span
                         >
-                        <span class="font-medium"
-                          >${{ invoice.irAmount.toFixed(2) }}</span
-                        >
+                        <span class="font-medium">{{
+                          formatAmount(invoice.irAmount)
+                        }}</span>
                       </div>
                       <div
                         class="border-t border-gray-300 pt-2 flex justify-between text-lg font-bold"
                       >
                         <span>Total:</span>
-                        <span>${{ invoice.total.toFixed(2) }}</span>
+                        <span>{{ formatAmount(invoice.total) }}</span>
                       </div>
                     </div>
                   </div>
@@ -262,6 +262,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { invoiceService } from "@/services/invoices";
+import { useCurrency } from "@/composables/useCurrency";
 import type { Invoice } from "@/types";
 import {
   ArrowDownTrayIcon,
@@ -283,6 +284,8 @@ const emit = defineEmits<{
 const invoice = ref<Invoice | null>(null);
 const loading = ref(false);
 const downloading = ref(false);
+
+const { formatAmount } = useCurrency();
 
 watch(
   () => props.isOpen,
