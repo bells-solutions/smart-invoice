@@ -65,7 +65,7 @@
                 {{ $t("dashboard.totalRevenue") }}
               </p>
               <p class="text-3xl font-bold text-green-600">
-                ${{ stats?.totalSales?.toFixed(2) || "0.00" }}
+                {{ formatAmount(stats?.totalSales || 0) }}
               </p>
             </div>
             <div class="bg-green-100 p-3 rounded-full">
@@ -113,7 +113,7 @@
                 {{ $t("dashboard.outstandingAmount") }}
               </p>
               <p class="text-3xl font-bold text-red-600">
-                ${{ stats?.unpaidAmount?.toFixed(2) || "0.00" }}
+                {{ formatAmount(stats?.unpaidAmount || 0) }}
               </p>
             </div>
             <div class="bg-red-100 p-3 rounded-full">
@@ -241,6 +241,7 @@
 import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { invoiceService } from "@/services/invoices";
+import { useCurrency } from "@/composables/useCurrency";
 import type { DashboardStats } from "@/types";
 import Layout from "@/components/Layout.vue";
 import {
@@ -261,6 +262,7 @@ const stats = ref<DashboardStats | null>(null);
 const loading = ref(true);
 const user = ref(JSON.parse(localStorage.getItem("user") || "{}"));
 const { t } = useI18n();
+const { formatAmount } = useCurrency();
 
 onMounted(async () => {
   try {
