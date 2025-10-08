@@ -205,7 +205,7 @@
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900"
               >
-                ${{ invoice.total.toFixed(2) }}
+                {{ formatAmount(invoice.total) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <div class="flex items-center space-x-2">
@@ -251,6 +251,7 @@
 import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { invoiceService } from "@/services/invoices";
+import { useCurrency } from "@/composables/useCurrency";
 import type { Invoice } from "@/types";
 import Layout from "@/components/Layout.vue";
 import InvoicePreviewModal from "@/components/InvoicePreviewModal.vue";
@@ -268,6 +269,7 @@ import {
 } from "@heroicons/vue/24/outline";
 
 const { t } = useI18n();
+const { formatAmount } = useCurrency();
 
 const invoices = ref<Invoice[]>([]);
 const loading = ref(true);
