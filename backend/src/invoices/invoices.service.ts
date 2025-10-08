@@ -373,305 +373,274 @@ export class InvoicesService {
       let yPosition = 50;
 
       // ===== HEADER SECTION =====
-      // Decorative background
-      drawRoundedRect(0, 0, 595, 120, 0, colors.light);
-
-      // Company branding section
+      // Invoice title
       doc.fillColor(colors.primary).fontSize(28).font("Helvetica-Bold");
-      const companyName = user.companyName || "Your Company";
-      doc.text(companyName, 50, 20);
+      doc.text("INVOICE", 50, yPosition);
 
-      // Company tagline
-      doc.fillColor(colors.muted).fontSize(10).font("Helvetica");
-      doc.text("Professional Invoicing Solutions", 50, 50);
+      // Logo placeholder
+      drawRoundedRect(450, yPosition, 100, 40, 5, colors.light);
+      doc
+        .strokeColor(colors.border)
+        .lineWidth(1)
+        .roundedRect(450, yPosition, 100, 40, 5)
+        .stroke();
+      doc.fillColor(colors.primary).fontSize(16).font("Helvetica-Bold");
+      doc.text("LOGO", 470, yPosition + 12);
 
-      // Company contact info
-      doc.fillColor(colors.secondary).fontSize(9).font("Helvetica");
-      doc.text(`${user.firstName} ${user.lastName}`, 50, 70);
-      doc.text("Email: contact@company.com", 50, 83);
-      doc.text("Phone: (555) 123-4567", 50, 96);
-      doc.text("Website: www.company.com", 50, 109);
+      yPosition += 60;
 
-      // Invoice title with modern styling
-      drawRoundedRect(380, 15, 140, 40, 8, colors.primary);
-      doc.fillColor("white").fontSize(16).font("Helvetica-Bold");
+      // ===== TO SECTION (LEFT) =====
+      doc.fillColor(colors.dark).fontSize(12).font("Helvetica-Bold");
+      doc.text("TO:", 50, yPosition);
+      yPosition += 20;
+
+      // Client details (left aligned)
+      doc.fillColor(colors.secondary).fontSize(10).font("Helvetica");
+      const clientName = `${invoice.client.name}`;
+      doc.text(clientName, 50, yPosition);
+      yPosition += 15;
+
+      const companyName = invoice.client.companyName || "";
+      if (companyName) {
+        doc.text(companyName, 50, yPosition);
+        yPosition += 15;
+      }
+
+      const address = invoice.client.address || "";
+      if (address) {
+        doc.text(address, 50, yPosition);
+        yPosition += 15;
+      }
+
+      const taxpayer = invoice.client.taxpayerNumber || "";
+      if (taxpayer) {
+        doc.text(`Taxpayer number: ${taxpayer}`, 50, yPosition);
+        yPosition += 15;
+      }
+
+      const phone = invoice.client.phone || "";
+      if (phone) {
+        doc.text(`Phone number: ${phone}`, 50, yPosition);
+        yPosition += 15;
+      }
+
+      doc.text(invoice.client.email || "", 50, yPosition);
+      yPosition += 60; // Space before table
+
+      // ===== INVOICE NUMBER AND DATE (RIGHT) =====
+      const rightX = 400;
+      doc.fillColor(colors.dark).fontSize(10).font("Helvetica-Bold");
+      doc.text(`Invoice Number: ${invoice.invoiceNumber}`, rightX, 110);
       doc.text(
-        invoice.type === InvoiceType.PROFORMA ? "PROFORMA INVOICE" : "INVOICE",
-        410,
-        27
+        `Invoice Date: ${formatDate(new Date(invoice.issueDate))}`,
+        rightX,
+        130
       );
 
-      // Invoice number with background
-      drawRoundedRect(380, 65, 140, 35, 6, colors.light);
-      doc
-        .strokeColor(colors.border)
-        .lineWidth(1)
-        .roundedRect(380, 65, 140, 35, 6)
-        .stroke();
-      doc.fillColor(colors.primary).fontSize(12).font("Helvetica-Bold");
-      doc.text(`#${invoice.invoiceNumber}`, 390, 75);
-
-      yPosition = 140;
-
-      // ===== INVOICE DETAILS SECTION =====
+      // ===== SERVICE DETAILS TABLE =====
+      yPosition = 220; // Reset to after header
       doc.fillColor(colors.dark).fontSize(16).font("Helvetica-Bold");
-      doc.text("Invoice Details", 50, yPosition);
+      doc.text("Service Details", 50, yPosition);
       yPosition += 30;
 
-      // Details grid with modern styling
-      const detailsY = yPosition;
-
-      // Left column labels
-      doc.fillColor(colors.muted).fontSize(10).font("Helvetica");
-      doc.text("Issue Date:", 50, detailsY);
-      doc.text("Due Date:", 50, detailsY + 18);
-      doc.text("Status:", 50, detailsY + 36);
-
-      // Right column values
-      doc.fillColor(colors.dark).font("Helvetica-Bold");
-      const issueDate = formatDate(new Date(invoice.issueDate));
-      const dueDate = formatDate(new Date(invoice.dueDate));
-
-      doc.text(issueDate, 130, detailsY);
-      doc.text(dueDate, 130, detailsY + 18);
-
-      // Status badge
-      drawStatusBadge(invoice.status, 130, detailsY + 36);
-
-      yPosition += 75;
-
-      // ===== BILL TO SECTION =====
-      doc.fillColor(colors.dark).fontSize(16).font("Helvetica-Bold");
-      doc.text("Bill To:", 50, yPosition);
-      yPosition += 25;
-
-      // Client info card
-      drawRoundedRect(45, yPosition - 8, 280, 70, 8, colors.light);
-      doc
-        .strokeColor(colors.border)
-        .lineWidth(1)
-        .roundedRect(45, yPosition - 8, 280, 70, 8)
-        .stroke();
-
-      // Client avatar placeholder
-      drawRoundedRect(55, yPosition, 30, 30, 15, colors.primary);
-      doc.fillColor("white").fontSize(12).font("Helvetica-Bold");
-      doc.text(invoice.client.name.charAt(0).toUpperCase(), 65, yPosition + 9);
-
-      // Client details
-      doc.fillColor(colors.dark).fontSize(14).font("Helvetica-Bold");
-      doc.text(invoice.client.name, 95, yPosition + 5);
-
-      doc.fillColor(colors.secondary).fontSize(10).font("Helvetica");
-      doc.text(invoice.client.email, 95, yPosition + 22);
-
-      if (invoice.client.address) {
-        doc.text(invoice.client.address, 95, yPosition + 35);
-      }
-
-      if (invoice.client.city || invoice.client.country) {
-        const location = [invoice.client.city, invoice.client.country]
-          .filter(Boolean)
-          .join(", ");
-        doc.text(location, 95, yPosition + 48);
-      }
-
-      yPosition += 90;
-
-      // ===== ITEMS TABLE =====
-      doc.fillColor(colors.dark).fontSize(16).font("Helvetica-Bold");
-      doc.text("Items & Services", 50, yPosition);
-      yPosition += 25;
-
-      // Table header with gradient
-      drawRoundedRect(45, yPosition, 500, 30, 6, colors.primary);
+      // Table header
+      const tableX = 50;
+      const tableWidth = 500;
+      const headerHeight = 25;
+      drawRoundedRect(
+        tableX,
+        yPosition,
+        tableWidth,
+        headerHeight,
+        4,
+        colors.primary
+      );
       doc.fillColor("white").fontSize(11).font("Helvetica-Bold");
-      doc.text("Description", 55, yPosition + 9);
-      doc.text("Qty", 330, yPosition + 9);
-      doc.text("Rate", 390, yPosition + 9);
-      doc.text("Amount", 470, yPosition + 9);
+      doc.text("Items", tableX + 10, yPosition + 7, { width: 300 });
+      doc.text("Qty", tableX + 320, yPosition + 7);
+      doc.text("Unit price", tableX + 370, yPosition + 7);
+      doc.text("Amount", tableX + 450, yPosition + 7);
 
-      yPosition += 40;
+      yPosition += headerHeight + 5;
 
-      // Table rows with alternating colors
+      // Table rows
       let alternateRow = false;
+      let tableEndY = yPosition;
       invoice.items.forEach((item) => {
-        const rowHeight = 32;
+        const rowHeight = 25;
 
         // Alternate row background
         if (alternateRow) {
-          drawRoundedRect(45, yPosition, 500, rowHeight, 4, "#fafbfc");
+          drawRect(
+            tableX + 1,
+            yPosition + 1,
+            tableWidth - 2,
+            rowHeight - 2,
+            "#f0f0f0"
+          );
         }
+
+        // Borders
+        doc
+          .strokeColor(colors.border)
+          .lineWidth(0.5)
+          .moveTo(tableX, yPosition)
+          .lineTo(tableX + tableWidth, yPosition)
+          .moveTo(tableX, yPosition + rowHeight)
+          .lineTo(tableX + tableWidth, yPosition + rowHeight)
+          .stroke();
 
         // Item details
         doc.fillColor(colors.dark).fontSize(10).font("Helvetica");
-        doc.text(item.description, 55, yPosition + 10, { width: 250 });
+        doc.text(item.description || "", tableX + 10, yPosition + 5, {
+          width: 300,
+        });
 
-        doc.text(item.quantity.toString(), 330, yPosition + 10);
+        doc.text(item.quantity.toString(), tableX + 320, yPosition + 5);
         doc.text(
           formatCurrency(parseFloat(item.unitPrice.toString())),
-          390,
-          yPosition + 10
+          tableX + 370,
+          yPosition + 5
         );
         doc.text(
           formatCurrency(parseFloat(item.amount.toString())),
-          470,
-          yPosition + 10
+          tableX + 450,
+          yPosition + 5
         );
 
         yPosition += rowHeight;
+        tableEndY = yPosition;
         alternateRow = !alternateRow;
       });
 
       // Table bottom border
       doc
         .strokeColor(colors.primary)
-        .lineWidth(2)
-        .moveTo(45, yPosition)
-        .lineTo(545, yPosition)
+        .lineWidth(1.5)
+        .moveTo(tableX, tableEndY)
+        .lineTo(tableX + tableWidth, tableEndY)
         .stroke();
 
-      yPosition += 30;
+      yPosition = tableEndY + 20;
 
-      // ===== TOTALS SECTION =====
-      const totalsX = 320;
-      const totalsWidth = 225;
-
-      // Totals background
-      drawRoundedRect(totalsX, yPosition - 8, totalsWidth, 85, 8, colors.light);
-      doc
-        .strokeColor(colors.border)
-        .lineWidth(1)
-        .roundedRect(totalsX, yPosition - 8, totalsWidth, 85, 8)
-        .stroke();
+      // ===== TOTALS SECTION (RIGHT ALIGNED) =====
+      const totalsStartY = yPosition;
+      const totalsX = 300;
+      const totalsLabelWidth = 100;
+      const totalsAmountX = totalsX + totalsLabelWidth + 20;
 
       doc.fillColor(colors.secondary).fontSize(10).font("Helvetica");
-
-      // Subtotal
-      doc.text("Subtotal:", totalsX + 10, yPosition);
+      doc.text("Subtotal", totalsX, totalsStartY);
       doc.fillColor(colors.dark).font("Helvetica-Bold");
       doc.text(
         formatCurrency(parseFloat(invoice.subtotal.toString())),
-        totalsX + 140,
-        yPosition,
-        { align: "right" }
+        totalsAmountX,
+        totalsStartY,
+        { align: "right", width: 100 }
       );
 
-      // TVA Tax
+      let totalsY = totalsStartY + 20;
+
       if (invoice.tvaEnabled) {
-        yPosition += 20;
         doc.fillColor(colors.secondary).font("Helvetica");
-        doc.text(`TVA (${invoice.tvaRate}%):`, totalsX + 10, yPosition);
+        doc.text(`TVA(${invoice.tvaRate}%)`, totalsX, totalsY);
         doc.fillColor(colors.dark).font("Helvetica-Bold");
         doc.text(
           formatCurrency(parseFloat(invoice.tvaAmount.toString())),
-          totalsX + 140,
-          yPosition,
-          { align: "right" }
+          totalsAmountX,
+          totalsY,
+          { align: "right", width: 100 }
         );
+        totalsY += 20;
       }
 
-      // IR Tax
       if (invoice.irEnabled) {
-        yPosition += 20;
         doc.fillColor(colors.secondary).font("Helvetica");
-        doc.text(`IR (${invoice.irRate}%):`, totalsX + 10, yPosition);
+        doc.text(`IR(${invoice.irRate}%)`, totalsX, totalsY);
         doc.fillColor(colors.dark).font("Helvetica-Bold");
         doc.text(
           formatCurrency(parseFloat(invoice.irAmount.toString())),
-          totalsX + 140,
-          yPosition,
-          { align: "right" }
+          totalsAmountX,
+          totalsY,
+          { align: "right", width: 100 }
         );
+        totalsY += 20;
       }
 
-      // Total with accent background
-      yPosition += 25;
-      drawRoundedRect(
-        totalsX,
-        yPosition - 5,
-        totalsWidth,
-        30,
-        6,
-        colors.primary
-      );
-      doc.fillColor("white").fontSize(14).font("Helvetica-Bold");
-      doc.text("TOTAL:", totalsX + 10, yPosition);
+      // Total
+      doc.fillColor(colors.primary).fontSize(12).font("Helvetica-Bold");
+      doc.text("TOTAL", totalsX, totalsY);
       doc.text(
         formatCurrency(parseFloat(invoice.total.toString())),
-        totalsX + 140,
-        yPosition,
-        { align: "right" }
+        totalsAmountX,
+        totalsY,
+        { align: "right", width: 100 }
       );
 
-      yPosition += 55;
+      yPosition = totalsY + 40;
 
-      // ===== NOTES SECTION =====
-      if (invoice.notes) {
-        doc.fillColor(colors.dark).fontSize(12).font("Helvetica-Bold");
-        doc.text("Notes:", 50, yPosition);
-        yPosition += 20;
+      // ===== APPROVAL TEXT =====
+      doc.fillColor(colors.muted).fontSize(10).font("Helvetica-Oblique");
+      const totalInWords = "Total amount in letters"; // Placeholder - implement number to words if needed
+      doc.text(
+        `Approved on this invoice the sum of: ${totalInWords}`,
+        50,
+        yPosition
+      );
+      yPosition += 30;
 
-        // Notes background
-        drawRoundedRect(45, yPosition - 5, 500, 40, 4, "#fefefe");
-        doc
-          .strokeColor(colors.border)
-          .lineWidth(1)
-          .roundedRect(45, yPosition - 5, 500, 40, 4)
-          .stroke();
+      // // ===== FOOTER =====
+      // const footerY = Math.max(yPosition + 20, 780); // Adjusted to reduce bottom height
 
-        doc.fillColor(colors.secondary).fontSize(10).font("Helvetica");
-        doc.text(invoice.notes, 55, yPosition, { width: 480 });
-        yPosition += 55;
-      }
+      // // Footer line
+      // doc
+      //   .strokeColor(colors.primary)
+      //   .lineWidth(1)
+      //   .moveTo(50, footerY - 10)
+      //   .lineTo(545, footerY - 10)
+      //   .stroke();
+
+      // // Company footer details (left aligned)
+      // doc.fillColor(colors.secondary).fontSize(9).font("Helvetica");
+      // const footerText = `${user.email || ""}, ${user.address || ""}, ${
+      //   user.taxpayerNumber || ""
+      // }`; // Use actual user data
+      // doc.text(footerText, 50, footerY);
 
       // ===== FOOTER =====
-      const footerY = Math.max(yPosition + 20, 720); // Ensure minimum space from content
+      const pageHeight = doc.page.height;
 
-      // Footer decorative line
+      // Footer line (fixed near bottom)
+      const footerLineY = pageHeight - 60;
       doc
         .strokeColor(colors.primary)
-        .lineWidth(3)
-        .moveTo(50, footerY)
-        .lineTo(545, footerY)
+        .lineWidth(1)
+        .moveTo(50, footerLineY)
+        .lineTo(545, footerLineY)
         .stroke();
 
-      // Footer content
+      // Company info just below the line
       doc.fillColor(colors.secondary).fontSize(9).font("Helvetica");
-      doc.text("Thank you for your business!", 50, footerY + 15);
+      const companyInfo = [
+        user.companyName || `${user.firstName || ""} ${user.lastName || ""}`,
+        user.email || "",
+        user.address || "",
+        user.taxpayerNumber ? `Taxpayer No: ${user.taxpayerNumber}` : "",
+      ]
+        .filter(Boolean)
+        .join(" | ");
 
-      doc.text(
-        "Payment Terms: Net 30 days • Please include invoice number on all payments",
-        50,
-        footerY + 30
-      );
-      doc.text(
-        "For questions about this invoice, please contact us at contact@company.com",
-        50,
-        footerY + 42
-      );
-
-      // Company footer
-      doc.fillColor(colors.primary).fontSize(10).font("Helvetica-Bold");
-      doc.text(
-        `${companyName} • ${user.firstName} ${user.lastName}`,
-        400,
-        footerY + 15,
-        { align: "right" }
-      );
-      doc.text("contact@company.com • (555) 123-4567", 400, footerY + 30, {
-        align: "right",
+      doc.text(companyInfo, 50, footerLineY + 3, {
+        width: 495,
+        align: "left",
       });
-      doc.text("www.company.com", 400, footerY + 42, { align: "right" });
 
-      // Page info
-      doc.fillColor(colors.muted).fontSize(8).font("Helvetica");
-      doc.text(
-        `Generated on ${formatDate(new Date())} • Page 1 of 1`,
-        400,
-        footerY + 54,
-        { align: "right" }
-      );
+      // Thank-you note centered just below company info
+      doc.fillColor(colors.muted).fontSize(8).font("Helvetica-Oblique");
+      doc.text("Thank you for your business!", 50, footerLineY + 18, {
+        align: "center",
+        width: 495,
+      });
 
       doc.end();
     });
