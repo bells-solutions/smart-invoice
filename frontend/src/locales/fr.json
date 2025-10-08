@@ -287,6 +287,12 @@
       "eur": "Euro (EUR)",
       "xaf": "Franc CFA (XAF)"
     },
+    "languageSettings": "Paramètres de langue",
+    "preferredLanguage": "Langue préférée",
+    "language": {
+      "en": "Anglais",
+      "fr": "Français"
+    },
     "resetChanges": "Réinitialiser les modifications",
     "updating": "Mise à jour...",
     "saveChanges": "Enregistrer les modifications",

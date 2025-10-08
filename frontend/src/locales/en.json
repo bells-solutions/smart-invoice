@@ -287,6 +287,12 @@
       "eur": "Euro (EUR)",
       "xaf": "Central African Franc (XAF)"
     },
+    "languageSettings": "Language Settings",
+    "preferredLanguage": "Preferred Language",
+    "language": {
+      "en": "English",
+      "fr": "French"
+    },
     "resetChanges": "Reset Changes",
     "updating": "Updating...",
     "saveChanges": "Save Changes",

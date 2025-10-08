@@ -63,6 +63,9 @@ export class User {
   @Column({ nullable: true, default: "XAF" })
   currency?: string;
 
+  @Column({ nullable: true, default: "en" })
+  language?: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

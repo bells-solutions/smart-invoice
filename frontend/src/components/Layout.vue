@@ -328,6 +328,12 @@ function changeLanguage(langCode: string) {
   locale.value = langCode;
   localStorage.setItem("user-language", langCode);
   showLanguageMenu.value = false;
+
+  // Update language preference in backend
+  const authStore = useAuthStore();
+  authStore.updateProfile({ language: langCode }).catch((error) => {
+    console.error("Failed to update language preference:", error);
+  });
 }
 
 function handleClickOutside(event: MouseEvent) {

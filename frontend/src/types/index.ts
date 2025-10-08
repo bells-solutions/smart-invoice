@@ -14,6 +14,7 @@ export interface User {
   companyLogo?: string;
   profilePicture?: string;
   currency?: string;
+  language?: string;
 }
 
 export interface Client {

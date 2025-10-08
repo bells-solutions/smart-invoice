@@ -54,6 +54,8 @@ export const authService = {
     taxpayerNumber?: string;
     commercialRegister?: string;
     poBox?: string;
+    currency?: string;
+    language?: string;
   }) {
     const response = await api.put("/users/me", updateData);
     return response.data;
