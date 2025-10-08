@@ -55,6 +55,7 @@ export const useAuthStore = defineStore("auth", () => {
     taxpayerNumber?: string;
     commercialRegister?: string;
     poBox?: string;
+    currency?: string;
   }) {
     const response = await authService.updateProfile(updateData);
     authService.setUser(response);
