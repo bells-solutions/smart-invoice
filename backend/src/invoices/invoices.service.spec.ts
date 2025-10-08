@@ -429,5 +429,92 @@ describe("InvoicesService", () => {
       expect(result.irAmount).toBe(0);
       expect(result.total).toBe(100); // Only subtotal
     });
+
+    it("should calculate totals correctly when discount is enabled", () => {
+      const items = [
+        { quantity: 2, unitPrice: 50 }, // 100
+        { quantity: 1, unitPrice: 100 }, // 100
+      ]; // subtotal = 200
+
+      const result = (service as any).calculateTotals(
+        items,
+        true,
+        19.25,
+        false,
+        5.5,
+        true,
+        10
+      );
+
+      expect(result.subtotal).toBe(200);
+      expect(result.tvaAmount).toBe(38.5); // 200 * 19.25%
+      expect(result.irAmount).toBe(0); // IR disabled
+      expect(result.discountAmount).toBe(23.85); // (200 + 38.5) * 10% = 238.5 * 0.1
+      expect(result.total).toBe(214.65); // 238.5 - 23.85
+    });
+
+    it("should calculate totals correctly when discount is enabled but rate is 0", () => {
+      const items = [
+        { quantity: 1, unitPrice: 100 }, // 100
+      ];
+
+      const result = (service as any).calculateTotals(
+        items,
+        true,
+        20,
+        false,
+        5.5,
+        true,
+        0
+      );
+
+      expect(result.subtotal).toBe(100);
+      expect(result.tvaAmount).toBe(20); // 100 * 20%
+      expect(result.discountAmount).toBe(0); // 0% discount
+      expect(result.total).toBe(120); // 120 - 0
+    });
+
+    it("should calculate totals correctly when discount is disabled", () => {
+      const items = [
+        { quantity: 1, unitPrice: 200 }, // 200
+      ];
+
+      const result = (service as any).calculateTotals(
+        items,
+        true,
+        10,
+        false,
+        5.5,
+        false,
+        15
+      );
+
+      expect(result.subtotal).toBe(200);
+      expect(result.tvaAmount).toBe(20); // 200 * 10%
+      expect(result.discountAmount).toBe(0); // discount disabled
+      expect(result.total).toBe(220); // 220 - 0
+    });
+
+    it("should calculate totals correctly with TVA, IR, and discount all enabled", () => {
+      const items = [
+        { quantity: 1, unitPrice: 1000 }, // 1000
+      ];
+
+      const result = (service as any).calculateTotals(
+        items,
+        true,
+        20,
+        true,
+        5,
+        true,
+        10
+      );
+
+      expect(result.subtotal).toBe(1000);
+      expect(result.tvaAmount).toBe(200); // 1000 * 20%
+      expect(result.irAmount).toBe(50); // 1000 * 5%
+      expect(result.discountAmount).toBe(120); // (1000 + 200) * 10% = 1200 * 0.1
+      expect(result.total).toBe(1080); // 1200 - 120
+    });
   });
 });
