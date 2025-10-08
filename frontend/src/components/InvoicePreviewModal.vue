@@ -31,10 +31,10 @@
             >
               <div>
                 <h2 class="text-2xl font-bold text-gray-900">
-                  Invoice Preview
+                  {{ t("invoices.preview.title") }}
                 </h2>
                 <p class="text-gray-600">
-                  Invoice #{{ invoice?.invoiceNumber }}
+                  {{ t("invoices.invoiceNumber") }} {{ invoice?.invoiceNumber }}
                 </p>
               </div>
               <div class="flex items-center space-x-3">
@@ -45,7 +45,11 @@
                 >
                   <ArrowDownTrayIcon v-if="!downloading" class="w-4 h-4 mr-2" />
                   <ArrowPathIcon v-else class="w-4 h-4 mr-2 animate-spin" />
-                  {{ downloading ? "Downloading..." : "Download PDF" }}
+                  {{
+                    downloading
+                      ? t("invoices.preview.downloading")
+                      : t("invoices.preview.downloadPDF")
+                  }}
                 </button>
                 <button
                   @click="close"
@@ -65,7 +69,9 @@
                 <div
                   class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
                 ></div>
-                <span class="ml-3 text-gray-600">Loading invoice...</span>
+                <span class="ml-3 text-gray-600">{{
+                  t("invoices.preview.loading")
+                }}</span>
               </div>
 
               <div v-else-if="invoice" class="space-y-8">
@@ -76,16 +82,27 @@
                   <div class="flex justify-between items-start">
                     <div>
                       <h3 class="text-2xl font-bold text-gray-900 mb-2">
-                        INVOICE
+                        {{ t("invoices.preview.invoice") }}
+                        {{
+                          invoice.type == InvoiceType.PROFORMA
+                            ? "Proforma".toUpperCase()
+                            : ""
+                        }}
                       </h3>
-                      <p class="text-gray-600">
-                        Invoice #{{ invoice.invoiceNumber }}
+                      <p
+                        v-if="invoice.type !== InvoiceType.PROFORMA"
+                        class="text-gray-600"
+                      >
+                        {{ t("invoices.invoiceNumber") }}
+                        {{ invoice.invoiceNumber }}
                       </p>
                       <p class="text-gray-600">
-                        Issue Date: {{ formatDate(invoice.issueDate) }}
+                        {{ t("invoices.preview.issueDate") }}
+                        {{ formatDate(invoice.issueDate) }}
                       </p>
                       <p class="text-gray-600">
-                        Due Date: {{ formatDate(invoice.dueDate) }}
+                        {{ t("invoices.preview.dueDate") }}
+                        {{ formatDate(invoice.dueDate) }}
                       </p>
                     </div>
                     <div class="text-right">
@@ -114,20 +131,25 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div class="bg-gray-50 rounded-lg p-6">
                     <h4 class="text-lg font-semibold text-gray-900 mb-4">
-                      From
+                      {{ t("invoices.preview.from") }}
                     </h4>
                     <div class="text-gray-600">
-                      <p class="font-medium">Your Company Name</p>
-                      <p>Your Address</p>
-                      <p>City, State, ZIP</p>
-                      <p>your@email.com</p>
-                      <p>(123) 456-7890</p>
+                      <p class="font-medium">
+                        {{
+                          user?.companyName ||
+                          user?.firstName + " " + user?.lastName
+                        }}
+                      </p>
+                      <p>{{ user?.address }}</p>
+
+                      <p>{{ user?.email }}</p>
+                      <p>{{ user?.phone }}</p>
                     </div>
                   </div>
 
                   <div class="bg-gray-50 rounded-lg p-6">
                     <h4 class="text-lg font-semibold text-gray-900 mb-4">
-                      Bill To
+                      {{ t("invoices.preview.billTo") }}
                     </h4>
                     <div v-if="invoice.client" class="text-gray-600">
                       <p class="font-medium">{{ invoice.client.name }}</p>
@@ -155,22 +177,22 @@
                         <th
                           class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                         >
-                          Description
+                          {{ t("invoices.preview.table.description") }}
                         </th>
                         <th
                           class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                         >
-                          Qty
+                          {{ t("invoices.preview.table.quantity") }}
                         </th>
                         <th
                           class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                         >
-                          Unit Price
+                          {{ t("invoices.preview.table.unitPrice") }}
                         </th>
                         <th
                           class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                         >
-                          Amount
+                          {{ t("invoices.preview.table.amount") }}
                         </th>
                       </tr>
                     </thead>
@@ -206,7 +228,9 @@
                   <div class="flex justify-end">
                     <div class="w-64 space-y-2">
                       <div class="flex justify-between text-sm">
-                        <span class="text-gray-600">Subtotal:</span>
+                        <span class="text-gray-600">{{
+                          t("invoices.preview.summary.subtotal")
+                        }}</span>
                         <span class="font-medium">{{
                           formatAmount(invoice.subtotal)
                         }}</span>
@@ -215,9 +239,11 @@
                         v-if="invoice.tvaEnabled"
                         class="flex justify-between text-sm"
                       >
-                        <span class="text-gray-600"
-                          >TVA ({{ invoice.tvaRate }}%):</span
-                        >
+                        <span class="text-gray-600">{{
+                          t("invoices.preview.summary.tva", {
+                            rate: invoice.tvaRate,
+                          })
+                        }}</span>
                         <span class="font-medium">{{
                           formatAmount(invoice.tvaAmount)
                         }}</span>
@@ -226,9 +252,11 @@
                         v-if="invoice.irEnabled"
                         class="flex justify-between text-sm"
                       >
-                        <span class="text-gray-600"
-                          >IR ({{ invoice.irRate }}%):</span
-                        >
+                        <span class="text-gray-600">{{
+                          t("invoices.preview.summary.ir", {
+                            rate: invoice.irRate,
+                          })
+                        }}</span>
                         <span class="font-medium">{{
                           formatAmount(invoice.irAmount)
                         }}</span>
@@ -236,7 +264,7 @@
                       <div
                         class="border-t border-gray-300 pt-2 flex justify-between text-lg font-bold"
                       >
-                        <span>Total:</span>
+                        <span>{{ t("invoices.preview.summary.total") }}</span>
                         <span>{{ formatAmount(invoice.total) }}</span>
                       </div>
                     </div>
@@ -246,7 +274,7 @@
                 <!-- Notes -->
                 <div v-if="invoice.notes" class="bg-blue-50 rounded-lg p-6">
                   <h4 class="text-lg font-semibold text-gray-900 mb-2">
-                    Notes
+                    {{ t("invoices.preview.notes") }}
                   </h4>
                   <p class="text-gray-700">{{ invoice.notes }}</p>
                 </div>
@@ -261,14 +289,19 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { invoiceService } from "@/services/invoices";
 import { useCurrency } from "@/composables/useCurrency";
-import type { Invoice } from "@/types";
+import { InvoiceType, type Invoice } from "@/types";
 import {
   ArrowDownTrayIcon,
   ArrowPathIcon,
+  UserCircleIcon,
   XMarkIcon,
 } from "@heroicons/vue/24/outline";
+import { authService } from "@/services/auth";
+
+const { t } = useI18n();
 
 interface Props {
   isOpen: boolean;
@@ -284,6 +317,7 @@ const emit = defineEmits<{
 const invoice = ref<Invoice | null>(null);
 const loading = ref(false);
 const downloading = ref(false);
+const user = authService.getUser();
 
 const { formatAmount } = useCurrency();
 

@@ -78,7 +78,31 @@
     "amount": "Amount",
     "status": "Status",
     "date": "Date",
-    "actions": "Actions"
+    "actions": "Actions",
+    "preview": {
+      "title": "Invoice Preview",
+      "downloadPDF": "Download PDF",
+      "downloading": "Downloading...",
+      "loading": "Loading invoice...",
+      "invoice": "INVOICE",
+      "issueDate": "Issue Date:",
+      "dueDate": "Due Date:",
+      "from": "From",
+      "billTo": "Bill To",
+      "table": {
+        "description": "Description",
+        "quantity": "Qty",
+        "unitPrice": "Unit Price",
+        "amount": "Amount"
+      },
+      "summary": {
+        "subtotal": "Subtotal:",
+        "tva": "TVA ({rate}%) :",
+        "ir": "IR ({rate}%) :",
+        "total": "Total:"
+      },
+      "notes": "Notes"
+    }
   },
   "invoiceForm": {
     "editInvoice": "Edit Invoice",

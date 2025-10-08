@@ -6,6 +6,7 @@ import InvoicePreviewModal from "./InvoicePreviewModal.vue";
 import { invoiceService } from "@/services/invoices";
 import type { Invoice } from "@/types";
 import { InvoiceStatus, InvoiceType } from "@/types";
+import { i18n } from "@/i18n";
 
 // Mock the invoice service
 vi.mock("@/services/invoices", () => ({
@@ -60,12 +61,14 @@ describe("InvoicePreviewModal", () => {
   });
 
   it("should not render when isOpen is false", () => {
-    mount(InvoicePreviewModal, {
+    const wrapper = mount(InvoicePreviewModal, {
       props: {
         isOpen: false,
         invoiceId: null,
       },
-      attachTo: document.body,
+      global: {
+        plugins: [i18n],
+      },
     });
 
     // Teleport renders to body, so we need to check the document body
@@ -74,12 +77,14 @@ describe("InvoicePreviewModal", () => {
   });
 
   it("should render modal when isOpen is true", async () => {
-    mount(InvoicePreviewModal, {
+    const wrapper = mount(InvoicePreviewModal, {
       props: {
         isOpen: true,
         invoiceId: "1",
       },
-      attachTo: document.body,
+      global: {
+        plugins: [i18n],
+      },
     });
 
     await nextTick();
@@ -97,6 +102,9 @@ describe("InvoicePreviewModal", () => {
         isOpen: false,
         invoiceId: null,
       },
+      global: {
+        plugins: [i18n],
+      },
     });
 
     await wrapper.setProps({ isOpen: true, invoiceId: "1" });
@@ -111,6 +119,9 @@ describe("InvoicePreviewModal", () => {
       props: {
         isOpen: true,
         invoiceId: "1",
+      },
+      global: {
+        plugins: [i18n],
       },
     });
 
@@ -134,6 +145,9 @@ describe("InvoicePreviewModal", () => {
         isOpen: true,
         invoiceId: "1",
       },
+      global: {
+        plugins: [i18n],
+      },
       attachTo: document.body,
     });
 
@@ -155,6 +169,9 @@ describe("InvoicePreviewModal", () => {
       props: {
         isOpen: true,
         invoiceId: "1",
+      },
+      global: {
+        plugins: [i18n],
       },
     });
 
@@ -182,6 +199,9 @@ describe("InvoicePreviewModal", () => {
       props: {
         isOpen: true,
         invoiceId: "1",
+      },
+      global: {
+        plugins: [i18n],
       },
     });
 
@@ -213,6 +233,9 @@ describe("InvoicePreviewModal", () => {
       props: {
         isOpen: false,
         invoiceId: null,
+      },
+      global: {
+        plugins: [i18n],
       },
     });
 
