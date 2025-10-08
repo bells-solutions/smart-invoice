@@ -299,6 +299,60 @@ export class InvoicesService {
   async generatePDF(id: string, user: User): Promise<Buffer> {
     const invoice = await this.findOne(id, user);
 
+    // Translation object for PDF text
+    const translations = {
+      en: {
+        invoice: "INVOICE",
+        proformaInvoice: "PROFORMA INVOICE",
+        logo: "LOGO",
+        to: "TO:",
+        taxpayerNumber: "Taxpayer number:",
+        phoneNumber: "Phone number:",
+        invoiceNumber: "Invoice Number:",
+        invoiceDate: "Invoice Date:",
+        serviceDetails: "Service Details",
+        items: "Items",
+        qty: "Qty",
+        unitPrice: "Unit price",
+        amount: "Amount",
+        subtotal: "Subtotal",
+        tva: "TVA",
+        ir: "IR",
+        total: "TOTAL",
+        totalInWords: "Total amount in letters",
+        approvedText: "Approved on this invoice the sum of:",
+        taxpayerNo: "Taxpayer No:",
+        thankYou: "Thank you for your business!",
+      },
+      fr: {
+        invoice: "FACTURE",
+        proformaInvoice: "FACTURE PROFORMA",
+        logo: "LOGO",
+        to: "À:",
+        taxpayerNumber: "Numéro de contribuable:",
+        phoneNumber: "Numéro de téléphone:",
+        invoiceNumber: "Numéro de facture:",
+        invoiceDate: "Date de facture:",
+        serviceDetails: "Détails du service",
+        items: "Articles",
+        qty: "Qté",
+        unitPrice: "Prix unitaire",
+        amount: "Montant",
+        subtotal: "Sous-total",
+        tva: "TVA",
+        ir: "IR",
+        total: "TOTAL",
+        totalInWords: "Montant total en lettres",
+        approvedText: "Approuvé sur cette facture la somme de:",
+        taxpayerNo: "N° contribuable:",
+        thankYou: "Merci pour votre confiance!",
+      },
+    };
+
+    const t =
+      translations[user.language as keyof typeof translations] ||
+      translations.en;
+
     return new Promise((resolve, reject) => {
       // Create PDF with professional settings
       const doc = new PDFDocument({
@@ -308,14 +362,14 @@ export class InvoicesService {
         info: {
           Title: `${
             invoice.type === InvoiceType.PROFORMA
-              ? "Proforma Invoice"
-              : "Invoice"
+              ? t.proformaInvoice
+              : t.invoice
           } ${invoice.invoiceNumber}`,
           Author: user.companyName || `${user.firstName} ${user.lastName}`,
           Subject: `${
             invoice.type === InvoiceType.PROFORMA
-              ? "Proforma Invoice"
-              : "Invoice"
+              ? t.proformaInvoice
+              : t.invoice
           } for ${invoice.client.name}`,
           Keywords: "invoice, bill, payment",
           CreationDate: new Date(),
@@ -425,7 +479,7 @@ export class InvoicesService {
       // ===== HEADER SECTION =====
       // Invoice title
       doc.fillColor(colors.primary).fontSize(28).font("Helvetica-Bold");
-      doc.text("INVOICE", 50, yPosition);
+      doc.text(t.invoice, 50, yPosition);
 
       // Logo placeholder
       drawRoundedRect(450, yPosition, 100, 40, 5, colors.light);
@@ -435,13 +489,13 @@ export class InvoicesService {
         .roundedRect(450, yPosition, 100, 40, 5)
         .stroke();
       doc.fillColor(colors.primary).fontSize(16).font("Helvetica-Bold");
-      doc.text("LOGO", 470, yPosition + 12);
+      doc.text(t.logo, 470, yPosition + 12);
 
       yPosition += 60;
 
       // ===== TO SECTION (LEFT) =====
       doc.fillColor(colors.dark).fontSize(12).font("Helvetica-Bold");
-      doc.text("TO:", 50, yPosition);
+      doc.text(t.to, 50, yPosition);
       yPosition += 20;
 
       // Client details (left aligned)
@@ -464,13 +518,13 @@ export class InvoicesService {
 
       const taxpayer = invoice.client.taxpayerNumber || "";
       if (taxpayer) {
-        doc.text(`Taxpayer number: ${taxpayer}`, 50, yPosition);
+        doc.text(`${t.taxpayerNumber} ${taxpayer}`, 50, yPosition);
         yPosition += 15;
       }
 
       const phone = invoice.client.phone || "";
       if (phone) {
-        doc.text(`Phone number: ${phone}`, 50, yPosition);
+        doc.text(`${t.phoneNumber} ${phone}`, 50, yPosition);
         yPosition += 15;
       }
 
@@ -480,9 +534,9 @@ export class InvoicesService {
       // ===== INVOICE NUMBER AND DATE (RIGHT) =====
       const rightX = 400;
       doc.fillColor(colors.dark).fontSize(10).font("Helvetica-Bold");
-      doc.text(`Invoice Number: ${invoice.invoiceNumber}`, rightX, 110);
+      doc.text(`${t.invoiceNumber} ${invoice.invoiceNumber}`, rightX, 110);
       doc.text(
-        `Invoice Date: ${formatDate(new Date(invoice.issueDate))}`,
+        `${t.invoiceDate} ${formatDate(new Date(invoice.issueDate))}`,
         rightX,
         130
       );
@@ -490,7 +544,7 @@ export class InvoicesService {
       // ===== SERVICE DETAILS TABLE =====
       yPosition = 220; // Reset to after header
       doc.fillColor(colors.dark).fontSize(16).font("Helvetica-Bold");
-      doc.text("Service Details", 50, yPosition);
+      doc.text(t.serviceDetails, 50, yPosition);
       yPosition += 30;
 
       // Table header
@@ -506,10 +560,10 @@ export class InvoicesService {
         colors.primary
       );
       doc.fillColor("white").fontSize(11).font("Helvetica-Bold");
-      doc.text("Items", tableX + 10, yPosition + 7, { width: 300 });
-      doc.text("Qty", tableX + 320, yPosition + 7);
-      doc.text("Unit price", tableX + 370, yPosition + 7);
-      doc.text("Amount", tableX + 450, yPosition + 7);
+      doc.text(t.items, tableX + 10, yPosition + 7, { width: 300 });
+      doc.text(t.qty, tableX + 320, yPosition + 7);
+      doc.text(t.unitPrice, tableX + 370, yPosition + 7);
+      doc.text(t.amount, tableX + 450, yPosition + 7);
 
       yPosition += headerHeight + 5;
 
@@ -580,7 +634,7 @@ export class InvoicesService {
       const totalsAmountX = totalsX + totalsLabelWidth + 20;
 
       doc.fillColor(colors.secondary).fontSize(10).font("Helvetica");
-      doc.text("Subtotal", totalsX, totalsStartY);
+      doc.text(t.subtotal, totalsX, totalsStartY);
       doc.fillColor(colors.dark).font("Helvetica-Bold");
       doc.text(
         formatCurrency(parseFloat(invoice.subtotal.toString())),
@@ -593,7 +647,7 @@ export class InvoicesService {
 
       if (invoice.tvaEnabled) {
         doc.fillColor(colors.secondary).font("Helvetica");
-        doc.text(`TVA(${invoice.tvaRate}%)`, totalsX, totalsY);
+        doc.text(`${t.tva}(${invoice.tvaRate}%)`, totalsX, totalsY);
         doc.fillColor(colors.dark).font("Helvetica-Bold");
         doc.text(
           formatCurrency(parseFloat(invoice.tvaAmount.toString())),
@@ -606,7 +660,7 @@ export class InvoicesService {
 
       if (invoice.irEnabled) {
         doc.fillColor(colors.secondary).font("Helvetica");
-        doc.text(`IR(${invoice.irRate}%)`, totalsX, totalsY);
+        doc.text(`${t.ir}(${invoice.irRate}%)`, totalsX, totalsY);
         doc.fillColor(colors.dark).font("Helvetica-Bold");
         doc.text(
           formatCurrency(parseFloat(invoice.irAmount.toString())),
@@ -619,7 +673,7 @@ export class InvoicesService {
 
       // Total
       doc.fillColor(colors.primary).fontSize(12).font("Helvetica-Bold");
-      doc.text("TOTAL", totalsX, totalsY);
+      doc.text(t.total, totalsX, totalsY);
       doc.text(
         formatCurrency(parseFloat(invoice.total.toString())),
         totalsAmountX,
@@ -631,12 +685,8 @@ export class InvoicesService {
 
       // ===== APPROVAL TEXT =====
       doc.fillColor(colors.muted).fontSize(10).font("Helvetica-Oblique");
-      const totalInWords = "Total amount in letters"; // Placeholder - implement number to words if needed
-      doc.text(
-        `Approved on this invoice the sum of: ${totalInWords}`,
-        50,
-        yPosition
-      );
+      const totalInWords = t.totalInWords; // Placeholder - implement number to words if needed
+      doc.text(`${t.approvedText} ${totalInWords}`, 50, yPosition);
       yPosition += 30;
 
       // ===== FOOTER =====
@@ -657,7 +707,7 @@ export class InvoicesService {
         user.companyName || `${user.firstName || ""} ${user.lastName || ""}`,
         user.email || "",
         user.address || "",
-        user.taxpayerNumber ? `Taxpayer No: ${user.taxpayerNumber}` : "",
+        user.taxpayerNumber ? `${t.taxpayerNo} ${user.taxpayerNumber}` : "",
       ]
         .filter(Boolean)
         .join(" | ");
@@ -669,7 +719,7 @@ export class InvoicesService {
 
       // Thank-you note centered just below company info
       doc.fillColor(colors.muted).fontSize(8).font("Helvetica-Oblique");
-      doc.text("Thank you for your business!", 50, footerLineY + 18, {
+      doc.text(t.thankYou, 50, footerLineY + 18, {
         align: "center",
         width: 495,
       });
