@@ -78,7 +78,31 @@
     "amount": "Montant",
     "status": "Statut",
     "date": "Date",
-    "actions": "Actions"
+    "actions": "Actions",
+    "preview": {
+      "title": "Aperçu de la facture",
+      "downloadPDF": "Télécharger PDF",
+      "downloading": "Téléchargement...",
+      "loading": "Chargement de la facture...",
+      "invoice": "FACTURE",
+      "issueDate": "Date d'émission :",
+      "dueDate": "Date d'échéance :",
+      "from": "De",
+      "billTo": "Facturé à",
+      "table": {
+        "description": "Description",
+        "quantity": "Qté",
+        "unitPrice": "Prix unit.",
+        "amount": "Montant"
+      },
+      "summary": {
+        "subtotal": "Sous-total :",
+        "tva": "TVA ({rate}%) :",
+        "ir": "IR ({rate}%) :",
+        "total": "Total :"
+      },
+      "notes": "Notes"
+    }
   },
   "invoiceForm": {
     "editInvoice": "Modifier la facture",

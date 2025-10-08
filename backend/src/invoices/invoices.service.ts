@@ -589,24 +589,6 @@ export class InvoicesService {
       );
       yPosition += 30;
 
-      // // ===== FOOTER =====
-      // const footerY = Math.max(yPosition + 20, 780); // Adjusted to reduce bottom height
-
-      // // Footer line
-      // doc
-      //   .strokeColor(colors.primary)
-      //   .lineWidth(1)
-      //   .moveTo(50, footerY - 10)
-      //   .lineTo(545, footerY - 10)
-      //   .stroke();
-
-      // // Company footer details (left aligned)
-      // doc.fillColor(colors.secondary).fontSize(9).font("Helvetica");
-      // const footerText = `${user.email || ""}, ${user.address || ""}, ${
-      //   user.taxpayerNumber || ""
-      // }`; // Use actual user data
-      // doc.text(footerText, 50, footerY);
-
       // ===== FOOTER =====
       const pageHeight = doc.page.height;
 
