@@ -3,6 +3,12 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UsersService } from "./users.service";
 import { User } from "./user.entity";
+import { UploadService } from "../upload/upload.service";
+
+// Mock uuid to avoid ES module issues
+jest.mock("uuid", () => ({
+  v4: jest.fn(() => "mock-uuid"),
+}));
 
 describe("UsersService", () => {
   let service: UsersService;
@@ -13,6 +19,11 @@ describe("UsersService", () => {
     update: jest.fn(),
   };
 
+  const mockUploadService = {
+    uploadProfilePicture: jest.fn(),
+    deleteProfilePicture: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -20,6 +31,10 @@ describe("UsersService", () => {
         {
           provide: getRepositoryToken(User),
           useValue: mockUserRepository,
+        },
+        {
+          provide: UploadService,
+          useValue: mockUploadService,
         },
       ],
     }).compile();

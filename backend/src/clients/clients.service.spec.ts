@@ -34,6 +34,7 @@ describe("ClientsService", () => {
     commercialRegister: "RC123456",
     poBox: "12345",
     companyLogo: null,
+    profilePicture: null,
     createdAt: new Date(),
     updatedAt: new Date(),
     clients: [],

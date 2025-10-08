@@ -4,6 +4,11 @@ import { UsersService } from "./users.service";
 import { User } from "./user.entity";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
 
+// Mock uuid to avoid ES module issues
+jest.mock("uuid", () => ({
+  v4: jest.fn(() => "mock-uuid"),
+}));
+
 describe("UsersController", () => {
   let controller: UsersController;
   let usersService: UsersService;
@@ -32,6 +37,7 @@ describe("UsersController", () => {
     updatedAt: new Date(),
     clients: [],
     invoices: [],
+    profilePicture: "",
   };
 
   beforeEach(async () => {
