@@ -38,6 +38,9 @@ const mockInvoices: Invoice[] = [
     irEnabled: false,
     irRate: 5.5,
     irAmount: 0,
+    discountEnabled: false,
+    discountRate: 0,
+    discountAmount: 0,
     total: 119.25,
     clientId: "client-1",
     client: {

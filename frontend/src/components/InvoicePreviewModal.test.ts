@@ -30,6 +30,9 @@ const mockInvoice: Invoice = {
   irEnabled: false,
   irRate: 5.5,
   irAmount: 0,
+  discountEnabled: false,
+  discountRate: 0,
+  discountAmount: 0,
   total: 119.25,
   notes: "Thank you for your business",
   clientId: "client-1",
@@ -245,5 +248,28 @@ describe("InvoicePreviewModal", () => {
 
     // Test that the service was called
     expect(invoiceService.getOne).toHaveBeenCalledWith("1");
+  });
+
+  it("should not display discount when discount is disabled", async () => {
+    vi.mocked(invoiceService.getOne).mockResolvedValue(mockInvoice);
+
+    const wrapper = mount(InvoicePreviewModal, {
+      props: {
+        isOpen: false,
+        invoiceId: null,
+      },
+      global: {
+        plugins: [i18n],
+      },
+    });
+
+    await wrapper.setProps({ isOpen: true, invoiceId: "1" });
+
+    await flushPromises();
+    await nextTick();
+
+    // Check teleported content in document body
+    const teleportedContent = document.body.querySelector(".fixed.inset-0");
+    expect(teleportedContent?.textContent).not.toContain("Discount");
   });
 });
