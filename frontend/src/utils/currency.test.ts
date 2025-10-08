@@ -45,11 +45,15 @@ describe("Currency Utils", () => {
     });
 
     it("should format XAF correctly", () => {
-      expect(formatCurrency(1000, "XAF")).toBe("XAF 1000.00");
+      expect(formatCurrency(1000, "XAF")).toBe("XAF 1 000");
+    });
+
+    it("should format large numbers with spaces", () => {
+      expect(formatCurrency(1000000, "USD")).toBe("$ 1 000 000");
     });
 
     it("should handle zero amounts", () => {
-      expect(formatCurrency(0, "USD")).toBe("$ 0.00");
+      expect(formatCurrency(0, "USD")).toBe("$ 0");
     });
 
     it("should handle negative amounts", () => {

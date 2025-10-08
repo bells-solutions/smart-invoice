@@ -148,7 +148,7 @@ describe("useCurrency Composable", () => {
 
       const { formatAmount } = useCurrency();
 
-      expect(formatAmount(1000)).toBe("XAF 1000.00");
+      expect(formatAmount(1000)).toBe("XAF 1 000");
     });
 
     it("should format amount with default USD when no currency set", () => {
@@ -168,7 +168,7 @@ describe("useCurrency Composable", () => {
 
       const { formatAmount } = useCurrency();
 
-      expect(formatAmount(0)).toBe("€ 0.00");
+      expect(formatAmount(0)).toBe("€ 0");
     });
 
     it("should handle negative amounts", () => {
