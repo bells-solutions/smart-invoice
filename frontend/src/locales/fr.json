@@ -251,6 +251,13 @@
     "poBox": "Boîte postale",
     "addressInformation": "Informations d'adresse",
     "fullAddress": "Adresse complète",
+    "currencySettings": "Paramètres de devise",
+    "preferredCurrency": "Devise préférée",
+    "currency": {
+      "usd": "Dollar américain (USD)",
+      "eur": "Euro (EUR)",
+      "xaf": "Franc CFA (XAF)"
+    },
     "resetChanges": "Réinitialiser les modifications",
     "updating": "Mise à jour...",
     "saveChanges": "Enregistrer les modifications",
