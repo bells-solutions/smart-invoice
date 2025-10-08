@@ -3,6 +3,17 @@ import { setActivePinia, createPinia } from "pinia";
 import { useAuthStore } from "./auth";
 import { authService } from "@/services/auth";
 
+// Mock localStorage
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+};
+Object.defineProperty(global, "localStorage", {
+  value: localStorageMock,
+});
+
 vi.mock("@/services/auth", () => ({
   authService: {
     login: vi.fn(),
@@ -132,6 +143,36 @@ describe("Auth Store", () => {
       accountType: "individual",
       firstName: "John",
       lastName: "Doe",
+    };
+
+    const result = await store.updateProfile(mockUpdateData);
+
+    expect(authService.updateProfile).toHaveBeenCalledWith(mockUpdateData);
+    expect(authService.setUser).toHaveBeenCalledWith(mockUpdatedUser);
+    expect(store.user).toEqual(mockUpdatedUser);
+    expect(result).toEqual(mockUpdatedUser);
+  });
+
+  it("should update currency successfully", async () => {
+    const mockUpdateData = {
+      currency: "EUR",
+    };
+
+    const mockUpdatedUser = {
+      id: "1",
+      email: "test@example.com",
+      accountType: "individual",
+      currency: "EUR",
+    };
+
+    vi.mocked(authService.updateProfile).mockResolvedValue(mockUpdatedUser);
+
+    const store = useAuthStore();
+    store.user = {
+      id: "1",
+      email: "test@example.com",
+      accountType: "individual",
+      currency: "USD",
     };
 
     const result = await store.updateProfile(mockUpdateData);
