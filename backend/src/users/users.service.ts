@@ -70,4 +70,50 @@ export class UsersService {
 
     return this.findOne(userId);
   }
+
+  async updateCompanyLogo(
+    userId: string,
+    file: Express.Multer.File
+  ): Promise<User> {
+    // Get current user to check if they have an existing company logo
+    const user = await this.findOne(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Delete old company logo if it exists
+    if (user.companyLogo) {
+      await this.uploadService.deleteCompanyLogo(user.companyLogo);
+    }
+
+    // Upload new company logo
+    const companyLogoUrl = await this.uploadService.uploadCompanyLogo(
+      file,
+      userId
+    );
+
+    // Update user with new company logo URL
+    await this.usersRepository.update(userId, {
+      companyLogo: companyLogoUrl,
+    });
+
+    return this.findOne(userId);
+  }
+
+  async deleteCompanyLogo(userId: string): Promise<User> {
+    const user = await this.findOne(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Delete company logo from storage if it exists
+    if (user.companyLogo) {
+      await this.uploadService.deleteCompanyLogo(user.companyLogo);
+    }
+
+    // Remove company logo URL from user
+    await this.usersRepository.update(userId, { companyLogo: null });
+
+    return this.findOne(userId);
+  }
 }

@@ -78,6 +78,23 @@ export const authService = {
     return response.data;
   },
 
+  async uploadCompanyLogo(file: File) {
+    const formData = new FormData();
+    formData.append("companyLogo", file);
+
+    const response = await api.post("/users/me/company-logo", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  },
+
+  async deleteCompanyLogo() {
+    const response = await api.delete("/users/me/company-logo");
+    return response.data;
+  },
+
   setToken(token: string) {
     localStorage.setItem("token", token);
   },

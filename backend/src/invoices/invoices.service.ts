@@ -6,6 +6,8 @@ import { InvoiceItem } from "./invoice-item.entity";
 import { CreateInvoiceDto, UpdateInvoiceDto } from "./invoice.dto";
 import { User } from "../users/user.entity";
 import PDFDocument from "pdfkit";
+import * as https from "https";
+import * as http from "http";
 
 @Injectable()
 export class InvoicesService {
@@ -45,6 +47,25 @@ export class InvoicesService {
       discountAmount: parseFloat(discountAmount.toFixed(2)),
       total: parseFloat(total.toFixed(2)),
     };
+  }
+
+  private async fetchImageFromUrl(url: string): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+      const protocol = url.startsWith("https://") ? https : http;
+      protocol
+        .get(url, (response) => {
+          if (response.statusCode !== 200) {
+            reject(new Error(`Failed to fetch image: ${response.statusCode}`));
+            return;
+          }
+
+          const chunks: Buffer[] = [];
+          response.on("data", (chunk) => chunks.push(chunk));
+          response.on("end", () => resolve(Buffer.concat(chunks)));
+          response.on("error", reject);
+        })
+        .on("error", reject);
+    });
   }
 
   private async generateInvoiceNumber(
@@ -305,6 +326,7 @@ export class InvoicesService {
         invoice: "INVOICE",
         proformaInvoice: "PROFORMA INVOICE",
         logo: "LOGO",
+        from: "FROM:",
         to: "TO:",
         taxpayerNumber: "Taxpayer number:",
         phoneNumber: "Phone number:",
@@ -328,6 +350,7 @@ export class InvoicesService {
         invoice: "FACTURE",
         proformaInvoice: "FACTURE PROFORMA",
         logo: "LOGO",
+        from: "DE:",
         to: "À:",
         taxpayerNumber: "Numéro de contribuable:",
         phoneNumber: "Numéro de téléphone:",
@@ -348,36 +371,31 @@ export class InvoicesService {
         thankYou: "Merci pour votre confiance!",
       },
     };
-
     const t =
       translations[user.language as keyof typeof translations] ||
       translations.en;
 
-    return new Promise((resolve, reject) => {
-      // Create PDF with professional settings
-      const doc = new PDFDocument({
-        margin: 50,
-        size: "A4",
-        bufferPages: true,
-        info: {
-          Title: `${
-            invoice.type === InvoiceType.PROFORMA
-              ? t.proformaInvoice
-              : t.invoice
-          } ${invoice.invoiceNumber}`,
-          Author: user.companyName || `${user.firstName} ${user.lastName}`,
-          Subject: `${
-            invoice.type === InvoiceType.PROFORMA
-              ? t.proformaInvoice
-              : t.invoice
-          } for ${invoice.client.name}`,
-          Keywords: "invoice, bill, payment",
-          CreationDate: new Date(),
-        },
-      });
+    // Create PDF with professional settings
+    const doc = new PDFDocument({
+      margin: 50,
+      size: "A4",
+      bufferPages: true,
+      info: {
+        Title: `${
+          invoice.type === InvoiceType.PROFORMA ? t.proformaInvoice : t.invoice
+        } ${invoice.invoiceNumber}`,
+        Author: user.companyName || `${user.firstName} ${user.lastName}`,
+        Subject: `${
+          invoice.type === InvoiceType.PROFORMA ? t.proformaInvoice : t.invoice
+        } for ${invoice.client.name}`,
+        Keywords: "invoice, bill, payment",
+        CreationDate: new Date(),
+      },
+    });
 
-      const buffers: Buffer[] = [];
+    const buffers: Buffer[] = [];
 
+    return new Promise(async (resolve, reject) => {
       doc.on("data", buffers.push.bind(buffers));
       doc.on("end", () => {
         const pdfBuffer = Buffer.concat(buffers);
@@ -481,64 +499,140 @@ export class InvoicesService {
       doc.fillColor(colors.primary).fontSize(28).font("Helvetica-Bold");
       doc.text(t.invoice, 50, yPosition);
 
-      // Logo placeholder
-      drawRoundedRect(450, yPosition, 100, 40, 5, colors.light);
-      doc
-        .strokeColor(colors.border)
-        .lineWidth(1)
-        .roundedRect(450, yPosition, 100, 40, 5)
-        .stroke();
-      doc.fillColor(colors.primary).fontSize(16).font("Helvetica-Bold");
-      doc.text(t.logo, 470, yPosition + 12);
+      // Logo section
+      if (user.companyLogo) {
+        // Try to embed company logo (no background)
+        try {
+          const logoBuffer = await this.fetchImageFromUrl(user.companyLogo);
+          // Calculate dimensions to fit within 120x50px area
+          const logoWidth = 120;
+          const logoHeight = 50;
+          const logoX = 430; // Position on the right side
+          const logoY = yPosition; // Align with title at yPosition (50)
 
-      yPosition += 60;
+          doc.image(logoBuffer, logoX, logoY, {
+            width: logoWidth,
+            height: logoHeight,
+            fit: [logoWidth, logoHeight],
+          });
+        } catch (error) {
+          // Fallback to text if image loading fails
+          doc.fillColor(colors.primary).fontSize(16).font("Helvetica-Bold");
+          doc.text(t.logo, 450, yPosition + 17);
+        }
+      } else {
+        // Logo placeholder (no background)
+        doc.fillColor(colors.primary).fontSize(16).font("Helvetica-Bold");
+        doc.text(t.logo, 450, yPosition + 17);
+      }
 
-      // ===== TO SECTION (LEFT) =====
+      yPosition = 140; // Start FROM section after invoice details
+
+      // ===== FROM SECTION (LEFT TOP) =====
       doc.fillColor(colors.dark).fontSize(12).font("Helvetica-Bold");
-      doc.text(t.to, 50, yPosition);
+      doc.text(t.from, 50, yPosition);
       yPosition += 20;
 
-      // Client details (left aligned)
+      // Issuer details (left aligned)
+      doc.fillColor(colors.secondary).fontSize(10).font("Helvetica");
+
+      // Company name or individual name
+      const issuerName =
+        user.companyName ||
+        `${user.firstName || ""} ${user.lastName || ""}`.trim();
+      if (issuerName) {
+        doc.text(issuerName, 50, yPosition);
+        yPosition += 15;
+      }
+
+      // Address information
+      const fullAddress = [user.address, user.town, user.poBox]
+        .filter(Boolean)
+        .join(", ");
+
+      if (fullAddress) {
+        doc.text(fullAddress, 50, yPosition);
+        yPosition += 15;
+      }
+
+      // Taxpayer number
+      if (user.taxpayerNumber) {
+        doc.text(`${t.taxpayerNumber} ${user.taxpayerNumber}`, 50, yPosition);
+        yPosition += 15;
+      }
+
+      // Commercial register
+      if (user.commercialRegister) {
+        doc.text(
+          `Commercial Register: ${user.commercialRegister}`,
+          50,
+          yPosition
+        );
+        yPosition += 15;
+      }
+
+      // Phone number
+      if (user.phone) {
+        doc.text(`${t.phoneNumber} ${user.phone}`, 50, yPosition);
+        yPosition += 15;
+      }
+
+      // Email
+      if (user.email) {
+        doc.text(user.email, 50, yPosition);
+        yPosition += 15;
+      }
+
+      yPosition += 20; // Space before TO section
+
+      // ===== TO SECTION (RIGHT) =====
+      const toSectionX = 300; // Position on the right side
+      let toYPosition = 140; // Start from same Y as FROM section
+
+      doc.fillColor(colors.dark).fontSize(12).font("Helvetica-Bold");
+      doc.text(t.to, toSectionX, toYPosition);
+      toYPosition += 20;
+
+      // Client details (right aligned)
       doc.fillColor(colors.secondary).fontSize(10).font("Helvetica");
       const clientName = `${invoice.client.name}`;
-      doc.text(clientName, 50, yPosition);
-      yPosition += 15;
+      doc.text(clientName, toSectionX, toYPosition);
+      toYPosition += 15;
 
       const companyName = invoice.client.companyName || "";
       if (companyName) {
-        doc.text(companyName, 50, yPosition);
-        yPosition += 15;
+        doc.text(companyName, toSectionX, toYPosition);
+        toYPosition += 15;
       }
 
       const address = invoice.client.address || "";
       if (address) {
-        doc.text(address, 50, yPosition);
-        yPosition += 15;
+        doc.text(address, toSectionX, toYPosition);
+        toYPosition += 15;
       }
 
       const taxpayer = invoice.client.taxpayerNumber || "";
       if (taxpayer) {
-        doc.text(`${t.taxpayerNumber} ${taxpayer}`, 50, yPosition);
-        yPosition += 15;
+        doc.text(`${t.taxpayerNumber} ${taxpayer}`, toSectionX, toYPosition);
+        toYPosition += 15;
       }
 
       const phone = invoice.client.phone || "";
       if (phone) {
-        doc.text(`${t.phoneNumber} ${phone}`, 50, yPosition);
-        yPosition += 15;
+        doc.text(`${t.phoneNumber} ${phone}`, toSectionX, toYPosition);
+        toYPosition += 15;
       }
 
-      doc.text(invoice.client.email || "", 50, yPosition);
-      yPosition += 60; // Space before table
+      doc.text(invoice.client.email || "", toSectionX, toYPosition);
+      // No need to update yPosition here as we're done with TO section
 
-      // ===== INVOICE NUMBER AND DATE (RIGHT) =====
-      const rightX = 400;
+      // ===== INVOICE NUMBER AND DATE (BELOW TITLE) =====
       doc.fillColor(colors.dark).fontSize(10).font("Helvetica-Bold");
-      doc.text(`${t.invoiceNumber} ${invoice.invoiceNumber}`, rightX, 110);
+      doc.text(`${t.invoiceNumber} ${invoice.invoiceNumber}`, 50, 90);
       doc.text(
         `${t.invoiceDate} ${formatDate(new Date(invoice.issueDate))}`,
-        rightX,
-        130
+        50,
+        80
       );
 
       // ===== SERVICE DETAILS TABLE =====

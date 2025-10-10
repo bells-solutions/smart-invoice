@@ -78,6 +78,20 @@ export const useAuthStore = defineStore("auth", () => {
     return response;
   }
 
+  async function uploadCompanyLogo(file: File) {
+    const response = await authService.uploadCompanyLogo(file);
+    authService.setUser(response);
+    user.value = response;
+    return response;
+  }
+
+  async function deleteCompanyLogo() {
+    const response = await authService.deleteCompanyLogo();
+    authService.setUser(response);
+    user.value = response;
+    return response;
+  }
+
   return {
     user,
     isAuthenticated,
@@ -87,5 +101,7 @@ export const useAuthStore = defineStore("auth", () => {
     updateProfile,
     uploadProfilePicture,
     deleteProfilePicture,
+    uploadCompanyLogo,
+    deleteCompanyLogo,
   };
 });

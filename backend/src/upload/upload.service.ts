@@ -28,7 +28,7 @@ export class UploadService {
         await this.minioClient.makeBucket(this.bucketName, "us-east-1");
         this.logger.log(`Bucket ${this.bucketName} created successfully`);
 
-        // Set bucket policy to allow public read access for profile pictures
+        // Set bucket policy to allow public read access for profile pictures and company logos
         const policy = {
           Version: "2012-10-17",
           Statement: [
@@ -38,7 +38,10 @@ export class UploadService {
                 AWS: ["*"],
               },
               Action: ["s3:GetObject"],
-              Resource: [`arn:aws:s3:::${this.bucketName}/profile-pictures/*`],
+              Resource: [
+                `arn:aws:s3:::${this.bucketName}/profile-pictures/*`,
+                `arn:aws:s3:::${this.bucketName}/company-logos/*`,
+              ],
             },
           ],
         };
@@ -94,6 +97,49 @@ export class UploadService {
       }
     } catch (error) {
       this.logger.error("Error deleting file:", error);
+    }
+  }
+
+  async uploadCompanyLogo(
+    file: Express.Multer.File,
+    userId: string
+  ): Promise<string> {
+    const fileExtension = file.originalname.split(".").pop();
+    const fileName = `company-logos/${userId}-${uuidv4()}.${fileExtension}`;
+
+    try {
+      await this.minioClient.putObject(
+        this.bucketName,
+        fileName,
+        file.buffer,
+        file.size,
+        {
+          "Content-Type": file.mimetype,
+        }
+      );
+
+      // Return the public URL
+      const baseUrl = `http://${this.configService.get(
+        "MINIO_ENDPOINT",
+        "localhost"
+      )}:${this.configService.get("MINIO_PORT", "9000")}`;
+      return `${baseUrl}/${this.bucketName}/${fileName}`;
+    } catch (error) {
+      this.logger.error("Error uploading company logo:", error);
+      throw new Error("Failed to upload company logo");
+    }
+  }
+
+  async deleteCompanyLogo(fileUrl: string): Promise<void> {
+    try {
+      // Extract the object name from the URL
+      const objectName = fileUrl.split(`/${this.bucketName}/`)[1];
+      if (objectName) {
+        await this.minioClient.removeObject(this.bucketName, objectName);
+        this.logger.log(`Deleted company logo: ${objectName}`);
+      }
+    } catch (error) {
+      this.logger.error("Error deleting company logo:", error);
     }
   }
 }
