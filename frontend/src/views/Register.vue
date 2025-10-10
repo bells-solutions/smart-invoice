@@ -535,7 +535,7 @@
                     ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
                     : 'border-gray-300',
                 ]"
-                placeholder="{{ $t('register.createStrongPassword') }}"
+                :placeholder="$t('register.createStrongPassword')"
                 @blur="validatePassword"
               />
               <div

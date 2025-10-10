@@ -309,7 +309,6 @@ import { InvoiceType, type Invoice } from "@/types";
 import {
   ArrowDownTrayIcon,
   ArrowPathIcon,
-  UserCircleIcon,
   XMarkIcon,
 } from "@heroicons/vue/24/outline";
 import { authService } from "@/services/auth";
@@ -360,6 +359,7 @@ async function loadInvoice() {
     invoice.value = await invoiceService.getOne(props.invoiceId);
   } catch (error) {
     console.error("Failed to load invoice:", error);
+    invoice.value = null;
   } finally {
     loading.value = false;
   }

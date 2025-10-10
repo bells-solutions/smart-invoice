@@ -17,8 +17,16 @@ api.interceptors.request.use((config) => {
 
 // Handle auth errors
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   (error) => {
+    console.error(
+      "API Error:",
+      error.config?.url,
+      error.response?.status,
+      error.message
+    );
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");

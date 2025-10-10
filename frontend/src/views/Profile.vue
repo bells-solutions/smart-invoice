@@ -368,6 +368,93 @@
               </div>
             </div>
 
+            <!-- Logo Section -->
+            <div class="bg-gray-50 rounded-xl p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                {{ $t("profile.logoSettings") }}
+              </h3>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-4">
+                  {{ $t("profile.logo") }}
+                </label>
+                <p class="text-sm text-gray-600 mb-4">
+                  {{ $t("profile.logoHelp") }}
+                </p>
+
+                <!-- Current Logo Preview -->
+                <div class="flex items-center space-x-4 mb-4">
+                  <div class="flex-shrink-0">
+                    <div
+                      v-if="user?.companyLogo"
+                      class="h-16 w-16 rounded-lg overflow-hidden border border-gray-300"
+                    >
+                      <img
+                        :src="user.companyLogo"
+                        alt="Logo"
+                        class="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div
+                      v-else
+                      class="h-16 w-16 rounded-lg bg-gray-100 border border-gray-300 flex items-center justify-center"
+                    >
+                      <BuildingOfficeIcon class="h-8 w-8 text-gray-400" />
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-3">
+                      <label
+                        for="company-logo-upload"
+                        :class="[
+                          'inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer transition-colors',
+                          companyLogoUploading
+                            ? 'opacity-50 cursor-not-allowed'
+                            : '',
+                        ]"
+                      >
+                        <CloudArrowUpIcon class="w-4 h-4 mr-2" />
+                        {{
+                          companyLogoUploading
+                            ? $t("common.loading")
+                            : $t("profile.uploadLogo")
+                        }}
+                      </label>
+                      <input
+                        id="company-logo-upload"
+                        type="file"
+                        accept="image/*"
+                        @change="handleCompanyLogoUpload"
+                        :disabled="companyLogoUploading"
+                        class="hidden"
+                      />
+                      <button
+                        v-if="user?.companyLogo"
+                        @click="handleDeleteCompanyLogo"
+                        :disabled="companyLogoUploading"
+                        type="button"
+                        class="inline-flex items-center px-4 py-2 border border-red-300 rounded-lg text-sm font-medium text-red-700 bg-white hover:bg-red-50 transition-colors disabled:opacity-50"
+                      >
+                        <svg
+                          class="w-4 h-4 mr-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                        {{ $t("profile.removeLogo") }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Address Section -->
             <div class="bg-gray-50 rounded-xl p-6">
               <h3 class="text-lg font-semibold text-gray-900 mb-4">
@@ -508,6 +595,7 @@ const loading = ref(false);
 const error = ref("");
 const success = ref("");
 const profilePictureUploading = ref(false);
+const companyLogoUploading = ref(false);
 
 function initializeForm() {
   const currentUser = authStore.user;
@@ -607,6 +695,59 @@ async function handleDeleteProfilePicture() {
     error.value = err.message || t("profile.profilePictureDeleteFailed");
   } finally {
     profilePictureUploading.value = false;
+  }
+}
+
+async function handleCompanyLogoUpload(event: Event) {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  if (!file) return;
+
+  // Validate file type
+  if (!file.type.startsWith("image/")) {
+    error.value = t("profile.invalidFileType");
+    return;
+  }
+
+  // Validate file size (5MB limit)
+  if (file.size > 5 * 1024 * 1024) {
+    error.value = t("profile.fileTooLarge");
+    return;
+  }
+
+  companyLogoUploading.value = true;
+  error.value = "";
+  success.value = "";
+
+  try {
+    await authStore.uploadCompanyLogo(file);
+    success.value = t("profile.companyLogoUpdated");
+  } catch (err: any) {
+    error.value = err.message || t("profile.companyLogoUploadFailed");
+  } finally {
+    companyLogoUploading.value = false;
+    // Reset the input
+    target.value = "";
+  }
+}
+
+async function handleDeleteCompanyLogo() {
+  if (!confirm(t("profile.confirmDeleteCompanyLogo"))) {
+    return;
+  }
+
+  companyLogoUploading.value = true;
+  error.value = "";
+  success.value = "";
+
+  try {
+    await authStore.deleteCompanyLogo();
+    success.value = t("profile.companyLogoDeleted");
+  } catch (err: any) {
+    error.value = err.message || t("profile.companyLogoDeleteFailed");
+  } finally {
+    companyLogoUploading.value = false;
   }
 }
 

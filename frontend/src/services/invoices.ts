@@ -28,6 +28,12 @@ function normalizeInvoice(inv: Invoice): Invoice {
   if ((inv as any).irAmount !== undefined) {
     out.irAmount = toNumber((inv as any).irAmount);
   }
+  if ((inv as any).discountRate !== undefined) {
+    out.discountRate = toNumber((inv as any).discountRate);
+  }
+  if ((inv as any).discountAmount !== undefined) {
+    out.discountAmount = toNumber((inv as any).discountAmount);
+  }
   if ((inv as any).total !== undefined) {
     out.total = toNumber((inv as any).total);
   }
@@ -48,7 +54,9 @@ function normalizeInvoice(inv: Invoice): Invoice {
 
 export const invoiceService = {
   async getAll() {
+    console.log("Fetching all invoices...");
     const response = await api.get<Invoice[]>("/invoices");
+    console.log("Invoices response:", response);
     return response.data.map(normalizeInvoice);
   },
 

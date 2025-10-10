@@ -68,4 +68,37 @@ export class UsersController {
   async deleteProfilePicture(@CurrentUser() user: User) {
     return this.usersService.deleteProfilePicture(user.id);
   }
+
+  @Post("me/company-logo")
+  @UseInterceptors(
+    FileInterceptor("companyLogo", {
+      fileFilter: (req, file, callback) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+          return callback(
+            new BadRequestException("Only image files are allowed!"),
+            false
+          );
+        }
+        callback(null, true);
+      },
+      limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB limit
+      },
+    })
+  )
+  async uploadCompanyLogo(
+    @CurrentUser() user: User,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    if (!file) {
+      throw new BadRequestException("No file uploaded");
+    }
+
+    return this.usersService.updateCompanyLogo(user.id, file);
+  }
+
+  @Delete("me/company-logo")
+  async deleteCompanyLogo(@CurrentUser() user: User) {
+    return this.usersService.deleteCompanyLogo(user.id);
+  }
 }

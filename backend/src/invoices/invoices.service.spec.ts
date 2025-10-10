@@ -517,4 +517,124 @@ describe("InvoicesService", () => {
       expect(result.total).toBe(1080); // 1200 - 120
     });
   });
+
+  describe("generatePDF", () => {
+    it("should generate PDF with company logo when user has companyLogo", async () => {
+      const mockInvoice = {
+        id: "invoice-1",
+        invoiceNumber: "INV-001",
+        type: InvoiceType.NORMAL,
+        issueDate: new Date(),
+        status: InvoiceStatus.SENT,
+        subtotal: 1000,
+        tvaEnabled: true,
+        tvaRate: 20,
+        tvaAmount: 200,
+        irEnabled: false,
+        irRate: 0,
+        irAmount: 0,
+        discountEnabled: false,
+        discountRate: 0,
+        discountAmount: 0,
+        total: 1200,
+        client: {
+          id: "client-1",
+          name: "Test Client",
+          email: "client@example.com",
+          companyName: "Client Company",
+          address: "123 Client St",
+          taxpayerNumber: "987654321",
+          phone: "+0987654321",
+        },
+        items: [
+          {
+            id: "item-1",
+            description: "Test Service",
+            quantity: 1,
+            unitPrice: 1000,
+            amount: 1000,
+          },
+        ],
+      };
+
+      const mockUser = {
+        id: "user-1",
+        email: "test@example.com",
+        firstName: "John",
+        lastName: "Doe",
+        companyName: "Test Company",
+        taxpayerNumber: "123456789",
+        address: "123 Test St",
+        companyLogo: "https://example.com/logo.png",
+        language: "en",
+        currency: "USD",
+      };
+
+      mockInvoiceRepository.findOne.mockResolvedValue(mockInvoice);
+
+      const result = await service.generatePDF("invoice-1", mockUser as User);
+
+      expect(result).toBeInstanceOf(Buffer);
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    it("should generate PDF with logo placeholder when user has no companyLogo", async () => {
+      const mockInvoice = {
+        id: "invoice-1",
+        invoiceNumber: "INV-001",
+        type: InvoiceType.NORMAL,
+        issueDate: new Date(),
+        status: InvoiceStatus.SENT,
+        subtotal: 1000,
+        tvaEnabled: true,
+        tvaRate: 20,
+        tvaAmount: 200,
+        irEnabled: false,
+        irRate: 0,
+        irAmount: 0,
+        discountEnabled: false,
+        discountRate: 0,
+        discountAmount: 0,
+        total: 1200,
+        client: {
+          id: "client-1",
+          name: "Test Client",
+          email: "client@example.com",
+          companyName: "Client Company",
+          address: "123 Client St",
+          taxpayerNumber: "987654321",
+          phone: "+0987654321",
+        },
+        items: [
+          {
+            id: "item-1",
+            description: "Test Service",
+            quantity: 1,
+            unitPrice: 1000,
+            amount: 1000,
+          },
+        ],
+      };
+
+      const mockUser = {
+        id: "user-1",
+        email: "test@example.com",
+        firstName: "John",
+        lastName: "Doe",
+        companyName: "Test Company",
+        taxpayerNumber: "123456789",
+        address: "123 Test St",
+        companyLogo: null,
+        language: "en",
+        currency: "USD",
+      };
+
+      mockInvoiceRepository.findOne.mockResolvedValue(mockInvoice);
+
+      const result = await service.generatePDF("invoice-1", mockUser as User);
+
+      expect(result).toBeInstanceOf(Buffer);
+      expect(result.length).toBeGreaterThan(0);
+    });
+  });
 });
