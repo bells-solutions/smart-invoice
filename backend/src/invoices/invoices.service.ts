@@ -262,6 +262,7 @@ export class InvoicesService {
         const items = await this.invoiceItemsRepository.find({
           where: { invoiceId: id },
         });
+
         const totals = this.calculateTotals(
           items,
           newTvaEnabled,
@@ -326,8 +327,8 @@ export class InvoicesService {
         invoice: "INVOICE",
         proformaInvoice: "PROFORMA INVOICE",
         logo: "LOGO",
-        from: "FROM:",
-        to: "TO:",
+        from: "From:",
+        to: "To:",
         taxpayerNumber: "Taxpayer number:",
         phoneNumber: "Phone number:",
         invoiceNumber: "Invoice Number:",
@@ -350,7 +351,7 @@ export class InvoicesService {
         invoice: "FACTURE",
         proformaInvoice: "FACTURE PROFORMA",
         logo: "LOGO",
-        from: "DE:",
+        from: "De:",
         to: "À:",
         taxpayerNumber: "Numéro de contribuable:",
         phoneNumber: "Numéro de téléphone:",
@@ -476,7 +477,7 @@ export class InvoicesService {
       };
 
       const formatCurrency = (amount: number) => {
-        const currency = user.currency || "USD";
+        const currency = user.currency || "XAF";
         const formatter = new Intl.NumberFormat(user.language || "en", {
           style: "currency",
           currency: currency,
@@ -778,45 +779,45 @@ export class InvoicesService {
       yPosition = totalsY + 40;
 
       // ===== APPROVAL TEXT =====
-      doc.fillColor(colors.muted).fontSize(10).font("Helvetica-Oblique");
-      const totalInWords = t.totalInWords; // Placeholder - implement number to words if needed
-      doc.text(`${t.approvedText} ${totalInWords}`, 50, yPosition);
-      yPosition += 30;
+      // doc.fillColor(colors.muted).fontSize(10).font("Helvetica-Oblique");
+      // const totalInWords = t.totalInWords; // Placeholder - implement number to words if needed
+      // doc.text(`${t.approvedText} ${totalInWords}`, 50, yPosition);
+      // yPosition += 30;
 
-      // ===== FOOTER =====
-      const pageHeight = doc.page.height;
+      // // ===== FOOTER =====
+      // const pageHeight = doc.page.height;
 
-      // Footer line (fixed near bottom)
-      const footerLineY = pageHeight - 60;
-      doc
-        .strokeColor(colors.primary)
-        .lineWidth(1)
-        .moveTo(50, footerLineY)
-        .lineTo(545, footerLineY)
-        .stroke();
+      // // Footer line (fixed near bottom)
+      // const footerLineY = pageHeight - 60;
+      // doc
+      //   .strokeColor(colors.primary)
+      //   .lineWidth(1)
+      //   .moveTo(50, footerLineY)
+      //   .lineTo(545, footerLineY)
+      //   .stroke();
 
-      // Company info just below the line
-      doc.fillColor(colors.secondary).fontSize(9).font("Helvetica");
-      const companyInfo = [
-        user.companyName || `${user.firstName || ""} ${user.lastName || ""}`,
-        user.email || "",
-        user.address || "",
-        user.taxpayerNumber ? `${t.taxpayerNo} ${user.taxpayerNumber}` : "",
-      ]
-        .filter(Boolean)
-        .join(" | ");
+      // // Company info just below the line
+      // doc.fillColor(colors.secondary).fontSize(9).font("Helvetica");
+      // const companyInfo = [
+      //   user.companyName || `${user.firstName || ""} ${user.lastName || ""}`,
+      //   user.email || "",
+      //   user.address || "",
+      //   user.taxpayerNumber ? `${t.taxpayerNo} ${user.taxpayerNumber}` : "",
+      // ]
+      //   .filter(Boolean)
+      //   .join(" | ");
 
-      doc.text(companyInfo, 50, footerLineY + 3, {
-        width: 495,
-        align: "left",
-      });
+      // doc.text(companyInfo, 50, footerLineY + 3, {
+      //   width: 495,
+      //   align: "left",
+      // });
 
-      // Thank-you note centered just below company info
-      doc.fillColor(colors.muted).fontSize(8).font("Helvetica-Oblique");
-      doc.text(t.thankYou, 50, footerLineY + 18, {
-        align: "center",
-        width: 495,
-      });
+      // // Thank-you note centered just below company info
+      // doc.fillColor(colors.muted).fontSize(8).font("Helvetica-Oblique");
+      // doc.text(t.thankYou, 50, footerLineY + 18, {
+      //   align: "center",
+      //   width: 495,
+      // });
 
       doc.end();
     });
