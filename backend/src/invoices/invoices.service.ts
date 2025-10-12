@@ -508,7 +508,7 @@ export class InvoicesService {
           // Calculate dimensions to fit within 120x50px area
           const logoWidth = 120;
           const logoHeight = 50;
-          const logoX = 430; // Position on the right side
+          const logoX = 420; // Position on the right side
           const logoY = yPosition; // Align with title at yPosition (50)
 
           doc.image(logoBuffer, logoX, logoY, {
@@ -637,7 +637,7 @@ export class InvoicesService {
       );
 
       // ===== SERVICE DETAILS TABLE =====
-      yPosition = 220; // Reset to after header
+      yPosition = 240; // Reset to after header
       doc.fillColor(colors.dark).fontSize(16).font("Helvetica-Bold");
       doc.text(t.serviceDetails, 50, yPosition);
       yPosition += 30;
