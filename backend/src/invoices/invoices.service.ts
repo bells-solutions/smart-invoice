@@ -742,7 +742,7 @@ export class InvoicesService {
 
       if (invoice.tvaEnabled) {
         doc.fillColor(colors.secondary).font("Helvetica");
-        doc.text(`${t.tva}(${invoice.tvaRate}%)`, totalsX, totalsY);
+        doc.text(`${t.tva} (${invoice.tvaRate}%)`, totalsX, totalsY);
         doc.fillColor(colors.dark).font("Helvetica-Bold");
         doc.text(
           formatCurrency(parseFloat(invoice.tvaAmount.toString())),
@@ -755,7 +755,7 @@ export class InvoicesService {
 
       if (invoice.irEnabled) {
         doc.fillColor(colors.secondary).font("Helvetica");
-        doc.text(`${t.ir}(${invoice.irRate}%)`, totalsX, totalsY);
+        doc.text(`${t.ir} (${invoice.irRate}%)`, totalsX, totalsY);
         doc.fillColor(colors.dark).font("Helvetica-Bold");
         doc.text(
           formatCurrency(parseFloat(invoice.irAmount.toString())),
