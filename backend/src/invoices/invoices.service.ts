@@ -478,11 +478,37 @@ export class InvoicesService {
 
       const formatCurrency = (amount: number) => {
         const currency = user.currency || "XAF";
-        const formatter = new Intl.NumberFormat(user.language || "en", {
-          style: "currency",
-          currency: currency,
-        });
-        return formatter.format(amount);
+
+        // Use the same formatting logic as the frontend
+        const CURRENCY_SYMBOLS: Record<string, string> = {
+          USD: "$",
+          EUR: "€",
+          XAF: "F CFA",
+        };
+
+        const symbol = CURRENCY_SYMBOLS[currency] || currency;
+
+        // Format the number with 2 decimal places
+        const formattedAmount = amount.toFixed(2);
+
+        // Remove .00 if it's a whole number
+        const displayAmount = formattedAmount.endsWith(".00")
+          ? formattedAmount.slice(0, -3)
+          : formattedAmount;
+
+        // Add spaces every 3 digits before the decimal point
+        const [integerPart, decimalPart] = displayAmount.split(".");
+        const formattedInteger = integerPart.replace(
+          /\B(?=(\d{3})+(?!\d))/g,
+          " "
+        );
+
+        // Reconstruct the number
+        const finalAmount = decimalPart
+          ? `${formattedInteger}.${decimalPart}`
+          : formattedInteger;
+
+        return `${finalAmount} ${symbol}`;
       };
 
       const formatDate = (date: Date) => {
@@ -655,10 +681,10 @@ export class InvoicesService {
         colors.primary
       );
       doc.fillColor("white").fontSize(11).font("Helvetica-Bold");
-      doc.text(t.items, tableX + 10, yPosition + 7, { width: 300 });
-      doc.text(t.qty, tableX + 320, yPosition + 7);
-      doc.text(t.unitPrice, tableX + 370, yPosition + 7);
-      doc.text(t.amount, tableX + 450, yPosition + 7);
+      doc.text(t.items, tableX + 10, yPosition + 7, { width: 220 });
+      doc.text(t.qty, tableX + 240, yPosition + 7);
+      doc.text(t.unitPrice, tableX + 280, yPosition + 7);
+      doc.text(t.amount, tableX + 380, yPosition + 7);
 
       yPosition += headerHeight + 5;
 
@@ -692,18 +718,18 @@ export class InvoicesService {
         // Item details
         doc.fillColor(colors.dark).fontSize(10).font("Helvetica");
         doc.text(item.description || "", tableX + 10, yPosition + 5, {
-          width: 300,
+          width: 220,
         });
 
-        doc.text(item.quantity.toString(), tableX + 320, yPosition + 5);
+        doc.text(item.quantity.toString(), tableX + 240, yPosition + 5);
         doc.text(
           formatCurrency(parseFloat(item.unitPrice.toString())),
-          tableX + 370,
+          tableX + 280,
           yPosition + 5
         );
         doc.text(
           formatCurrency(parseFloat(item.amount.toString())),
-          tableX + 450,
+          tableX + 380,
           yPosition + 5
         );
 
@@ -724,9 +750,9 @@ export class InvoicesService {
 
       // ===== TOTALS SECTION (RIGHT ALIGNED) =====
       const totalsStartY = yPosition;
-      const totalsX = 300;
+      const totalsX = 330; // Adjusted to align amounts with item amount column
       const totalsLabelWidth = 100;
-      const totalsAmountX = totalsX + totalsLabelWidth + 20;
+      const totalsAmountX = 450; // Align with amount column (tableX + 400)
 
       doc.fillColor(colors.secondary).fontSize(10).font("Helvetica");
       doc.text(t.subtotal, totalsX, totalsStartY);
@@ -735,7 +761,7 @@ export class InvoicesService {
         formatCurrency(parseFloat(invoice.subtotal.toString())),
         totalsAmountX,
         totalsStartY,
-        { align: "right", width: 100 }
+        { align: "left", width: 100 }
       );
 
       let totalsY = totalsStartY + 20;
@@ -748,7 +774,7 @@ export class InvoicesService {
           formatCurrency(parseFloat(invoice.tvaAmount.toString())),
           totalsAmountX,
           totalsY,
-          { align: "right", width: 100 }
+          { align: "left", width: 100 }
         );
         totalsY += 20;
       }
@@ -761,7 +787,7 @@ export class InvoicesService {
           formatCurrency(parseFloat(invoice.irAmount.toString())),
           totalsAmountX,
           totalsY,
-          { align: "right", width: 100 }
+          { align: "left", width: 100 }
         );
         totalsY += 20;
       }
@@ -773,7 +799,7 @@ export class InvoicesService {
         formatCurrency(parseFloat(invoice.total.toString())),
         totalsAmountX,
         totalsY,
-        { align: "right", width: 100 }
+        { align: "left", width: 100 }
       );
 
       yPosition = totalsY + 40;
