@@ -51,7 +51,7 @@ export class Invoice {
   @Column({ type: "date" })
   dueDate: Date;
 
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  @Column({ type: "decimal", precision: 15, scale: 2, default: 0 })
   subtotal: number;
 
   @Column({ type: "boolean", default: false })
@@ -60,7 +60,7 @@ export class Invoice {
   @Column({ type: "decimal", precision: 5, scale: 2, default: 19.25 })
   tvaRate: number;
 
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  @Column({ type: "decimal", precision: 15, scale: 2, default: 0 })
   tvaAmount: number;
 
   @Column({ type: "boolean", default: false })
@@ -69,7 +69,7 @@ export class Invoice {
   @Column({ type: "decimal", precision: 5, scale: 2, default: 5.5 })
   irRate: number;
 
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  @Column({ type: "decimal", precision: 15, scale: 2, default: 0 })
   irAmount: number;
 
   @Column({ type: "boolean", default: false })
@@ -78,10 +78,10 @@ export class Invoice {
   @Column({ type: "decimal", precision: 5, scale: 2, default: 0 })
   discountRate: number;
 
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  @Column({ type: "decimal", precision: 15, scale: 2, default: 0 })
   discountAmount: number;
 
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  @Column({ type: "decimal", precision: 15, scale: 2, default: 0 })
   total: number;
 
   @Column({ type: "text", nullable: true })
