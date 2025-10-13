@@ -1,29 +1,24 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-} from 'typeorm';
-import { Invoice } from './invoice.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Invoice } from "./invoice.entity";
 
-@Entity('invoice_items')
+@Entity("invoice_items")
 export class InvoiceItem {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
   description: string;
 
-  @Column({ type: 'integer' })
+  @Column({ type: "integer" })
   quantity: number;
 
-  @Column({ type: 'decimal', precision: 15, scale: 2 })
+  @Column({ type: "decimal", precision: 15, scale: 2 })
   unitPrice: number;
 
-  @Column({ type: 'decimal', precision: 15, scale: 2 })
+  @Column({ type: "decimal", precision: 15, scale: 2 })
   amount: number;
 
-  @ManyToOne(() => Invoice, (invoice) => invoice.items, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Invoice, (invoice) => invoice.items, { onDelete: "CASCADE" })
   invoice: Invoice;
 
   @Column()
