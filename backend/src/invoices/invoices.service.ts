@@ -805,45 +805,10 @@ export class InvoicesService {
       yPosition = totalsY + 40;
 
       // ===== APPROVAL TEXT =====
-      // doc.fillColor(colors.muted).fontSize(10).font("Helvetica-Oblique");
-      // const totalInWords = t.totalInWords; // Placeholder - implement number to words if needed
-      // doc.text(`${t.approvedText} ${totalInWords}`, 50, yPosition);
-      // yPosition += 30;
-
-      // // ===== FOOTER =====
-      // const pageHeight = doc.page.height;
-
-      // // Footer line (fixed near bottom)
-      // const footerLineY = pageHeight - 60;
-      // doc
-      //   .strokeColor(colors.primary)
-      //   .lineWidth(1)
-      //   .moveTo(50, footerLineY)
-      //   .lineTo(545, footerLineY)
-      //   .stroke();
-
-      // // Company info just below the line
-      // doc.fillColor(colors.secondary).fontSize(9).font("Helvetica");
-      // const companyInfo = [
-      //   user.companyName || `${user.firstName || ""} ${user.lastName || ""}`,
-      //   user.email || "",
-      //   user.address || "",
-      //   user.taxpayerNumber ? `${t.taxpayerNo} ${user.taxpayerNumber}` : "",
-      // ]
-      //   .filter(Boolean)
-      //   .join(" | ");
-
-      // doc.text(companyInfo, 50, footerLineY + 3, {
-      //   width: 495,
-      //   align: "left",
-      // });
-
-      // // Thank-you note centered just below company info
-      // doc.fillColor(colors.muted).fontSize(8).font("Helvetica-Oblique");
-      // doc.text(t.thankYou, 50, footerLineY + 18, {
-      //   align: "center",
-      //   width: 495,
-      // });
+      doc.fillColor(colors.muted).fontSize(10).font("Helvetica-Oblique");
+      const totalInWords = t.totalInWords; // Placeholder - implement number to words if needed
+      doc.text(`${t.approvedText} ${totalInWords}`, 50, yPosition);
+      yPosition += 30;
 
       doc.end();
     });
