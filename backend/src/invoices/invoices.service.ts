@@ -810,6 +810,30 @@ export class InvoicesService {
       doc.text(`${t.approvedText} ${totalInWords}`, 50, yPosition);
       yPosition += 30;
 
+      // ===== FOOTER SECTION =====
+      // Draw a line above the footer
+      doc
+        .moveTo(50, doc.page.height - 70)
+        .lineTo(doc.page.width - 50, doc.page.height - 70)
+        .strokeColor(colors.border)
+        .lineWidth(1)
+        .stroke();
+
+      // Footer text (centered)
+      doc.fontSize(10).fillColor(colors.muted).font("Helvetica");
+      const footerText = user.companyName
+        ? `${user.companyName} | ${user.email} | ${
+            user.phone ? " | " + user.phone : ""
+          }`
+        : `${user.firstName} ${user.lastName} | ${user.email}, ${
+            user.phone ? " | " + user.phone : ""
+          }`;
+
+      doc.text(footerText, 50, doc.page.height - 55, {
+        align: "center",
+        width: doc.page.width - 100,
+      });
+
       doc.end();
     });
   }
