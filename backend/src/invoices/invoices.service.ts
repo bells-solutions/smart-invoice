@@ -5,7 +5,6 @@ import { Invoice, InvoiceStatus, InvoiceType } from "./invoice.entity";
 import { InvoiceItem } from "./invoice-item.entity";
 import { CreateInvoiceDto, UpdateInvoiceDto } from "./invoice.dto";
 import { User } from "../users/user.entity";
-// import { MailService } from "../mail/mail.service"; // Mail functionality disabled
 import PDFDocument from "pdfkit";
 import * as https from "https";
 import * as http from "http";
@@ -17,7 +16,6 @@ export class InvoicesService {
     private invoicesRepository: Repository<Invoice>,
     @InjectRepository(InvoiceItem)
     private invoiceItemsRepository: Repository<InvoiceItem>
-    // private mailService: MailService // Mail functionality disabled
   ) {}
 
   private calculateTotals(
@@ -285,35 +283,7 @@ export class InvoicesService {
     });
 
     await this.invoicesRepository.save(invoice);
-    const updatedInvoice = await this.findOne(id, user);
-
-    // Send email if status changed from non-sent to sent
-    if (
-      updateData.status === InvoiceStatus.SENT &&
-      previousStatus?.status !== InvoiceStatus.SENT
-    ) {
-      try {
-        const invoiceWithRelations = await this.invoicesRepository.findOne({
-          where: { id },
-          relations: ["user", "client"],
-        });
-
-        if (invoiceWithRelations) {
-          // Generate PDF for attachment
-          const pdfBuffer = await this.generatePDF(id, user);
-          // Mail functionality disabled
-          // await this.mailService.sendInvoiceToClient(
-          //   invoiceWithRelations,
-          //   pdfBuffer
-          // );
-        }
-      } catch (error) {
-        console.error("Failed to send invoice email:", error);
-        // Don't throw error to avoid failing the update operation
-      }
-    }
-
-    return updatedInvoice;
+    return await this.findOne(id, user);
   }
 
   async remove(id: string, user: User) {
@@ -875,38 +845,11 @@ export class InvoicesService {
   }
 
   async sendInvoiceEmail(invoiceId: string, user: User) {
-    const invoice = await this.invoicesRepository.findOne({
-      where: { id: invoiceId, userId: user.id },
-      relations: ["client", "items"],
-    });
-
-    if (!invoice) {
-      throw new NotFoundException("Invoice not found");
-    }
-
-    // Generate PDF for attachment
-    const pdfBuffer = await this.generatePDF(invoiceId, user);
-
-    // Mail functionality disabled
-    // await this.mailService.sendInvoiceToClient(invoice, pdfBuffer);
-
-    return { message: "Invoice email functionality is disabled" };
+    throw new NotFoundException("Email functionality has been removed");
   }
 
   async sendPaymentReminder(invoiceId: string, user: User) {
-    const invoice = await this.invoicesRepository.findOne({
-      where: { id: invoiceId, userId: user.id },
-      relations: ["client"],
-    });
-
-    if (!invoice) {
-      throw new NotFoundException("Invoice not found");
-    }
-
-    // Mail functionality disabled
-    // await this.mailService.sendPaymentReminder(invoice);
-
-    return { message: "Payment reminder functionality is disabled" };
+    throw new NotFoundException("Email functionality has been removed");
   }
 
   async getOverdueInvoices(user: User) {

@@ -4,7 +4,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Invoice, InvoiceStatus } from "../invoices/invoice.entity";
 import { User } from "../users/user.entity";
-// import { MailService } from "../mail/mail.service"; // Mail functionality disabled
 
 @Injectable()
 export class ReportsService {
@@ -15,7 +14,6 @@ export class ReportsService {
     private invoicesRepository: Repository<Invoice>,
     @InjectRepository(User)
     private usersRepository: Repository<User>
-    // private mailService: MailService // Mail functionality disabled
   ) {}
 
   // Run on the 1st day of each month at 9:00 AM
@@ -30,11 +28,9 @@ export class ReportsService {
         try {
           const summaryData = await this.generateMonthlySummary(user.id);
 
-          // Only send if user has invoices
+          // Only process if user has invoices
           if (summaryData.totalInvoices > 0) {
-            // Mail functionality disabled
-            // await this.mailService.sendMonthlySummary(user, summaryData);
-            this.logger.log(`Monthly summary skipped for user: ${user.email} (mail disabled)`);
+            this.logger.log(`Monthly summary generated for user: ${user.email} (email disabled)`);
           }
         } catch (error) {
           this.logger.error(
@@ -129,11 +125,9 @@ export class ReportsService {
       return { message: "No invoices found for this month" };
     }
 
-    // Mail functionality disabled
-    // await this.mailService.sendMonthlySummary(user, summaryData);
-    this.logger.log(`Manual monthly summary skipped for user: ${user.email} (mail disabled)`);
+    this.logger.log(`Monthly summary generated for user: ${user.email} (email disabled)`);
 
-    return { message: "Monthly summary generated (mail functionality disabled)", data: summaryData };
+    return { message: "Monthly summary generated", data: summaryData };
   }
 
   // Get dashboard statistics for a user

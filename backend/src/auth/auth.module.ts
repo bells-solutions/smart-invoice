@@ -7,7 +7,6 @@ import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { JwtStrategy } from "./jwt.strategy";
 import { User } from "../users/user.entity";
-// import { MailModule } from "../mail/mail.module";
 
 @Module({
   imports: [
@@ -21,7 +20,6 @@ import { User } from "../users/user.entity";
       }),
       inject: [ConfigService],
     }),
-    // MailModule, // Mail functionality disabled
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

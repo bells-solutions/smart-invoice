@@ -3,7 +3,6 @@ import { Cron, CronExpression } from "@nestjs/schedule";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, LessThan } from "typeorm";
 import { Invoice, InvoiceStatus } from "../invoices/invoice.entity";
-// import { MailService } from "../mail/mail.service"; // Mail functionality disabled
 
 @Injectable()
 export class PaymentReminderService {
@@ -12,7 +11,6 @@ export class PaymentReminderService {
   constructor(
     @InjectRepository(Invoice)
     private invoicesRepository: Repository<Invoice>
-    // private mailService: MailService // Mail functionality disabled
   ) {}
 
   // Run every day at 9:00 AM
@@ -32,20 +30,7 @@ export class PaymentReminderService {
 
       this.logger.log(`Found ${overdueInvoices.length} overdue invoices`);
 
-      for (const invoice of overdueInvoices) {
-        try {
-          // Mail functionality disabled
-          // await this.mailService.sendPaymentReminder(invoice);
-          this.logger.log(
-            `Payment reminder skipped for invoice ${invoice.invoiceNumber} (mail disabled)`
-          );
-        } catch (error) {
-          this.logger.error(
-            `Failed to process payment reminder for invoice ${invoice.invoiceNumber}:`,
-            error
-          );
-        }
-      }
+      this.logger.log(`Found ${overdueInvoices.length} overdue invoices (email reminders disabled)`);
 
       this.logger.log("Payment reminder check completed");
     } catch (error) {
@@ -72,10 +57,8 @@ export class PaymentReminderService {
       throw new Error("Invoice is not overdue yet");
     }
 
-    // Mail functionality disabled
-    // await this.mailService.sendPaymentReminder(invoice);
     this.logger.log(
-      `Manual payment reminder skipped for invoice ${invoice.invoiceNumber} (mail disabled)`
+      `Payment reminder requested for invoice ${invoice.invoiceNumber} (email functionality disabled)`
     );
   }
 

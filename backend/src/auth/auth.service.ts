@@ -6,7 +6,6 @@ import * as bcrypt from "bcrypt";
 import * as crypto from "crypto";
 import { User } from "../users/user.entity";
 import { RegisterDto, LoginDto } from "./auth.dto";
-// import { MailService } from "../mail/mail.service"; // Mail functionality disabled
 
 @Injectable()
 export class AuthService {
@@ -14,7 +13,6 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private jwtService: JwtService
-    // private mailService: MailService // Mail functionality disabled
   ) {}
 
   async register(registerDto: RegisterDto) {
@@ -153,14 +151,6 @@ export class AuthService {
     user.passwordResetExpires = resetExpires;
     await this.usersRepository.save(user);
 
-    // Send email - DISABLED
-    // try {
-    //   await this.mailService.sendPasswordResetEmail(user, resetToken);
-    // } catch (error) {
-    //   console.error("Failed to send password reset email:", error);
-    //   // Don't throw error to avoid revealing if email exists
-    // }
-
     return {
       message: "If the email exists, a password reset link has been sent.",
     };
@@ -207,9 +197,6 @@ export class AuthService {
     const verificationToken = crypto.randomBytes(32).toString("hex");
     user.emailVerificationToken = verificationToken;
     await this.usersRepository.save(user);
-
-    // Send verification email - DISABLED
-    // await this.mailService.sendEmailVerification(user, verificationToken);
 
     return { message: "Verification email sent" };
   }
