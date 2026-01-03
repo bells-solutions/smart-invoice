@@ -7,7 +7,7 @@ import { UsersModule } from "./users/users.module";
 import { ClientsModule } from "./clients/clients.module";
 import { InvoicesModule } from "./invoices/invoices.module";
 import { UploadModule } from "./upload/upload.module";
-import { MailModule } from "./mail/mail.module";
+// import { MailModule } from "./mail/mail.module";
 import { User } from "./users/user.entity";
 import { Client } from "./clients/client.entity";
 import { Invoice } from "./invoices/invoice.entity";
@@ -38,7 +38,7 @@ import { InvoiceItem } from "./invoices/invoice-item.entity";
     ClientsModule,
     InvoicesModule,
     UploadModule,
-    MailModule,
+    // MailModule, // Mail functionality disabled
   ],
 })
 export class AppModule {}

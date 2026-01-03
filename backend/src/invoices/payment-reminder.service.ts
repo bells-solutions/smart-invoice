@@ -3,7 +3,7 @@ import { Cron, CronExpression } from "@nestjs/schedule";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, LessThan } from "typeorm";
 import { Invoice, InvoiceStatus } from "../invoices/invoice.entity";
-import { MailService } from "../mail/mail.service";
+// import { MailService } from "../mail/mail.service"; // Mail functionality disabled
 
 @Injectable()
 export class PaymentReminderService {
@@ -11,8 +11,8 @@ export class PaymentReminderService {
 
   constructor(
     @InjectRepository(Invoice)
-    private invoicesRepository: Repository<Invoice>,
-    private mailService: MailService
+    private invoicesRepository: Repository<Invoice>
+    // private mailService: MailService // Mail functionality disabled
   ) {}
 
   // Run every day at 9:00 AM
@@ -34,13 +34,14 @@ export class PaymentReminderService {
 
       for (const invoice of overdueInvoices) {
         try {
-          await this.mailService.sendPaymentReminder(invoice);
+          // Mail functionality disabled
+          // await this.mailService.sendPaymentReminder(invoice);
           this.logger.log(
-            `Payment reminder sent for invoice ${invoice.invoiceNumber}`
+            `Payment reminder skipped for invoice ${invoice.invoiceNumber} (mail disabled)`
           );
         } catch (error) {
           this.logger.error(
-            `Failed to send payment reminder for invoice ${invoice.invoiceNumber}:`,
+            `Failed to process payment reminder for invoice ${invoice.invoiceNumber}:`,
             error
           );
         }
@@ -71,9 +72,10 @@ export class PaymentReminderService {
       throw new Error("Invoice is not overdue yet");
     }
 
-    await this.mailService.sendPaymentReminder(invoice);
+    // Mail functionality disabled
+    // await this.mailService.sendPaymentReminder(invoice);
     this.logger.log(
-      `Manual payment reminder sent for invoice ${invoice.invoiceNumber}`
+      `Manual payment reminder skipped for invoice ${invoice.invoiceNumber} (mail disabled)`
     );
   }
 

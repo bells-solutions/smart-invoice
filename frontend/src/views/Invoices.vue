@@ -260,7 +260,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { invoiceService } from "@/services/invoices";
-import {mailSer}
+// import {mailService} from "@/services/mail";
 import { useCurrency } from "@/composables/useCurrency";
 import type { Invoice } from "@/types";
 import Layout from "@/components/Layout.vue";
@@ -319,7 +319,7 @@ function closePreview() {
 }
 
 function handleEmailSent(invoiceId: string) {
-  mailService
+  // mailService;
   console.log(`Email sent for invoice ${invoiceId}`);
   // Optionally reload invoices to update email status
   // loadInvoices();

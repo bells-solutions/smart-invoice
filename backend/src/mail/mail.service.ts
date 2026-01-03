@@ -142,4 +142,20 @@ export class MailService {
       },
     });
   }
+
+  async sendTestEmail(to: string, subject: string, message: string) {
+    await this.mailerService.sendMail({
+      to,
+      subject,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #1e40af;">Test Email from Smart Invoice</h2>
+          <p>${message}</p>
+          <p style="color: #64748b; font-size: 12px; margin-top: 30px;">
+            This is a test email to verify your mail configuration is working correctly.
+          </p>
+        </div>
+      `,
+    });
+  }
 }

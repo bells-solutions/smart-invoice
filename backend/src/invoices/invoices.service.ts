@@ -5,7 +5,7 @@ import { Invoice, InvoiceStatus, InvoiceType } from "./invoice.entity";
 import { InvoiceItem } from "./invoice-item.entity";
 import { CreateInvoiceDto, UpdateInvoiceDto } from "./invoice.dto";
 import { User } from "../users/user.entity";
-import { MailService } from "../mail/mail.service";
+// import { MailService } from "../mail/mail.service"; // Mail functionality disabled
 import PDFDocument from "pdfkit";
 import * as https from "https";
 import * as http from "http";
@@ -16,8 +16,8 @@ export class InvoicesService {
     @InjectRepository(Invoice)
     private invoicesRepository: Repository<Invoice>,
     @InjectRepository(InvoiceItem)
-    private invoiceItemsRepository: Repository<InvoiceItem>,
-    private mailService: MailService
+    private invoiceItemsRepository: Repository<InvoiceItem>
+    // private mailService: MailService // Mail functionality disabled
   ) {}
 
   private calculateTotals(
@@ -301,10 +301,11 @@ export class InvoicesService {
         if (invoiceWithRelations) {
           // Generate PDF for attachment
           const pdfBuffer = await this.generatePDF(id, user);
-          await this.mailService.sendInvoiceToClient(
-            invoiceWithRelations,
-            pdfBuffer
-          );
+          // Mail functionality disabled
+          // await this.mailService.sendInvoiceToClient(
+          //   invoiceWithRelations,
+          //   pdfBuffer
+          // );
         }
       } catch (error) {
         console.error("Failed to send invoice email:", error);
@@ -886,9 +887,10 @@ export class InvoicesService {
     // Generate PDF for attachment
     const pdfBuffer = await this.generatePDF(invoiceId, user);
 
-    await this.mailService.sendInvoiceToClient(invoice, pdfBuffer);
+    // Mail functionality disabled
+    // await this.mailService.sendInvoiceToClient(invoice, pdfBuffer);
 
-    return { message: "Invoice email sent successfully" };
+    return { message: "Invoice email functionality is disabled" };
   }
 
   async sendPaymentReminder(invoiceId: string, user: User) {
@@ -901,9 +903,10 @@ export class InvoicesService {
       throw new NotFoundException("Invoice not found");
     }
 
-    await this.mailService.sendPaymentReminder(invoice);
+    // Mail functionality disabled
+    // await this.mailService.sendPaymentReminder(invoice);
 
-    return { message: "Payment reminder sent successfully" };
+    return { message: "Payment reminder functionality is disabled" };
   }
 
   async getOverdueInvoices(user: User) {

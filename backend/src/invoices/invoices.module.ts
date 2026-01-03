@@ -7,10 +7,10 @@ import { ReportsService } from "./reports.service";
 import { Invoice } from "./invoice.entity";
 import { InvoiceItem } from "./invoice-item.entity";
 import { User } from "../users/user.entity";
-import { MailModule } from "../mail/mail.module";
+// import { MailModule } from "../mail/mail.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Invoice, InvoiceItem, User]), MailModule],
+  imports: [TypeOrmModule.forFeature([Invoice, InvoiceItem, User])], // MailModule removed
   providers: [InvoicesService, PaymentReminderService, ReportsService],
   controllers: [InvoicesController],
   exports: [InvoicesService, PaymentReminderService, ReportsService],

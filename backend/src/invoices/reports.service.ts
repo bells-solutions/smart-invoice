@@ -4,7 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Invoice, InvoiceStatus } from "../invoices/invoice.entity";
 import { User } from "../users/user.entity";
-import { MailService } from "../mail/mail.service";
+// import { MailService } from "../mail/mail.service"; // Mail functionality disabled
 
 @Injectable()
 export class ReportsService {
@@ -14,8 +14,8 @@ export class ReportsService {
     @InjectRepository(Invoice)
     private invoicesRepository: Repository<Invoice>,
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
-    private mailService: MailService
+    private usersRepository: Repository<User>
+    // private mailService: MailService // Mail functionality disabled
   ) {}
 
   // Run on the 1st day of each month at 9:00 AM
@@ -32,8 +32,9 @@ export class ReportsService {
 
           // Only send if user has invoices
           if (summaryData.totalInvoices > 0) {
-            await this.mailService.sendMonthlySummary(user, summaryData);
-            this.logger.log(`Monthly summary sent to user: ${user.email}`);
+            // Mail functionality disabled
+            // await this.mailService.sendMonthlySummary(user, summaryData);
+            this.logger.log(`Monthly summary skipped for user: ${user.email} (mail disabled)`);
           }
         } catch (error) {
           this.logger.error(
@@ -128,10 +129,11 @@ export class ReportsService {
       return { message: "No invoices found for this month" };
     }
 
-    await this.mailService.sendMonthlySummary(user, summaryData);
-    this.logger.log(`Manual monthly summary sent to user: ${user.email}`);
+    // Mail functionality disabled
+    // await this.mailService.sendMonthlySummary(user, summaryData);
+    this.logger.log(`Manual monthly summary skipped for user: ${user.email} (mail disabled)`);
 
-    return { message: "Monthly summary sent successfully", data: summaryData };
+    return { message: "Monthly summary generated (mail functionality disabled)", data: summaryData };
   }
 
   // Get dashboard statistics for a user
