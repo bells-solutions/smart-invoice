@@ -28,6 +28,30 @@ const router = createRouter({
       component: () => import("@/views/Register.vue"),
     },
     {
+      path: "/forgot-password",
+      name: "ForgotPassword",
+      meta: {
+        title: "Forgot Password",
+      },
+      component: () => import("@/views/ForgotPassword.vue"),
+    },
+    {
+      path: "/reset-password",
+      name: "ResetPassword",
+      meta: {
+        title: "Reset Password",
+      },
+      component: () => import("@/views/ResetPassword.vue"),
+    },
+    {
+      path: "/verify-email",
+      name: "VerifyEmail",
+      meta: {
+        title: "Verify Email",
+      },
+      component: () => import("@/views/VerifyEmail.vue"),
+    },
+    {
       path: "/dashboard",
       name: "Dashboard",
       component: () => import("@/views/Dashboard.vue"),
@@ -75,7 +99,11 @@ router.beforeEach((to, _from, next) => {
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next("/login");
   } else if (
-    (to.path === "/login" || to.path === "/register") &&
+    (to.path === "/login" ||
+      to.path === "/register" ||
+      to.path === "/forgot-password" ||
+      to.path === "/reset-password" ||
+      to.path === "/verify-email") &&
     authStore.isAuthenticated
   ) {
     next("/dashboard");

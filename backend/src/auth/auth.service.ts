@@ -3,15 +3,18 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
+import * as crypto from "crypto";
 import { User } from "../users/user.entity";
 import { RegisterDto, LoginDto } from "./auth.dto";
+import { MailService } from "../mail/mail.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private mailService: MailService
   ) {}
 
   async register(registerDto: RegisterDto) {
@@ -130,5 +133,100 @@ export class AuthService {
 
   async validateUser(userId: string) {
     return await this.usersRepository.findOne({ where: { id: userId } });
+  }
+
+  async requestPasswordReset(email: string) {
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (!user) {
+      // Don't reveal if email exists or not for security
+      return {
+        message: "If the email exists, a password reset link has been sent.",
+      };
+    }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetExpires = new Date(Date.now() + 3600000); // 1 hour from now
+
+    // Save token to user
+    user.passwordResetToken = resetToken;
+    user.passwordResetExpires = resetExpires;
+    await this.usersRepository.save(user);
+
+    // Send email
+    try {
+      await this.mailService.sendPasswordResetEmail(user, resetToken);
+    } catch (error) {
+      console.error("Failed to send password reset email:", error);
+      // Don't throw error to avoid revealing if email exists
+    }
+
+    return {
+      message: "If the email exists, a password reset link has been sent.",
+    };
+  }
+
+  async resetPassword(token: string, newPassword: string) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        passwordResetToken: token,
+      },
+    });
+
+    if (
+      !user ||
+      !user.passwordResetExpires ||
+      new Date() > user.passwordResetExpires
+    ) {
+      throw new UnauthorizedException("Invalid or expired reset token");
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user
+    user.password = hashedPassword;
+    user.passwordResetToken = null;
+    user.passwordResetExpires = null;
+    await this.usersRepository.save(user);
+
+    return { message: "Password successfully reset" };
+  }
+
+  async sendEmailVerification(userId: string) {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
+    if (user.emailVerified) {
+      return { message: "Email is already verified" };
+    }
+
+    // Generate verification token
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    user.emailVerificationToken = verificationToken;
+    await this.usersRepository.save(user);
+
+    // Send verification email
+    await this.mailService.sendEmailVerification(user, verificationToken);
+
+    return { message: "Verification email sent" };
+  }
+
+  async verifyEmail(token: string) {
+    const user = await this.usersRepository.findOne({
+      where: { emailVerificationToken: token },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException("Invalid verification token");
+    }
+
+    user.emailVerified = true;
+    user.emailVerificationToken = null;
+    await this.usersRepository.save(user);
+
+    return { message: "Email successfully verified" };
   }
 }

@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to Smart Invoice!</title>
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333;
+      max-width: 600px; margin: 0 auto; padding: 20px; } .header {
+      background-color: #4f46e5; color: white; padding: 20px; text-align:
+      center; border-radius: 8px 8px 0 0; } .content { background-color:
+      #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; } .button { display:
+      inline-block; background-color: #4f46e5; color: white; padding: 15px 30px;
+      text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight:
+      bold; } .features { background-color: white; padding: 20px; border-radius:
+      8px; margin: 20px 0; } .feature-item { margin: 10px 0; padding-left: 20px;
+      position: relative; } .feature-item:before { content: "✓"; position:
+      absolute; left: 0; color: #059669; font-weight: bold; } .footer {
+      text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px
+      solid #e5e7eb; color: #6b7280; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🎉 Welcome to Smart Invoice!</h1>
+      <p>Your journey to smarter invoicing starts here</p>
+    </div>
+
+    <div class="content">
+      <p>Hello {{firstName}},</p>
+
+      <p>Welcome to Smart Invoice! We're excited to have you on board. Your
+        account has been successfully created and you're ready to start managing
+        your invoices more efficiently.</p>
+
+      <div class="features">
+        <h3>What you can do with Smart Invoice:</h3>
+        <div class="feature-item">Create and send professional invoices</div>
+        <div class="feature-item">Track payments and manage clients</div>
+        <div class="feature-item">Generate detailed reports and analytics</div>
+        <div class="feature-item">Set up automated payment reminders</div>
+        <div class="feature-item">Export invoices as PDF documents</div>
+        <div class="feature-item">Manage your business finances effortlessly</div>
+      </div>
+
+      <p>Ready to get started? Click the button below to access your dashboard:</p>
+
+      <div style="text-align: center;">
+        <a href="{{loginUrl}}" class="button">Go to Dashboard</a>
+      </div>
+
+      <p>Your account details:</p>
+      <ul>
+        <li><strong>Email:</strong> {{email}}</li>
+        <li><strong>Account created:</strong> Today</li>
+      </ul>
+
+      <p>If you have any questions or need help getting started, don't hesitate
+        to reach out to our support team.</p>
+
+      <p>Happy invoicing!<br />
+        The Smart Invoice Team</p>
+    </div>
+
+    <div class="footer">
+      <p>This is an automated welcome email. If you didn't create this account,
+        please contact our support team.</p>
+    </div>
+  </body>
+</html>

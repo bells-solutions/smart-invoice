@@ -1,6 +1,7 @@
 {
   "common": {
     "loading": "Chargement...",
+    "sending": "Envoi en cours...",
     "error": "Erreur",
     "save": "Enregistrer",
     "cancel": "Annuler",
@@ -14,6 +15,7 @@
   "auth": {
     "welcomeBack": "Bienvenue",
     "signInDescription": "Connectez-vous à votre compte SmartInvoice",
+    "email": "E-mail",
     "emailAddress": "Adresse e-mail",
     "enterEmail": "Entrez votre e-mail",
     "password": "Mot de passe",
@@ -23,7 +25,28 @@
     "dontHaveAccount": "Vous n'avez pas de compte ?",
     "createOneHere": "Créez-en un ici",
     "secureLogin": "Connexion sécurisée par SmartInvoice",
-    "loginFailed": "Échec de la connexion"
+    "loginFailed": "Échec de la connexion",
+    "forgotPassword": "Mot de passe oublié ?",
+    "forgotPasswordDescription": "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+    "sending": "Envoi en cours...",
+    "sendResetLink": "Envoyer le lien de réinitialisation",
+    "rememberPassword": "Vous vous souvenez de votre mot de passe ?",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "resetPasswordDescription": "Entrez votre nouveau mot de passe ci-dessous.",
+    "newPassword": "Nouveau mot de passe",
+    "enterNewPassword": "Entrez votre nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "confirmNewPassword": "Confirmez votre nouveau mot de passe",
+    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+    "resetting": "Réinitialisation...",
+    "passwordResetSuccess": "Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+    "emailVerification": "Vérification d'e-mail",
+    "verifyingEmail": "Vérification de votre e-mail...",
+    "emailVerified": "E-mail vérifié !",
+    "verificationFailed": "Échec de la vérification",
+    "invalidToken": "Jeton invalide",
+    "invalidTokenDescription": "Le lien de vérification est invalide ou a expiré. Veuillez contacter le support ou essayer de vous connecter.",
+    "resendVerification": "Renvoyer l'e-mail de vérification"
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -103,6 +126,22 @@
         "total": "Total :"
       },
       "notes": "Notes"
+    },
+    "email": {
+      "sendEmail": "Envoyer par e-mail",
+      "sendByEmail": "Envoyer la facture par e-mail",
+      "emailSent": "E-mail envoyé avec succès",
+      "emailFailed": "Échec de l'envoi de l'e-mail",
+      "remind": "Rappeler",
+      "sendReminder": "Envoyer un rappel de paiement",
+      "reminderSent": "Rappel de paiement envoyé",
+      "reminderFailed": "Échec de l'envoi du rappel",
+      "emailStatus": {
+        "sent": "E-mail envoyé",
+        "delivered": "Livré",
+        "failed": "Échec",
+        "pending": "En attente"
+      }
     }
   },
   "invoiceForm": {

@@ -1,0 +1,93 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monthly Invoice Summary</title>
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333;
+      max-width: 600px; margin: 0 auto; padding: 20px; } .header {
+      background-color: #7c3aed; color: white; padding: 20px; text-align:
+      center; border-radius: 8px 8px 0 0; } .content { background-color:
+      #faf5ff; padding: 30px; border-radius: 0 0 8px 8px; } .summary-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;
+      } .summary-card { background-color: white; padding: 20px; border-radius:
+      8px; text-align: center; border-left: 4px solid #7c3aed; }
+      .summary-card.paid { border-left-color: #059669; } .summary-card.overdue {
+      border-left-color: #dc2626; } .summary-card.pending { border-left-color:
+      #d97706; } .stat-number { font-size: 24px; font-weight: bold;
+      margin-bottom: 5px; } .stat-label { color: #6b7280; font-size: 14px; }
+      .footer { text-align: center; margin-top: 30px; padding-top: 20px;
+      border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>📊 Monthly Summary</h1>
+      <p>{{month}} - {{companyName}}</p>
+    </div>
+
+    <div class="content">
+      <p>Hello {{firstName}},</p>
+
+      <p>Here's your monthly invoice summary for {{month}}:</p>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="stat-number">{{totalInvoices}}</div>
+          <div class="stat-label">Total Invoices</div>
+        </div>
+        <div class="summary-card">
+          <div class="stat-number">${{totalAmount}}</div>
+          <div class="stat-label">Total Amount</div>
+        </div>
+        <div class="summary-card paid">
+          <div class="stat-number">{{paidInvoices}}</div>
+          <div class="stat-label">Paid Invoices</div>
+        </div>
+        <div class="summary-card paid">
+          <div class="stat-number">${{paidAmount}}</div>
+          <div class="stat-label">Paid Amount</div>
+        </div>
+        <div class="summary-card overdue">
+          <div class="stat-number">{{overdueInvoices}}</div>
+          <div class="stat-label">Overdue Invoices</div>
+        </div>
+        <div class="summary-card overdue">
+          <div class="stat-number">${{overdueAmount}}</div>
+          <div class="stat-label">Overdue Amount</div>
+        </div>
+        <div class="summary-card pending">
+          <div class="stat-number">{{pendingInvoices}}</div>
+          <div class="stat-label">Pending Invoices</div>
+        </div>
+        <div class="summary-card pending">
+          <div class="stat-number">${{pendingAmount}}</div>
+          <div class="stat-label">Pending Amount</div>
+        </div>
+      </div>
+
+      {{#if overdueInvoices}}
+        <div
+          style="background-color: #fee2e2; border: 1px solid #fecaca; padding: 15px; border-radius: 8px; margin: 20px 0;"
+        >
+          <p><strong>⚠️ Action Required:</strong>
+            You have
+            {{overdueInvoices}}
+            overdue invoice(s) totaling ${{overdueAmount}}. Consider sending
+            payment reminders to your clients.</p>
+        </div>
+      {{/if}}
+
+      <p>Thank you for using Smart Invoice to manage your business. Keep up the
+        great work!</p>
+
+      <p>Best regards,<br />
+        The Smart Invoice Team</p>
+    </div>
+
+    <div class="footer">
+      <p>This is your automated monthly summary. You can adjust email
+        preferences in your account settings.</p>
+    </div>
+  </body>
+</html>

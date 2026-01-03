@@ -1,11 +1,13 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ScheduleModule } from "@nestjs/schedule";
 import { AuthModule } from "./auth/auth.module";
 import { UsersModule } from "./users/users.module";
 import { ClientsModule } from "./clients/clients.module";
 import { InvoicesModule } from "./invoices/invoices.module";
 import { UploadModule } from "./upload/upload.module";
+import { MailModule } from "./mail/mail.module";
 import { User } from "./users/user.entity";
 import { Client } from "./clients/client.entity";
 import { Invoice } from "./invoices/invoice.entity";
@@ -16,6 +18,7 @@ import { InvoiceItem } from "./invoices/invoice-item.entity";
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -35,6 +38,7 @@ import { InvoiceItem } from "./invoices/invoice-item.entity";
     ClientsModule,
     InvoicesModule,
     UploadModule,
+    MailModule,
   ],
 })
 export class AppModule {}

@@ -66,6 +66,18 @@ export class User {
   @Column({ nullable: true, default: "en" })
   language?: string;
 
+  @Column({ nullable: true })
+  passwordResetToken: string;
+
+  @Column({ nullable: true })
+  passwordResetExpires: Date;
+
+  @Column({ nullable: true })
+  emailVerificationToken: string;
+
+  @Column({ default: false })
+  emailVerified: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 

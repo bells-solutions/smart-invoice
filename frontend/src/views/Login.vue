@@ -142,6 +142,16 @@
                 {{ $t("auth.signIn") }}
               </span>
             </button>
+
+            <!-- Forgot Password Link -->
+            <div class="text-center">
+              <router-link
+                to="/forgot-password"
+                class="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200"
+              >
+                {{ $t("auth.forgotPassword") }}
+              </router-link>
+            </div>
           </form>
         </div>
 

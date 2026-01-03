@@ -5,6 +5,7 @@ import { Invoice, InvoiceStatus, InvoiceType } from "./invoice.entity";
 import { InvoiceItem } from "./invoice-item.entity";
 import { CreateInvoiceDto, UpdateInvoiceDto } from "./invoice.dto";
 import { User } from "../users/user.entity";
+import { MailService } from "../mail/mail.service";
 import PDFDocument from "pdfkit";
 import * as https from "https";
 import * as http from "http";
@@ -15,7 +16,8 @@ export class InvoicesService {
     @InjectRepository(Invoice)
     private invoicesRepository: Repository<Invoice>,
     @InjectRepository(InvoiceItem)
-    private invoiceItemsRepository: Repository<InvoiceItem>
+    private invoiceItemsRepository: Repository<InvoiceItem>,
+    private mailService: MailService
   ) {}
 
   private calculateTotals(
@@ -276,8 +278,41 @@ export class InvoicesService {
       }
     }
 
+    // Check if status changed to 'sent' to trigger email
+    const previousStatus = await this.invoicesRepository.findOne({
+      where: { id },
+      select: ["status"],
+    });
+
     await this.invoicesRepository.save(invoice);
-    return this.findOne(id, user);
+    const updatedInvoice = await this.findOne(id, user);
+
+    // Send email if status changed from non-sent to sent
+    if (
+      updateData.status === InvoiceStatus.SENT &&
+      previousStatus?.status !== InvoiceStatus.SENT
+    ) {
+      try {
+        const invoiceWithRelations = await this.invoicesRepository.findOne({
+          where: { id },
+          relations: ["user", "client"],
+        });
+
+        if (invoiceWithRelations) {
+          // Generate PDF for attachment
+          const pdfBuffer = await this.generatePDF(id, user);
+          await this.mailService.sendInvoiceToClient(
+            invoiceWithRelations,
+            pdfBuffer
+          );
+        }
+      } catch (error) {
+        console.error("Failed to send invoice email:", error);
+        // Don't throw error to avoid failing the update operation
+      }
+    }
+
+    return updatedInvoice;
   }
 
   async remove(id: string, user: User) {

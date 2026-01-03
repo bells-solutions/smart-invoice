@@ -1,6 +1,7 @@
 {
   "common": {
     "loading": "Loading...",
+    "sending": "Sending...",
     "error": "Error",
     "save": "Save",
     "cancel": "Cancel",
@@ -14,6 +15,7 @@
   "auth": {
     "welcomeBack": "Welcome Back",
     "signInDescription": "Sign in to your SmartInvoice account",
+    "email": "Email",
     "emailAddress": "Email Address",
     "enterEmail": "Enter your email",
     "password": "Password",
@@ -23,7 +25,28 @@
     "dontHaveAccount": "Don't have an account?",
     "createOneHere": "Create one here",
     "secureLogin": "Secure login powered by SmartInvoice",
-    "loginFailed": "Login failed"
+    "loginFailed": "Login failed",
+    "forgotPassword": "Forgot Password?",
+    "forgotPasswordDescription": "Enter your email address and we'll send you a link to reset your password.",
+    "sending": "Sending...",
+    "sendResetLink": "Send Reset Link",
+    "rememberPassword": "Remember your password?",
+    "resetPassword": "Reset Password",
+    "resetPasswordDescription": "Enter your new password below.",
+    "newPassword": "New Password",
+    "enterNewPassword": "Enter your new password",
+    "confirmPassword": "Confirm Password",
+    "confirmNewPassword": "Confirm your new password",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "resetting": "Resetting...",
+    "passwordResetSuccess": "Your password has been successfully reset. You can now sign in with your new password.",
+    "emailVerification": "Email Verification",
+    "verifyingEmail": "Verifying your email...",
+    "emailVerified": "Email Verified!",
+    "verificationFailed": "Verification Failed",
+    "invalidToken": "Invalid Token",
+    "invalidTokenDescription": "The verification link is invalid or has expired. Please contact support or try logging in.",
+    "resendVerification": "Resend Verification Email"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -103,6 +126,22 @@
         "total": "Total:"
       },
       "notes": "Notes"
+    },
+    "email": {
+      "sendEmail": "Send Email",
+      "sendByEmail": "Send invoice by email",
+      "emailSent": "Email sent successfully",
+      "emailFailed": "Failed to send email",
+      "remind": "Remind",
+      "sendReminder": "Send payment reminder",
+      "reminderSent": "Payment reminder sent",
+      "reminderFailed": "Failed to send reminder",
+      "emailStatus": {
+        "sent": "Email Sent",
+        "delivered": "Delivered",
+        "failed": "Failed",
+        "pending": "Pending"
+      }
     }
   },
   "invoiceForm": {
