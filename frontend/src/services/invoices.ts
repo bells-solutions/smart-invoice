@@ -54,9 +54,7 @@ function normalizeInvoice(inv: Invoice): Invoice {
 
 export const invoiceService = {
   async getAll() {
-    console.log("Fetching all invoices...");
     const response = await api.get<Invoice[]>("/invoices");
-    console.log("Invoices response:", response);
     return response.data.map(normalizeInvoice);
   },
 

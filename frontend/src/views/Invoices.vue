@@ -208,28 +208,38 @@
                 {{ formatAmount(invoice.total) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <div class="flex items-center space-x-2">
-                  <button
-                    @click="openPreview(invoice.id)"
-                    class="text-blue-600 hover:text-blue-900 transition-colors duration-200"
-                    title="Preview Invoice"
-                  >
-                    <EyeIcon class="w-4 h-4" />
-                  </button>
-                  <router-link
-                    :to="`/invoices/${invoice.id}/edit`"
-                    class="text-indigo-600 hover:text-indigo-900 transition-colors duration-200"
-                    title="Edit Invoice"
-                  >
-                    <PencilSquareIcon class="w-4 h-4" />
-                  </router-link>
-                  <button
-                    @click="downloadPDF(invoice.id)"
-                    class="text-green-600 hover:text-green-900 transition-colors duration-200"
-                    title="Download PDF"
-                  >
-                    <ArrowDownTrayIcon class="w-4 h-4" />
-                  </button>
+                <div class="flex items-center space-x-3">
+                  <!-- Email Status Component -->
+                  <EmailStatus
+                    :invoice="invoice"
+                    @email-sent="handleEmailSent"
+                    @reminder-sent="handleReminderSent"
+                  />
+
+                  <!-- Existing Action Buttons -->
+                  <div class="flex items-center space-x-2">
+                    <button
+                      @click="openPreview(invoice.id)"
+                      class="text-blue-600 hover:text-blue-900 transition-colors duration-200"
+                      title="Preview Invoice"
+                    >
+                      <EyeIcon class="w-4 h-4" />
+                    </button>
+                    <router-link
+                      :to="`/invoices/${invoice.id}/edit`"
+                      class="text-indigo-600 hover:text-indigo-900 transition-colors duration-200"
+                      title="Edit Invoice"
+                    >
+                      <PencilSquareIcon class="w-4 h-4" />
+                    </router-link>
+                    <button
+                      @click="downloadPDF(invoice.id)"
+                      class="text-green-600 hover:text-green-900 transition-colors duration-200"
+                      title="Download PDF"
+                    >
+                      <ArrowDownTrayIcon class="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -249,11 +259,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useI18n } from "vue-i18n";
 import { invoiceService } from "@/services/invoices";
+import {mailSer}
 import { useCurrency } from "@/composables/useCurrency";
 import type { Invoice } from "@/types";
 import Layout from "@/components/Layout.vue";
+import EmailStatus from "@/components/EmailStatus.vue";
 import InvoicePreviewModal from "@/components/InvoicePreviewModal.vue";
 import {
   PlusIcon,
@@ -268,7 +279,6 @@ import {
   ArrowDownTrayIcon,
 } from "@heroicons/vue/24/outline";
 
-const { t } = useI18n();
 const { formatAmount } = useCurrency();
 
 const invoices = ref<Invoice[]>([]);
@@ -306,5 +316,17 @@ function openPreview(invoiceId: string) {
 function closePreview() {
   previewModalOpen.value = false;
   selectedInvoiceId.value = null;
+}
+
+function handleEmailSent(invoiceId: string) {
+  mailService
+  console.log(`Email sent for invoice ${invoiceId}`);
+  // Optionally reload invoices to update email status
+  // loadInvoices();
+}
+
+function handleReminderSent(invoiceId: string) {
+  console.log(`Payment reminder sent for invoice ${invoiceId}`);
+  // Optionally show a success message or reload invoices
 }
 </script>

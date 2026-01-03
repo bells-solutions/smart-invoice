@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Repository, LessThan } from "typeorm";
 import { Invoice, InvoiceStatus, InvoiceType } from "./invoice.entity";
 import { InvoiceItem } from "./invoice-item.entity";
 import { CreateInvoiceDto, UpdateInvoiceDto } from "./invoice.dto";
@@ -870,6 +870,51 @@ export class InvoicesService {
       });
 
       doc.end();
+    });
+  }
+
+  async sendInvoiceEmail(invoiceId: string, user: User) {
+    const invoice = await this.invoicesRepository.findOne({
+      where: { id: invoiceId, userId: user.id },
+      relations: ["client", "items"],
+    });
+
+    if (!invoice) {
+      throw new NotFoundException("Invoice not found");
+    }
+
+    // Generate PDF for attachment
+    const pdfBuffer = await this.generatePDF(invoiceId, user);
+
+    await this.mailService.sendInvoiceToClient(invoice, pdfBuffer);
+
+    return { message: "Invoice email sent successfully" };
+  }
+
+  async sendPaymentReminder(invoiceId: string, user: User) {
+    const invoice = await this.invoicesRepository.findOne({
+      where: { id: invoiceId, userId: user.id },
+      relations: ["client"],
+    });
+
+    if (!invoice) {
+      throw new NotFoundException("Invoice not found");
+    }
+
+    await this.mailService.sendPaymentReminder(invoice);
+
+    return { message: "Payment reminder sent successfully" };
+  }
+
+  async getOverdueInvoices(user: User) {
+    return this.invoicesRepository.find({
+      where: {
+        userId: user.id,
+        status: InvoiceStatus.SENT,
+        dueDate: LessThan(new Date()),
+      },
+      relations: ["client"],
+      order: { dueDate: "ASC" },
     });
   }
 }

@@ -16,11 +16,11 @@
       @click="sendInvoiceEmail"
       :disabled="sending"
       class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors duration-200 disabled:opacity-50"
-      :title="$t('invoices.sendByEmail')"
+      :title="t('invoices.email.sendByEmail')"
     >
       <PaperAirplaneIcon v-if="!sending" class="w-3 h-3 mr-1" />
       <ArrowPathIcon v-else class="w-3 h-3 mr-1 animate-spin" />
-      {{ sending ? $t("common.sending") : $t("invoices.sendEmail") }}
+      {{ sending ? t("common.sending") : t("invoices.email.sendEmail") }}
     </button>
 
     <!-- Payment Reminder Button -->
@@ -29,11 +29,11 @@
       @click="sendPaymentReminder"
       :disabled="sendingReminder"
       class="inline-flex items-center px-2 py-1 text-xs font-medium text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-full transition-colors duration-200 disabled:opacity-50"
-      :title="$t('invoices.sendReminder')"
+      :title="t('invoices.sendReminder')"
     >
       <BellIcon v-if="!sendingReminder" class="w-3 h-3 mr-1" />
       <ArrowPathIcon v-else class="w-3 h-3 mr-1 animate-spin" />
-      {{ sendingReminder ? $t("common.sending") : $t("invoices.remind") }}
+      {{ sendingReminder ? t("common.sending") : t("invoices.email.remind") }}
     </button>
   </div>
 </template>
@@ -49,6 +49,7 @@ import {
   ArrowPathIcon,
 } from "@heroicons/vue/24/outline";
 import { reportsService } from "@/services/reports";
+import { useI18n } from "vue-i18n";
 
 interface Props {
   invoice: {
@@ -65,6 +66,8 @@ const emit = defineEmits<{
   emailSent: [invoiceId: string];
   reminderSent: [invoiceId: string];
 }>();
+
+const { t } = useI18n();
 
 const sending = ref(false);
 const sendingReminder = ref(false);
